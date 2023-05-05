@@ -11,5 +11,6 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Farmstead Fortress");
 		new Lwjgl3Application(new MyGdxGame(), config);
+
 	}
 }
