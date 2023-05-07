@@ -32,8 +32,8 @@ public class GameScreen extends ScreenAdapter {
         centerX /= map.getBaseTiles().size();
         centerY /= map.getBaseTiles().size();
 
-        float offsetX = 50; // Adjust this value to change the horizontal shift
-        float offsetY = 30; // Adjust this value to change the vertical shift
+        float offsetX = 50;
+        float offsetY = 30;
         camera.position.set(centerX + offsetX, centerY + offsetY, 0);
     }
 
@@ -53,8 +53,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void cameraInput() {
-        System.out.println(camera.position.x);
-        System.out.println(camera.position.y);
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             camera.position.x -= 3f;
         }
