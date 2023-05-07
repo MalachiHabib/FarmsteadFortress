@@ -1,0 +1,40 @@
+package com.farmstedfortress.path;
+
+import java.util.List;
+
+/**
+ * Represents the result of a pathfinding operation.
+ */
+public class PathResult {
+    private boolean success;
+    private List<int[]> path;
+
+    /**
+     * Constructor for PathResult.
+     *
+     * @param success Indicates whether the pathfinding operation was successful.
+     * @param path    A list of int arrays representing the path, with each int array containing the x and y coordinates of a point.
+     */
+    public PathResult(boolean success, List<int[]> path) {
+        this.success = success;
+        this.path = path;
+    }
+
+    /**
+     * Returns whether the pathfinding operation was successful.
+     *
+     * @return true if the operation was successful, false otherwise.
+     */
+    public boolean isSuccess() {
+        return success;
+    }
+
+    /**
+     * Returns the path as a list of int arrays, where each int array contains the x and y coordinates of a point.
+     *
+     * @return The path as a list of int arrays.
+     */
+    public List<int[]> getPath() {
+        return path;
+    }
+}
