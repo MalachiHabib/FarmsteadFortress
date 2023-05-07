@@ -1,4 +1,4 @@
-package com.gamegroup.farmstedfortress.render;
+package com.farmstedfortress.render;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,5 +17,9 @@ public class Tile {
 
     public void render(SpriteBatch batch) {
         batch.draw(tile, worldPos.x, worldPos.y);
+    }
+
+    public Vector2 getPosition() {
+        return worldPos;
     }
 }
