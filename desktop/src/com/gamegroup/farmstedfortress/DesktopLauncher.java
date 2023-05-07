@@ -2,7 +2,7 @@ package com.gamegroup.farmstedfortress;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.farmstedfortress.FarmstedFortress;
+import com.farmsteadfortress.FarmsteadFortress;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {
@@ -11,6 +11,6 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Farmstead Fortress");
 		config.setWindowedMode(1280, 720); // set the windowed mode to 1280x720
-		new Lwjgl3Application(new FarmstedFortress(), config);
+		new Lwjgl3Application(new FarmsteadFortress(), config);
 	}
 }

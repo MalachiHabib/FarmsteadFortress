@@ -1,4 +1,4 @@
-package com.farmstedfortress.render;
+package com.farmsteadfortress.render;
 
 /**
  * TileMap class generates a randomised 2D tile map with a circular shaped island, it also calculates a path through it.
@@ -9,8 +9,8 @@ package com.farmstedfortress.render;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.farmstedfortress.path.PathCalculator;
-import com.farmstedfortress.path.PathResult;
+import com.farmsteadfortress.path.PathCalculator;
+import com.farmsteadfortress.path.PathResult;
 
 import java.util.Arrays;
 import java.util.LinkedList;

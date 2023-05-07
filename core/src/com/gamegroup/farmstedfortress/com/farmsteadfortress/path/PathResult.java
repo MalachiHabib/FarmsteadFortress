@@ -1,4 +1,4 @@
-package com.farmstedfortress.path;
+package com.farmsteadfortress.path;
 
 import java.util.List;
 

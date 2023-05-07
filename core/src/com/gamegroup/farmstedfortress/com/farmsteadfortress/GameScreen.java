@@ -1,4 +1,4 @@
-package com.farmstedfortress;
+package com.farmsteadfortress;
 
 import static com.badlogic.gdx.Gdx.*;
 
@@ -8,8 +8,8 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.farmstedfortress.render.Tile;
-import com.farmstedfortress.render.TileMap;
+import com.farmsteadfortress.render.Tile;
+import com.farmsteadfortress.render.TileMap;
 
 public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;

@@ -1,9 +1,9 @@
-package com.farmstedfortress;
+package com.farmsteadfortress;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class FarmstedFortress extends Game {
+public class FarmsteadFortress extends Game {
     private SpriteBatch batch;
     private GameScreen screen;
 
