@@ -126,8 +126,8 @@ public class TileMap {
     private void fillMapWithTiles() {
         for (int row = mapSize - 1; row >= 0; row--) {
             for (int col = mapSize - 1; col >= 0; col--) {
-                float x = (row - col) * 32 / 2.0001f;
-                float y = (col + row) * 16 / 2f;
+                float x = (row - col) * 64 / 2.0001f;
+                float y = (col + row) * 32 / 2f;
 
                 if (map[row][col].equals(GROUND)) {
                     baseTiles.add(new Tile(groundTexture, new Vector2(row, col), new Vector2(x, y)));

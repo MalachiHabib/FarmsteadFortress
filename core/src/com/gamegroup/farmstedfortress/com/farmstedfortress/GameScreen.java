@@ -19,6 +19,7 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(SpriteBatch batch) {
         this.batch = batch;
         camera = new OrthographicCamera(1280, 720);
+        camera.zoom = 1.5f;
         map = new TileMap();
 
         // Set camera position to center of island
@@ -30,7 +31,10 @@ public class GameScreen extends ScreenAdapter {
         }
         centerX /= map.getBaseTiles().size();
         centerY /= map.getBaseTiles().size();
-        camera.position.set(centerX, centerY, 0);
+
+        float offsetX = 50; // Adjust this value to change the horizontal shift
+        float offsetY = 30; // Adjust this value to change the vertical shift
+        camera.position.set(centerX + offsetX, centerY + offsetY, 0);
     }
 
     @Override
@@ -49,24 +53,19 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void cameraInput() {
-        float zoom = camera.zoom;
-        float maxMoveDistance = 150f * zoom;
-        float minCameraX = -105f;
-        float maxCameraX = 135f;
-        float minCameraY = 950f;
-        float maxCameraY = 980f;
-
+        System.out.println(camera.position.x);
+        System.out.println(camera.position.y);
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (camera.position.x > minCameraX) camera.position.x -= Math.min(maxMoveDistance, 3f * zoom);
+            camera.position.x -= 3f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (camera.position.x < maxCameraX) camera.position.x += Math.min(maxMoveDistance, 3f * zoom);
+            camera.position.x += 3f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if (camera.position.y < maxCameraY) camera.position.y += Math.min(maxMoveDistance, 3f * zoom);
+            camera.position.y += 3f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if (camera.position.y > minCameraY) camera.position.y -= Math.min(maxMoveDistance, 3f * zoom);
+            camera.position.y -= 3f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
             if (camera.zoom > 0.55) camera.zoom -= .1;
