@@ -1,4 +1,4 @@
-package com.farmsteadfortress;
+package com.farmsteadfortress.screens;
 
 import static com.badlogic.gdx.Gdx.*;
 
