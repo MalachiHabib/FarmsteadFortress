@@ -22,29 +22,56 @@ public class InputHandler extends InputAdapter {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        updateHoverEffect(screenX, screenY);
+        return super.mouseMoved(screenX, screenY);
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        replaceTile(screenX, screenY, new Texture("tiles/middle.png"));
+        return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return super.touchUp(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        replaceTile(screenX, screenY, new Texture("tiles/middle.png"));
+        updateHoverEffect(screenX, screenY);
+        return super.touchDragged(screenX, screenY, pointer);
+    }
+
+    private void updateHoverEffect(int screenX, int screenY) {
         Tile currentTile = getTileAtPosition(screenX, screenY);
         if (currentTile != null) {
             if (currentTile.isInteractable()) {
                 if (currentTile != lastHoveredTile) {
                     if (lastHoveredTile != null) {
-                        lastHoveredTile.setTileTexture(lastHoveredTile.getOriginalTileTexture());
+                        lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                     }
 
                     if (currentTile != null) {
                         lastHoveredTile = currentTile;
-                        currentTile.setTileTexture(hoverTexture);
+                        currentTile.setHoverTexture(hoverTexture);
                     } else {
                         lastHoveredTile = null;
                     }
                 }
             } else if (lastHoveredTile != null) {
-                lastHoveredTile.setTileTexture(lastHoveredTile.getOriginalTileTexture());
+                lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                 lastHoveredTile = null;
             }
         }
-        return super.mouseMoved(screenX, screenY);
     }
-
+    public void replaceTile(int screenX, int screenY, Texture newTileTexture) {
+        Tile clickedTile = getTileAtPosition(screenX, screenY);
+        if (clickedTile != null && clickedTile.isInteractable()) {
+            clickedTile.setTileTexture(newTileTexture);
+        }
+    }
 
     private Tile getTileAtPosition(int screenX, int screenY) {
         Vector3 unprojected = new Vector3(screenX, screenY, 0);

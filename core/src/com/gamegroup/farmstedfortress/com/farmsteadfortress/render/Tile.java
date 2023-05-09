@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Tile {
 
+
+
     public enum TileType {
         CROP_LAND,
         GRASS,
@@ -46,7 +48,10 @@ public class Tile {
         batch.draw(tileTexture, worldPos.x, worldPos.y);
     }
 
-    public void setTileTexture(Texture newTexture) {
+    public void setTileTexture(Texture newTileTexture) {
+        this.originalTile = newTileTexture;
+    }
+    public void setHoverTexture(Texture newTexture) {
         this.tileTexture = newTexture;
     }
 
