@@ -3,8 +3,9 @@ package com.farmsteadfortress.render;
 /**
  * TileMap class generates a randomised 2D tile map with a circular shaped island, it also calculates a path through it.
  * It fills the map with textures and creates corresponding Tile objects for rendering.
- *
  */
+
+import static com.badlogic.gdx.math.MathUtils.random;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,20 +14,26 @@ import com.farmsteadfortress.path.PathCalculator;
 import com.farmsteadfortress.path.PathResult;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 public class TileMap {
+
+    private static final double DIFFICULTY = 0.5f;
+
     private static final String WATER = "W";
     private static final String GROUND = "G";
+    private static final String WEIGHTED_GROUND = "WG";
     private static final String CENTER = "C";
     private static final String SPAWN_POINT = "S";
-    private static final String BRIDGE = "B";
     private static final String PATH = "P";
+
     private int mapSize;
     private String[][] map;
-    private Texture waterTexture, groundTexture, baseTexture, bridgeTexture, pathTexture;
+    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassMushroomTexture, grassRocksTextureOne, grassRocksTextureTwo;
+    private Texture objectTileTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
 
@@ -36,11 +43,22 @@ public class TileMap {
      */
     public TileMap() {
         mapSize = 120;
-        waterTexture = new Texture("water.png");
-        groundTexture = new Texture("sand.png");
-        baseTexture = new Texture("stone.png");
-        pathTexture = new Texture("purple.png");
-        bridgeTexture = new Texture("bridge.png");
+        cropLandTexture = new Texture("tiles/crop_land.png");
+
+        grassTexture = new Texture("tiles/grass.png");
+        grassMushroomTexture = new Texture("tiles/grass_mushroom.png");
+        grassRocksTextureOne = new Texture("tiles/grass_rocks.png");
+        grassRocksTextureTwo = new Texture("tiles/grass_rocks2.png");
+
+        waterTexture = new Texture("tiles/water.png");
+        waterFar = new Texture("tiles/water_far.png");
+        waterBorder = new Texture("tiles/water_border.png");
+
+        middleTexture = new Texture("tiles/middle.png");
+        pathTextureTop = new Texture("tiles/path.png");
+        bridgeTexture = new Texture("tiles/bridge.png");
+
+        objectTileTexture = new Texture("objects/tomato_full_grown.png");
 
         baseTiles = new LinkedList<>();
         objectTiles = new LinkedList<>();
@@ -54,7 +72,7 @@ public class TileMap {
             generateInitialMap();
             smoothMap(2);
             addAdditionalCenterTiles();
-
+            printMap();
             pathResults = pathCalculator.calculatePath(map);
 
             if (pathResults != null) {
@@ -66,18 +84,19 @@ public class TileMap {
                     }
                 }
             }
-
             if (!successfulPathFound) {
                 System.out.println("Pathfinding timed out, generating a new map...");
             }
         }
-
-        fillMapWithTiles();
         printMap();
+        fillMapWithTiles();
+        fillMapWithObjects();
+
     }
 
     /**
      * Sets the tile map with path points indicated by the "P" string in the map.
+     *
      * @param path List of int[] representing the x, y coordinates of the path.
      */
     public void setPathPoints(List<int[]> path) {
@@ -99,16 +118,28 @@ public class TileMap {
         }
     }
 
+    public Tile getTileAt(Vector2 worldPosition) {
+        for (Tile tile : baseTiles) {
+            if (tile.containsWorldPosition(worldPosition, 192, 192)) {
+                return tile;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Returns a list of base tiles to be rendered.
+     *
      * @return List of Tile objects representing the base tiles.
      */
     public List<Tile> getBaseTiles() {
         return baseTiles;
     }
+
     /**
      * Returns a list of object tiles to be rendered.
+     *
      * @return List of Tile objects representing the object tiles.
      */
     public List<Tile> getObjectTiles() {
@@ -117,6 +148,7 @@ public class TileMap {
 
     /**
      * Renders the base and object tiles onto the screen.
+     *
      * @param batch SpriteBatch object for rendering the tiles.
      */
     public void render(SpriteBatch batch) {
@@ -150,6 +182,7 @@ public class TileMap {
 
     /**
      * Creates a circular island with ground tiles.
+     *
      * @param random Random object for creating random values.
      */
     private void createIsland(Random random) {
@@ -176,9 +209,11 @@ public class TileMap {
         }
     }
 
+
     /**
      * Smooths the map by changing tiles with fewer than four ground tiles adjacent
      * to ground tiles to water tiles, and vice versa.
+     *
      * @param iterations Number of times the smoothing operation should be run.
      */
     private void smoothMap(int iterations) {
@@ -189,6 +224,7 @@ public class TileMap {
 
     /**
      * Helper method for smoothMap method. Returns a new smoothed map based on the original map.
+     *
      * @param originalMap String[][] representing the original map.
      * @return String[][] representing the new smoothed map.
      */
@@ -205,16 +241,20 @@ public class TileMap {
                         int neighborCol = col + c;
 
                         if (neighborRow >= 0 && neighborRow < mapSize && neighborCol >= 0 && neighborCol < mapSize) {
-                            if (originalMap[neighborRow][neighborCol].equals(GROUND)) {
+                            if (originalMap[neighborRow][neighborCol].equals(GROUND) || originalMap[neighborRow][neighborCol].equals(WEIGHTED_GROUND)) {
                                 groundCount++;
                             }
                         }
                     }
                 }
 
-                if (originalMap[row][col].equals(WATER) || originalMap[row][col].equals(GROUND)) {
+                if (originalMap[row][col].equals(WATER) || originalMap[row][col].equals(GROUND) || originalMap[row][col].equals(WEIGHTED_GROUND)) {
                     if (groundCount > 4) {
-                        newMap[row][col] = GROUND;
+                        if (random.nextDouble() < DIFFICULTY) {
+                            newMap[row][col] = WEIGHTED_GROUND;
+                        } else {
+                            newMap[row][col] = GROUND;
+                        }
                     } else {
                         newMap[row][col] = WATER;
                     }
@@ -223,14 +263,13 @@ public class TileMap {
                 }
             }
         }
-
         return newMap;
     }
 
     /**
-     Adds additional spawn points in random locations on the map's edges.
-     Chooses two sides of the map to spawn on, and for each side, finds the closest ground tile from the shore.
-     Sets the tile at the closest ground tile to a spawn point.
+     * Adds additional spawn points in random locations on the map's edges.
+     * Chooses two sides of the map to spawn on, and for each side, finds the closest ground tile from the shore.
+     * Sets the tile at the closest ground tile to a spawn point.
      */
     private void addAdditionalCenterTiles() {
         Random random = new Random();
@@ -247,7 +286,7 @@ public class TileMap {
 
             for (int row = 0; row < mapSize; row++) {
                 for (int col = 0; col < mapSize; col++) {
-                    if (map[row][col].equals(GROUND)) {
+                    if (map[row][col].equals(GROUND) || map[row][col].equals(WEIGHTED_GROUND)) {
                         int distance;
                         switch (side) {
                             case 0: // Top side
@@ -290,55 +329,131 @@ public class TileMap {
     private void fillMapWithTiles() {
         for (int row = mapSize - 1; row >= 0; row--) {
             for (int col = mapSize - 1; col >= 0; col--) {
-                float x = (row - col) * 64 / 2.0001f;
-                float y = (col + row) * 32 / 2f;
+                float x = (row - col) * 192 / 2.0001f;
+                float y = (col + row) * 96 / 2f;
+
+                // Check for adjacent water blocks
+                int[][] neighbors = {{row - 1, col}, {row + 1, col}, {row, col - 1}, {row, col + 1}};
+                boolean adjacentWater = false;
+                for (int[] neighbor : neighbors) {
+                    int neighborRow = neighbor[0];
+                    int neighborCol = neighbor[1];
+                    if (isValid(neighborRow, neighborCol) && map[neighborRow][neighborCol].equals(WATER)) {
+                        adjacentWater = true;
+                        break;
+                    }
+                }
+
+                // Check for adjacent non-water blocks
+                boolean adjacentNonWater = false;
+                for (int[] neighbor : neighbors) {
+                    int neighborRow = neighbor[0];
+                    int neighborCol = neighbor[1];
+                    if (isValid(neighborRow, neighborCol) && !map[neighborRow][neighborCol].equals(WATER)) {
+                        adjacentNonWater = true;
+                        break;
+                    }
+                }
+
+                // Check for water blocks 4 blocks away from non-water blocks
+                boolean nearNonWater = false;
+                for (int distance = 1; distance <= 4; distance++) {
+                    int[][] farNeighbors = {
+                            {row - distance, col}, {row + distance, col},
+                            {row, col - distance}, {row, col + distance},
+                            {row - distance, col - distance}, {row + distance, col + distance},
+                            {row - distance, col + distance}, {row + distance, col - distance}
+                    };
+                    for (int[] farNeighbor : farNeighbors) {
+                        int farNeighborRow = farNeighbor[0];
+                        int farNeighborCol = farNeighbor[1];
+                        if (isValid(farNeighborRow, farNeighborCol) && !map[farNeighborRow][farNeighborCol].equals(WATER)) {
+                            nearNonWater = true;
+                            break;
+                        }
+                    }
+                }
 
                 switch (map[row][col]) {
                     case PATH:
-                        // Check for adjacent water blocks
-                        int[][] neighbors = {{row - 1, col}, {row + 1, col}, {row, col - 1}, {row, col + 1}};
-                        boolean adjacentWater = false;
-                        for (int[] neighbor : neighbors) {
-                            int neighborRow = neighbor[0];
-                            int neighborCol = neighbor[1];
-                            if (isValid(neighborRow, neighborCol) && map[neighborRow][neighborCol].equals(WATER)) {
-                                adjacentWater = true;
-                                break;
-                            }
-                        }
                         if (adjacentWater) {
-                            map[row][col] = BRIDGE;
-                            baseTiles.add(new Tile(bridgeTexture, new Vector2(row, col), new Vector2(x, y)));
+                            baseTiles.add(new Tile(bridgeTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.BRIDGE));
                         } else {
-                            baseTiles.add(new Tile(pathTexture, new Vector2(row, col), new Vector2(x, y)));
+                            baseTiles.add(new Tile(pathTextureTop, new Vector2(row, col), new Vector2(x, y), Tile.TileType.PATH));
                         }
                         break;
                     case CENTER:
-                        baseTiles.add(new Tile(baseTexture, new Vector2(row, col), new Vector2(x, y)));
+                        baseTiles.add(new Tile(middleTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.CENTER));
                         break;
                     case GROUND:
-                        baseTiles.add(new Tile(groundTexture, new Vector2(row, col), new Vector2(x, y)));
+                    case WEIGHTED_GROUND:
+                        Texture groundSelectedTexture;
+                        Tile.TileType tileType = null;
+                        int randomNum = new Random().nextInt(100) + 1;
+
+                        if (randomNum <= 80) {
+                            groundSelectedTexture = grassTexture;
+                            tileType = Tile.TileType.GRASS;
+                        } else if (randomNum <= 90) {
+                            groundSelectedTexture = grassMushroomTexture;
+                            tileType = Tile.TileType.MUSHROOM;
+                        } else if (randomNum <= 95) {
+                            groundSelectedTexture = grassRocksTextureOne;
+                            tileType = Tile.TileType.ROCK;
+                        } else {
+                            groundSelectedTexture = cropLandTexture;
+                            tileType = Tile.TileType.CROP_LAND;
+
+                        }
+
+                        baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
                         break;
+
                     case WATER:
-                        baseTiles.add(new Tile(waterTexture, new Vector2(row, col), new Vector2(x, y)));
+                        Texture selectedTexture;
+                        if (adjacentNonWater) {
+                            selectedTexture = waterBorder;
+                        } else if (nearNonWater) {
+                            selectedTexture = waterTexture;
+                        } else {
+                            selectedTexture = waterFar;
+                        }
+                        baseTiles.add(new Tile(selectedTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.WATER));
                         break;
                 }
             }
         }
     }
 
+    private void fillMapWithObjects() {
+        Random random = new Random();
+        for (Tile baseTile : baseTiles) {
+            if (baseTile.getTileType().equals(Tile.TileType.CROP_LAND)) {
+                float x = baseTile.getPosition().x;
+                float y = baseTile.getPosition().y;
+                Vector2 tileMapPos = baseTile.tileMapPos;
+                int randomNumber = random.nextInt(10);
+                // Centers the object on the middle of the tile
+                if (randomNumber < 1) {
+                    objectTiles.add(new Tile(objectTileTexture, tileMapPos, new Vector2(x, y + 115), Tile.TileType.OBJECT_TILE));
+                }
+            }
+        }
+    }
+
     /**
-     Checks if the specified row and column are valid coordinates within the map.
-     @param row The row index.
-     @param col The column index.
-     @return True if the coordinates are valid, false otherwise.
+     * Checks if the specified row and column are valid coordinates within the map.
+     *
+     * @param row The row index.
+     * @param col The column index.
+     * @return True if the coordinates are valid, false otherwise.
      */
     private boolean isValid(int row, int col) {
         return row >= 0 && row < mapSize && col >= 0 && col < mapSize;
     }
 
     /**
-     Prints the current state of the map to the console.
+     * Prints the current state of the map to the console.
      */
     private void printMap() {
         for (String[] row : map) {

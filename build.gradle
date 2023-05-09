@@ -77,3 +77,9 @@ project(":core") {
         
     }
 }
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}

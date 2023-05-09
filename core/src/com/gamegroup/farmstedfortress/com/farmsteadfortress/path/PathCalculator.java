@@ -254,7 +254,7 @@ public class PathCalculator {
         String terrain = map[x][y];
         switch (terrain) {
             //Do no path find through trees
-            case "T":
+            case "WG":
                 return 5;
             default:
                 return 1;

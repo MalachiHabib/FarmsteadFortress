@@ -12,7 +12,8 @@ sourceSets {
 
 eclipse.project.name = appName + "-core"
 
-
 dependencies {
     testImplementation 'junit:junit:4.12'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.1'
+    implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.1'
 }
