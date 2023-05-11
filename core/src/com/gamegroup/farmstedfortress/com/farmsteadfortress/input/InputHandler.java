@@ -77,6 +77,7 @@ public class InputHandler extends InputAdapter {
         Vector3 unprojected = new Vector3(screenX, screenY, 0);
         camera.unproject(unprojected);
         Vector2 clickedWorldPosition = new Vector2(unprojected.x, unprojected.y);
+        System.out.println(clickedWorldPosition);
         Tile clickedTile = tileMap.getTileAt(clickedWorldPosition);
         return clickedTile;
     }

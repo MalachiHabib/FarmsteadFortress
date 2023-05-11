@@ -85,8 +85,8 @@ public class PathCalculator {
     private PathResult findPath(String[][] map, int[] startPoint, int[] endPoint) {
         long startTime = System.currentTimeMillis();
 
-        double[][] gScore = initializeScores(map);
-        double[][] fScore = initializeScores(map);
+        double[][] gScore = initialiseScores(map);
+        double[][] fScore = initialiseScores(map);
 
         gScore[startPoint[0]][startPoint[1]] = 0;
         fScore[startPoint[0]][startPoint[1]] = heuristicCostEstimate(startPoint, endPoint);
@@ -98,18 +98,38 @@ public class PathCalculator {
 
         while (!openSet.isEmpty()) {
             if (isTimeoutExceeded(startTime)) {
-                return new PathResult(false, null);
+                return new PathResult(false, null, null);
             }
 
             int[] current = openSet.poll();
             if (isEndPointReached(current, endPoint)) {
-                return new PathResult(true, reconstructPath(cameFrom, current));
+                return new PathResult(true, reconstructPath(cameFrom, current), reconstructPathPositions(cameFrom, current));
             }
 
-            updateNeighborScores(map, current, endPoint, gScore, fScore, openSet, cameFrom);
+            updateNeighbourScores(map, current, endPoint, gScore, fScore, openSet, cameFrom);
         }
 
-        return new PathResult(false, null); // No path found
+        return new PathResult(false, null, null); // No path found
+    }
+
+    /**
+     * Reconstructs the path positions from the start to the end point using the path information in cameFrom.
+     *
+     * @param cameFrom A Map containing the path information.
+     * @param current  An int array representing the current point coordinates.
+     * @return A list of strings representing the path positions.
+     */
+    private List<String> reconstructPathPositions(Map<String, int[]> cameFrom, int[] current) {
+        List<String> pathPositions = new ArrayList<>();
+        int position = 0;
+        while (cameFrom.containsKey(current[0] + "," + current[1])) {
+            pathPositions.add(String.valueOf(position));
+            position++;
+            current = cameFrom.get(current[0] + "," + current[1]);
+        }
+        pathPositions.add(String.valueOf(position));
+        Collections.reverse(pathPositions);
+        return pathPositions;
     }
 
     /**
@@ -118,7 +138,7 @@ public class PathCalculator {
      * @param map A 2D String array representing the map.
      * @return A 2D double array containing the initialized scores.
      */
-    private double[][] initializeScores(String[][] map) {
+    private double[][] initialiseScores(String[][] map) {
         double[][] scores = new double[map.length][map[0].length];
         for (int row = 0; row < map.length; row++) {
             for (int column = 0; column < map[0].length; column++) {
@@ -150,7 +170,7 @@ public class PathCalculator {
     }
 
     /**
-     * Updates neighbor scores and their paths.
+     * Updates neighbour scores and their paths.
      *
      * @param map       A 2D String array representing the map.
      * @param current   An int array representing the current point coordinates.
@@ -160,13 +180,13 @@ public class PathCalculator {
      * @param openSet   A PriorityQueue containing nodes to be processed.
      * @param cameFrom  A Map containing the path information.
      */
-    private void updateNeighborScores(String[][] map, int[] current, int[] endPoint, double[][] gScore, double[][] fScore,
-                                      PriorityQueue<int[]> openSet, Map<String, int[]> cameFrom) {
-        int[][] neighbors = getNeighbors(current);
+    private void updateNeighbourScores(String[][] map, int[] current, int[] endPoint, double[][] gScore, double[][] fScore,
+                                       PriorityQueue<int[]> openSet, Map<String, int[]> cameFrom) {
+        int[][] neighbours = getNeighbours(current);
 
-        for (int[] neighbor : neighbors) {
-            int neighborX = neighbor[0];
-            int neighborY = neighbor[1];
+        for (int[] neighbour : neighbours) {
+            int neighborX = neighbour[0];
+            int neighborY = neighbour[1];
 
             if (isValid(map, neighborX, neighborY)) {
                 double tentativeGScore = gScore[current[0]][current[1]] + getWeight(map, neighborX, neighborY);
@@ -174,10 +194,10 @@ public class PathCalculator {
                 if (tentativeGScore < gScore[neighborX][neighborY]) {
                     cameFrom.put(neighborX + "," + neighborY, current);
                     gScore[neighborX][neighborY] = tentativeGScore;
-                    fScore[neighborX][neighborY] = gScore[neighborX][neighborY] + heuristicCostEstimate(neighbor, endPoint);
+                    fScore[neighborX][neighborY] = gScore[neighborX][neighborY] + heuristicCostEstimate(neighbour, endPoint);
 
-                    if (!openSetContains(openSet, neighbor)) {
-                        openSet.offer(neighbor);
+                    if (!openSetContains(openSet, neighbour)) {
+                        openSet.offer(neighbour);
                     }
                 }
             }
@@ -190,7 +210,7 @@ public class PathCalculator {
      * @param current An int array representing the current point coordinates.
      * @return A 2D int array containing the coordinates of the potential neighbors.
      */
-    private int[][] getNeighbors(int[] current) {
+    private int[][] getNeighbours(int[] current) {
         int x = current[0];
         int y = current[1];
         return new int[][]{{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}};

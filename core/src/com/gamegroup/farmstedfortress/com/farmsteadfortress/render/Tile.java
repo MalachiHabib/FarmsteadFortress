@@ -5,8 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class Tile {
-
-
+    public static final int TILE_SIZE = 192;
 
     public enum TileType {
         CROP_LAND,
@@ -18,7 +17,8 @@ public class Tile {
         WATER,
         BRIDGE,
         PATH,
-        CENTER
+        CENTER,
+        SPAWN_POINT
     }
 
     private static final TileType[] INTERACTABLE_TILES = {
@@ -55,10 +55,6 @@ public class Tile {
         this.tileTexture = newTexture;
     }
 
-    public Texture getTileTexture() {
-        return tileTexture;
-    }
-
     public Texture getOriginalTileTexture() {
         return originalTile;
     }
@@ -67,16 +63,16 @@ public class Tile {
         return tileType;
     }
 
-    public boolean containsWorldPosition(Vector2 worldPosition, float tileWidth, float tileHeight) {
-        float halfWidth = tileWidth / 2.0f;
-        float halfHeight = tileHeight / 2.0f;
+    public boolean containsWorldPosition(Vector2 worldPosition) {
+        float halfWidth = TILE_SIZE / 2.0f;
+        float halfHeight = TILE_SIZE / 2.0f;
 
         float relX = worldPosition.x - worldPos.x;
         float relY = worldPosition.y - worldPos.y;
 
         float xLimit = Math.abs(relY - halfHeight) / halfHeight * halfWidth;
 
-        return relY >= halfHeight && relY < tileHeight && relX >= halfWidth - xLimit && relX < halfWidth + xLimit;
+        return relY >= halfHeight && relY < TILE_SIZE && relX >= halfWidth - xLimit && relX < halfWidth + xLimit;
     }
 
     public boolean isInteractable() {
