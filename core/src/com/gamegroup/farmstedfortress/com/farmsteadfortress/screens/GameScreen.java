@@ -6,8 +6,11 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.farmsteadfortress.entities.Enemy;
 import com.farmsteadfortress.entities.EnemyFactory;
+import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
@@ -17,6 +20,8 @@ public class GameScreen extends ScreenAdapter {
     private OrthographicCamera camera;
     private TileMap map;
     private Enemy enemy;
+    private Player player;
+    private InputHandler inputHandler;
 
     public GameScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -28,21 +33,25 @@ public class GameScreen extends ScreenAdapter {
         enemy = EnemyFactory.createEnemy();
         enemy.setPath(map);
 
-        InputHandler inputHandler = new InputHandler(map, camera);
+        player = PlayerFactory.createPlayer(map.getCenterTilePos());
+        inputHandler = new InputHandler(map, camera, player, enemy);
         Gdx.input.setInputProcessor(inputHandler);
     }
+
 
     @Override
     public void render(float delta) {
         clearScreen();
         updateCamera();
-
+        inputHandler.update();
         enemy.update(delta, map);
+        player.update(delta);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         map.render(batch);
         enemy.render(batch);
+        player.render(batch);
         batch.end();
     }
 
@@ -93,5 +102,8 @@ public class GameScreen extends ScreenAdapter {
         float offsetX = 50;
         float offsetY = 30;
         camera.position.set(centerX + offsetX, centerY + offsetY, 0);
+    }
+    @Override
+    public void dispose() {
     }
 }

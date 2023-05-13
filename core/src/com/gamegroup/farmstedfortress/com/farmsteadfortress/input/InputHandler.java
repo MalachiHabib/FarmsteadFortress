@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.farmsteadfortress.entities.Enemy;
+import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 
@@ -13,11 +15,19 @@ public class InputHandler extends InputAdapter {
     private OrthographicCamera camera;
     private Tile lastHoveredTile;
     private Texture hoverTexture;
+    private Tile targetTile;
+    private Player player;
+    private Enemy enemy;
+    private int clickedScreenX;
+    private int clickedScreenY;
 
-    public InputHandler(TileMap tileMap, OrthographicCamera camera) {
+
+    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, Enemy enemy) {
         hoverTexture = new Texture("tiles/highlight.png");
         this.tileMap = tileMap;
         this.camera = camera;
+        this.player = player;
+        this.enemy = enemy;
     }
 
     @Override
@@ -28,9 +38,41 @@ public class InputHandler extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        replaceTile(screenX, screenY, new Texture("tiles/middle.png"));
-        return super.touchDown(screenX, screenY, pointer, button);
+        Tile clickedTile = getTileAtPosition(screenX, screenY);
+        if (clickedTile != null) {
+            Vector2 tileCenter = new Vector2(
+                    clickedTile.getPosition().x + Tile.TILE_SIZE / 2,
+                    clickedTile.getPosition().y + Tile.TILE_SIZE / 2
+            );
+            player.setTargetPosition(tileCenter);
+            targetTile = clickedTile; // store the target tile
+
+            // Store the screen coordinates of the clicked tile
+            clickedScreenX = screenX;
+            clickedScreenY = screenY;
+        }
+
+        // Transform the screen coordinates to world coordinates
+        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
+        Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
+
+        // Loop through all enemies and check if they were clicked
+
+        if (enemy.containsPoint(touchPosition)) {
+            enemy.onClick();
+        }
+
+        return true;
     }
+
+
+    public void update() {
+        if (player.hasReachedTarget() && targetTile != null) {
+            System.out.println("Player has reached target, replacing tile...");
+            targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
+        }
+    }
+
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -39,7 +81,6 @@ public class InputHandler extends InputAdapter {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        replaceTile(screenX, screenY, new Texture("tiles/middle.png"));
         updateHoverEffect(screenX, screenY);
         return super.touchDragged(screenX, screenY, pointer);
     }
@@ -66,6 +107,7 @@ public class InputHandler extends InputAdapter {
             }
         }
     }
+
     public void replaceTile(int screenX, int screenY, Texture newTileTexture) {
         Tile clickedTile = getTileAtPosition(screenX, screenY);
         if (clickedTile != null && clickedTile.isInteractable()) {
@@ -77,7 +119,6 @@ public class InputHandler extends InputAdapter {
         Vector3 unprojected = new Vector3(screenX, screenY, 0);
         camera.unproject(unprojected);
         Vector2 clickedWorldPosition = new Vector2(unprojected.x, unprojected.y);
-        System.out.println(clickedWorldPosition);
         Tile clickedTile = tileMap.getTileAt(clickedWorldPosition);
         return clickedTile;
     }

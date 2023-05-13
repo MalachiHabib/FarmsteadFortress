@@ -50,7 +50,9 @@ public class Tile {
 
     public void setTileTexture(Texture newTileTexture) {
         this.originalTile = newTileTexture;
+        this.tileTexture = newTileTexture;
     }
+
     public void setHoverTexture(Texture newTexture) {
         this.tileTexture = newTexture;
     }

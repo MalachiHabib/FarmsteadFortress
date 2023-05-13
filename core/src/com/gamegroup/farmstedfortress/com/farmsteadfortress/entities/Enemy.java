@@ -1,10 +1,13 @@
 package com.farmsteadfortress.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
@@ -23,6 +26,9 @@ public class Enemy {
     private List<int[]> currentPath;
     private int currentPathIndex;
     private float speed;
+    private boolean outline;
+    private Rectangle boundingBox;
+
 
     /**
      * Constructs an enemy entity.
@@ -39,6 +45,16 @@ public class Enemy {
         this.currentPathIndex = 0;
         this.speed = speed;
         this.direction = new Vector2();
+        this.outline = false;
+        this.boundingBox = new Rectangle();
+    }
+
+    public void onClick() {
+        outline = !outline;
+    }
+
+    public boolean containsPoint(Vector2 point) {
+        return boundingBox.contains(point);
     }
 
     /**
@@ -52,12 +68,13 @@ public class Enemy {
             setPath(map);
         }
 
+        boundingBox.set(position.x, position.y, walkingAnimation.getKeyFrame(stateTime).getRegionWidth(), walkingAnimation.getKeyFrame(stateTime).getRegionHeight());
         if (currentPath != null && !currentPath.isEmpty()) {
             if (currentPathIndex < currentPath.size()) {
                 int[] coordinate = currentPath.get(currentPathIndex);
                 int row = coordinate[0];
                 int col = coordinate[1];
-                Vector2 targetPosition = Helpers.gridToWorldPosition(row, col, Tile.TILE_SIZE, (float)Tile.TILE_SIZE / 2);
+                Vector2 targetPosition = Helpers.gridToWorldPosition(row, col, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
 
                 Vector2 direction = new Vector2(targetPosition.x - position.x, targetPosition.y - position.y).nor();
                 position.x += direction.x * speed * deltaTime;
@@ -77,12 +94,12 @@ public class Enemy {
      */
     public void setPath(TileMap map) {
         if (!map.getEnemyPaths().isEmpty()) {
-            currentPath = map.getEnemyPaths().get(2);
+            currentPath = map.getEnemyPaths().get(0);
             if (currentPath != null && !currentPath.isEmpty()) {
                 int[] firstCoordinate = currentPath.get(0);
                 int firstRow = firstCoordinate[0];
                 int firstCol = firstCoordinate[1];
-                Vector2 initialPosition = Helpers.gridToWorldPosition(firstRow, firstCol, Tile.TILE_SIZE, (float)Tile.TILE_SIZE / 2);
+                Vector2 initialPosition = Helpers.gridToWorldPosition(firstRow, firstCol, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
                 position.set(initialPosition.x, initialPosition.y);
             }
         }
@@ -115,11 +132,17 @@ public class Enemy {
         float posX = position.x - originX + (Tile.TILE_SIZE - currentFrame.getRegionWidth() / 2.25f);
         float posY = position.y - originY + yOffset + (Tile.TILE_SIZE - currentFrame.getRegionHeight() / 2.25f);
 
+        if (outline) {
+            batch.setColor(Color.RED);
+        }
         batch.draw(currentFrame,
                 posX, posY,
                 originX, originY,
                 currentFrame.getRegionWidth(), currentFrame.getRegionHeight(),
                 1, 1,
                 angle);
+        if (outline) {
+            batch.setColor(Color.WHITE);
+        }
     }
 }

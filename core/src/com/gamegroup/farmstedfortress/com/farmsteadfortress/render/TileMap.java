@@ -16,15 +16,12 @@ import com.farmsteadfortress.utils.Helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 public class TileMap {
-
     private static final double DIFFICULTY = 0.5f;
-
     private static final String WATER = "W";
     private static final String GROUND = "G";
     private static final String WEIGHTED_GROUND = "WG";
@@ -100,7 +97,7 @@ public class TileMap {
                 System.out.println("Pathfinding timed out, generating a new map...");
             }
         }
-        //printMap();
+        printMap();
         fillMapWithTiles();
         fillMapWithObjects();
     }
@@ -163,6 +160,11 @@ public class TileMap {
         return objectTiles;
     }
 
+    /**
+     * Returns a list of object tiles to be rendered.
+     *
+     * @return A list of Tile objects representing the object tiles.
+     */
     public List<List<int[]>> getEnemyPaths() {
         return successfulPaths;
     }
@@ -423,7 +425,7 @@ public class TileMap {
                             groundSelectedTexture = grassRocksTextureOne;
                             tileType = Tile.TileType.ROCK;
                         } else {
-                            groundSelectedTexture = cropLandTexture; //grassRocksTextureTwo
+                            groundSelectedTexture = grassRocksTextureTwo;
                             tileType = Tile.TileType.CROP_LAND;
                         }
                         baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
@@ -472,7 +474,6 @@ public class TileMap {
         }
     }
 
-
     /**
      * Checks if the specified row and column are valid coordinates within the map.
      *
@@ -498,9 +499,26 @@ public class TileMap {
     }
 
     /**
-     *  @return The map.
+     * @return the map.
      */
     public String[][] getMap() {
         return map;
+    }
+
+    /**
+     * Retrieves the position of the center tile in the map.
+     *
+     * @return The position of the center tile as a Vector2 object,
+     *         or null if no center tile is found.
+     */
+    public Vector2 getCenterTilePos() {
+        for (int row = 0; row < mapSize; row++) {
+            for (int col = 0; col < mapSize; col++) {
+                if (map[row][col] == CENTER) {
+                    return Helpers.gridToWorldPosition(row, col, Tile.TILE_SIZE, (float)Tile.TILE_SIZE / 2);
+                }
+            }
+        }
+        return null;
     }
 }
