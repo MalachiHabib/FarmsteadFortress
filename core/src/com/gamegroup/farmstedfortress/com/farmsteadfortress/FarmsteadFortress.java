@@ -38,13 +38,6 @@ public class FarmsteadFortress extends Game {
         vignettingEffect.setIntensity(0.5f);
         vfxManager.addEffect(vignettingEffect);
 
-        BloomEffect bloomEffect = new BloomEffect();
-        bloomEffect.setBaseIntensity(1f);
-        bloomEffect.setBaseSaturation(1f);
-        bloomEffect.setBloomIntensity(3f);
-        bloomEffect.setBloomSaturation(1f);
-        vfxManager.addEffect(bloomEffect);
-
         motionBlurEffect = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MAX, .5f);
         vfxManager.addEffect(motionBlurEffect);
 

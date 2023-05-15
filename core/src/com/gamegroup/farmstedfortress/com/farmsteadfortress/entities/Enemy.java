@@ -1,5 +1,7 @@
 package com.farmsteadfortress.entities;
 
+import static com.farmsteadfortress.utils.Helpers.worldToGridPosition;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -75,7 +77,6 @@ public class Enemy {
                 int row = coordinate[0];
                 int col = coordinate[1];
                 Vector2 targetPosition = Helpers.gridToWorldPosition(row, col, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
-
                 Vector2 direction = new Vector2(targetPosition.x - position.x, targetPosition.y - position.y).nor();
                 position.x += direction.x * speed * deltaTime;
                 position.y += direction.y * speed * deltaTime;
@@ -86,6 +87,7 @@ public class Enemy {
             }
         }
     }
+
 
     /**
      * Sets the path for the enemy to follow.
