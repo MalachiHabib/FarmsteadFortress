@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.effects.BloomEffect;
 import com.crashinvaders.vfx.effects.FxaaEffect;
 import com.crashinvaders.vfx.effects.MotionBlurEffect;
 import com.crashinvaders.vfx.effects.VignettingEffect;

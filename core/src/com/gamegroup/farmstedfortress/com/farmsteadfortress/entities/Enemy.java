@@ -1,6 +1,6 @@
 package com.farmsteadfortress.entities;
 
-import static com.farmsteadfortress.utils.Helpers.worldToGridPosition;
+import static com.farmsteadfortress.utils.Helpers.gridToWorldPosition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,12 +8,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
-import com.farmsteadfortress.utils.Helpers;
+
 
 import java.util.List;
 
@@ -76,7 +75,7 @@ public class Enemy {
                 int[] coordinate = currentPath.get(currentPathIndex);
                 int row = coordinate[0];
                 int col = coordinate[1];
-                Vector2 targetPosition = Helpers.gridToWorldPosition(row, col, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
+                Vector2 targetPosition = gridToWorldPosition(row, col, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
                 Vector2 direction = new Vector2(targetPosition.x - position.x, targetPosition.y - position.y).nor();
                 position.x += direction.x * speed * deltaTime;
                 position.y += direction.y * speed * deltaTime;
@@ -101,7 +100,7 @@ public class Enemy {
                 int[] firstCoordinate = currentPath.get(0);
                 int firstRow = firstCoordinate[0];
                 int firstCol = firstCoordinate[1];
-                Vector2 initialPosition = Helpers.gridToWorldPosition(firstRow, firstCol, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
+                Vector2 initialPosition = gridToWorldPosition(firstRow, firstCol, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
                 position.set(initialPosition.x, initialPosition.y);
             }
         }
