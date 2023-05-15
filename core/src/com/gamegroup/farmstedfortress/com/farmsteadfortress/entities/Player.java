@@ -43,7 +43,6 @@ public class Player {
         stateTime += Gdx.graphics.getDeltaTime();
     }
 
-
     private float getRotationAngle() {
         float angle = direction.angleDeg();
         return angle;
@@ -79,8 +78,11 @@ public class Player {
         return false;
     }
 
-
     public boolean isMoving() {
         return targetPosition != null;
+    }
+
+    public Vector2 getPosition() {
+        return position;
     }
 }

@@ -82,7 +82,7 @@ public class PathCalculator {
      * @param endPoint   An int array representing the end point coordinates.
      * @return A PathResult object containing the success status and the path, if found.
      */
-    private PathResult findPath(String[][] map, int[] startPoint, int[] endPoint) {
+    public PathResult findPath(String[][] map, int[] startPoint, int[] endPoint) {
         long startTime = System.currentTimeMillis();
 
         double[][] gScore = initialiseScores(map);
@@ -274,7 +274,7 @@ public class PathCalculator {
         String terrain = map[x][y];
         switch (terrain) {
             //Do no path find through trees
-            case "WG":
+            case "WGG":
                 return 5;
             default:
                 return 1;
