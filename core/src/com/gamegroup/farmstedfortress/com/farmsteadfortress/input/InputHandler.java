@@ -7,12 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.farmsteadfortress.entities.Enemy;
 import com.farmsteadfortress.entities.Player;
-import com.farmsteadfortress.path.PathCalculator;
-import com.farmsteadfortress.path.PathResult;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
-
-import java.util.List;
 
 public class InputHandler extends InputAdapter {
     private TileMap tileMap;
@@ -42,37 +38,33 @@ public class InputHandler extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // Transform the screen coordinates to world coordinates
-        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
-        Vector2 clickPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
+        Tile clickedTile = getTileAtPosition(screenX, screenY);
+        if (clickedTile != null) {
+            Vector2 tileCenter = new Vector2(
+                    clickedTile.getPosition().x + Tile.TILE_SIZE / 2,
+                    clickedTile.getPosition().y + Tile.TILE_SIZE / 2
+            );
+            player.setTargetPosition(tileCenter);
+            targetTile = clickedTile; // store the target tile
 
-        // Calculate path from player's current position to the clicked position
-        int playerTileRow = (int) (player.getPosition().y / Tile.TILE_SIZE);
-        int playerTileCol = (int) (player.getPosition().x / Tile.TILE_SIZE);
-        int targetTileRow = (int) (clickPosition.y / Tile.TILE_SIZE);
-        int targetTileCol = (int) (clickPosition.x / Tile.TILE_SIZE);
-
-        PathCalculator pathCalculator = new PathCalculator();
-        PathResult pathResult = pathCalculator.findPath(tileMap.getMap(), new int[]{playerTileRow, playerTileCol}, new int[]{targetTileRow, targetTileCol});
-
-        // Print the path
-        if (pathResult.isSuccess()) {
-            System.out.println("Path:");
-            List<int[]> path = pathResult.getPath();
-            for (int[] point : path) {
-                System.out.println("[" + point[0] + ", " + point[1] + "]");
-            }
-        } else {
-            System.out.println("No path found.");
+            // Store the screen coordinates of the clicked tile
+            clickedScreenX = screenX;
+            clickedScreenY = screenY;
         }
 
-        // Update the player's target position and path
-        if (pathResult.isSuccess()) {
-            player.setTargetPosition(clickPosition);
+        // Transform the screen coordinates to world coordinates
+        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
+        Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
+
+        // Loop through all enemies and check if they were clicked
+
+        if (enemy.containsPoint(touchPosition)) {
+            enemy.onClick();
         }
 
         return true;
     }
+
 
     public void update() {
         if (player.hasReachedTarget() && targetTile != null) {
@@ -80,6 +72,7 @@ public class InputHandler extends InputAdapter {
             targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
         }
     }
+
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {

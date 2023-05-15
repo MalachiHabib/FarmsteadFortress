@@ -8,16 +8,15 @@ import java.util.List;
 public class PathResult {
     private boolean success;
     private List<int[]> path;
-    private List<String> pathPositions;
+    List<String> pathPositions;
 
     /**
      * Constructor for PathResult.
      *
-     * @param success        Indicates whether the pathfinding operation was successful.
-     * @param path           A list of int arrays representing the path, with each int array containing the x and y coordinates of a point.
-     * @param pathPositions  A list of strings representing the positions of the path.
+     * @param success Indicates whether the pathfinding operation was successful.
+     * @param path    A list of int arrays representing the path, with each int array containing the x and y coordinates of a point.
      */
-    public PathResult(boolean success, List<int[]> path, List<String> pathPositions) {
+    PathResult(boolean success, List<int[]> path, List<String> pathPositions) {
         this.success = success;
         this.path = path;
         this.pathPositions = pathPositions;
