@@ -33,7 +33,7 @@ public class GameScreen extends ScreenAdapter {
         enemy = EnemyFactory.createEnemy();
         enemy.setPath(map);
 
-        player = PlayerFactory.createPlayer(map.getCenterTilePos());
+        player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
         inputHandler = new InputHandler(map, camera, player, enemy);
         Gdx.input.setInputProcessor(inputHandler);
     }

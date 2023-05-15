@@ -426,7 +426,7 @@ public class TileMap {
                             tileType = Tile.TileType.ROCK;
                         } else {
                             groundSelectedTexture = grassRocksTextureTwo;
-                            tileType = Tile.TileType.CROP_LAND;
+                            tileType = Tile.TileType.ROCK;
                         }
                         baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
                         break;

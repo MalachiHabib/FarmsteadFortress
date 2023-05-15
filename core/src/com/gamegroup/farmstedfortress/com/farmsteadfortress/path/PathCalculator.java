@@ -15,6 +15,34 @@ public class PathCalculator {
      * Maximum allowed time for pathfinding, in milliseconds.
      */
     private static final long MAX_EXECUTION_TIME_MS = 500;
+    private Map<String, Double> terrainWeights;
+
+
+    public PathCalculator() {
+        terrainWeights = new HashMap<>();
+        terrainWeights.put("WG", Double.POSITIVE_INFINITY);
+    }
+
+    public double getTerrainWeight(String terrain) {
+        if (terrainWeights.containsKey(terrain)) {
+            return terrainWeights.get(terrain);
+        } else {
+            return 1.0;
+        }
+    }
+
+    public void setTerrainWeight(String terrain, double weight) {
+        terrainWeights.put(terrain, weight);
+    }
+
+    private double getWeight(String[][] map, int x, int y) {
+        String terrain = map[x][y];
+        return getTerrainWeight(terrain);
+    }
+
+    public void clearTerrainWeights() {
+        terrainWeights.clear();
+    }
 
     /**
      * Calculates paths for all spawn points to the center point on the given map.
@@ -82,7 +110,7 @@ public class PathCalculator {
      * @param endPoint   An int array representing the end point coordinates.
      * @return A PathResult object containing the success status and the path, if found.
      */
-    private PathResult findPath(String[][] map, int[] startPoint, int[] endPoint) {
+    public PathResult findPath(String[][] map, int[] startPoint, int[] endPoint) {
         long startTime = System.currentTimeMillis();
 
         double[][] gScore = initialiseScores(map);
@@ -172,13 +200,13 @@ public class PathCalculator {
     /**
      * Updates neighbour scores and their paths.
      *
-     * @param map       A 2D String array representing the map.
-     * @param current   An int array representing the current point coordinates.
-     * @param endPoint  An int array representing the end point coordinates.
-     * @param gScore    A 2D double array containing the g scores.
-     * @param fScore    A 2D double array containing the f scores.
-     * @param openSet   A PriorityQueue containing nodes to be processed.
-     * @param cameFrom  A Map containing the path information.
+     * @param map      A 2D String array representing the map.
+     * @param current  An int array representing the current point coordinates.
+     * @param endPoint An int array representing the end point coordinates.
+     * @param gScore   A 2D double array containing the g scores.
+     * @param fScore   A 2D double array containing the f scores.
+     * @param openSet  A PriorityQueue containing nodes to be processed.
+     * @param cameFrom A Map containing the path information.
      */
     private void updateNeighbourScores(String[][] map, int[] current, int[] endPoint, double[][] gScore, double[][] fScore,
                                        PriorityQueue<int[]> openSet, Map<String, int[]> cameFrom) {
@@ -196,9 +224,8 @@ public class PathCalculator {
                     gScore[neighborX][neighborY] = tentativeGScore;
                     fScore[neighborX][neighborY] = gScore[neighborX][neighborY] + heuristicCostEstimate(neighbour, endPoint);
 
-                    if (!openSetContains(openSet, neighbour)) {
-                        openSet.offer(neighbour);
-                    }
+                    openSet.remove(neighbour); // Remove the neighbor from the open set
+                    openSet.offer(neighbour); // Add it back with the updated scores
                 }
             }
         }
@@ -263,25 +290,6 @@ public class PathCalculator {
     }
 
     /**
-     * Gets the weight of the terrain at the given coordinates.
-     *
-     * @param map A 2D String array representing the map.
-     * @param x   The x-coordinate of the terrain.
-     * @param y   The y-coordinate of the terrain.
-     * @return A double value representing the weight of the terrain.
-     */
-    private double getWeight(String[][] map, int x, int y) {
-        String terrain = map[x][y];
-        switch (terrain) {
-            //Do no path find through trees
-            case "WG":
-                return 5;
-            default:
-                return 1;
-        }
-    }
-
-    /**
      * Calculates the heuristic cost estimate between two points using the Manhattan distance.
      *
      * @param pointA An int array representing the first point's coordinates.
@@ -289,6 +297,6 @@ public class PathCalculator {
      * @return A double value representing the heuristic cost estimate between the two points.
      */
     private double heuristicCostEstimate(int[] pointA, int[] pointB) {
-        return Math.abs(pointA[0] - pointB[0]) + Math.abs(pointA[1] - pointB[1]);
+        return Math.sqrt(Math.pow(pointA[0] - pointB[0], 2) + Math.pow(pointA[1] - pointB[1], 2));
     }
 }
