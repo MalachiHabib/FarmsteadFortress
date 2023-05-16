@@ -1,5 +1,7 @@
 package com.farmsteadfortress.utils;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -54,4 +56,15 @@ public class Helpers {
         Tile clickedTile = tileMap.getTileAt(clickedWorldPosition);
         return clickedTile;
     }
+
+    public static boolean isDesktop() {
+        return Gdx.app.getType() == Application.ApplicationType.Desktop;
+    }
+
+    // Similarly, you can add methods for other platforms
+    public static boolean isMobile() {
+        return Gdx.app.getType() == Application.ApplicationType.Android ||
+                Gdx.app.getType() == Application.ApplicationType.iOS;
+    }
+
 }

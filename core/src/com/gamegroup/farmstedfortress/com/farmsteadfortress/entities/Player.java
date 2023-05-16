@@ -1,5 +1,7 @@
 package com.farmsteadfortress.entities;
 
+import static com.farmsteadfortress.utils.Helpers.gridToWorldPosition;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
-import com.farmsteadfortress.utils.Helpers;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class Player {
      */
     public void setPath(List<int[]> path) {
         currentPathIndex = 0;
-        currentPath = (path != null && path.size() > 1) ? path.subList(1, path.size()) : path;
+        currentPath = (path != null && path.size() > 2) ? path.subList(2, path.size()) : path;
     }
 
     /**
@@ -55,7 +56,6 @@ public class Player {
             moveTowardsTarget(targetPosition, delta);
             checkTargetReached(targetPosition);
         }
-
         updateStateTime();
     }
 
@@ -80,7 +80,7 @@ public class Player {
     public boolean hasReachedTarget() {
         if (currentPath != null && currentPathIndex < currentPath.size()) {
             int[] lastPoint = currentPath.get(currentPath.size() - 1);
-            Vector2 targetPosition = Helpers.gridToWorldPosition(lastPoint[0], lastPoint[1], Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
+            Vector2 targetPosition = gridToWorldPosition(lastPoint[0], lastPoint[1], Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
             return position.dst(targetPosition) < 5f;
         }
         return true;
@@ -104,7 +104,7 @@ public class Player {
     private Vector2 calculateTargetPosition(int[] targetPoint) {
         int tileSize = Tile.TILE_SIZE;
         float halfTileSize = (float) tileSize / 2;
-        return Helpers.gridToWorldPosition(targetPoint[0], targetPoint[1], tileSize, halfTileSize);
+        return gridToWorldPosition(targetPoint[0], targetPoint[1], tileSize, halfTileSize);
     }
 
     /**

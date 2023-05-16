@@ -1,6 +1,9 @@
 package com.farmsteadfortress.entities;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+
 
 /**
  * Factory class for creating Enemy instances.
@@ -18,6 +21,18 @@ public class EnemyFactory {
      */
     public static Enemy createEnemy() {
         TextureAtlas atlas = new TextureAtlas(DEFAULT_TEXTURE_ATLAS_PATH);
+        setTextureFilters(atlas);
         return new Enemy(atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED);
+    }
+
+    /**
+     * Set texture filters for all textures in the atlas.
+     *
+     * @param atlas The texture atlas.
+     */
+    private static void setTextureFilters(TextureAtlas atlas) {
+        for (Texture texture : atlas.getTextures()) {
+            texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        }
     }
 }

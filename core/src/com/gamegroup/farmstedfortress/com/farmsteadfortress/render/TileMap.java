@@ -6,13 +6,13 @@ package com.farmsteadfortress.render;
  */
 
 import static com.badlogic.gdx.math.MathUtils.random;
+import static com.farmsteadfortress.utils.Helpers.gridToWorldPosition;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.path.PathCalculator;
 import com.farmsteadfortress.path.PathResult;
-import com.farmsteadfortress.utils.Helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class TileMap {
     List<int[]> path;
     List<List<int[]>> successfulPaths;
     List<PathResult> pathResults;
-    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassMushroomTexture, grassRocksTextureOne, grassRocksTextureTwo, enemySpawnPointTexture;
+    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassTextureTwo, grassMushroomTexture, grassRocksTextureOne, grassRocksTextureTwo, enemySpawnPointTexture;
     private Texture objectTileTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
@@ -46,23 +46,38 @@ public class TileMap {
      */
     public TileMap() {
         mapSize = 120;
+
         cropLandTexture = new Texture("tiles/crop_land.png");
+        cropLandTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         grassTexture = new Texture("tiles/grass.png");
+        grassTextureTwo = new Texture("tiles/grass2.png");
+        grassTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassMushroomTexture = new Texture("tiles/grass_mushroom.png");
+        grassMushroomTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassRocksTextureOne = new Texture("tiles/grass_rocks.png");
+        grassRocksTextureOne.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassRocksTextureTwo = new Texture("tiles/grass_rocks2.png");
+        grassRocksTextureTwo.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         waterTexture = new Texture("tiles/water.png");
-        waterFar = new Texture("tiles/water_far.png");
-        waterBorder = new Texture("tiles/water_border.png");
+        waterTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        waterFar = new Texture("tiles/water.png");
+        waterFar.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        waterBorder = new Texture("tiles/water.png");
+        waterBorder.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
-        enemySpawnPointTexture = new Texture("tiles/middle.png");
-        middleTexture = new Texture("tiles/middle.png");
-        pathTextureTop = new Texture("tiles/path.png");
-        bridgeTexture = new Texture("tiles/bridge.png");
+        enemySpawnPointTexture = new Texture("tiles/bridge2.png");
+        enemySpawnPointTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        middleTexture = new Texture("tiles/bridge2.png");
+        middleTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        pathTextureTop = new Texture("tiles/bridge2.png");
+        pathTextureTop.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        bridgeTexture = new Texture("tiles/bridge2.png");
+        bridgeTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         objectTileTexture = new Texture("objects/tomato_full_grown.png");
+        objectTileTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         baseTiles = new LinkedList<>();
         objectTiles = new LinkedList<>();
@@ -419,13 +434,13 @@ public class TileMap {
                             groundSelectedTexture = grassTexture;
                             tileType = Tile.TileType.GRASS;
                         } else if (randomNum <= 90) {
-                            groundSelectedTexture = grassMushroomTexture;
+                            groundSelectedTexture = grassTextureTwo;
                             tileType = Tile.TileType.MUSHROOM;
                         } else if (randomNum <= 95) {
-                            groundSelectedTexture = grassRocksTextureOne;
+                            groundSelectedTexture = grassTexture;
                             tileType = Tile.TileType.ROCK;
                         } else {
-                            groundSelectedTexture = grassRocksTextureTwo;
+                            groundSelectedTexture = grassTexture;
                             tileType = Tile.TileType.ROCK;
                         }
                         baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
@@ -509,13 +524,13 @@ public class TileMap {
      * Retrieves the position of the center tile in the map.
      *
      * @return The position of the center tile as a Vector2 object,
-     *         or null if no center tile is found.
+     * or null if no center tile is found.
      */
     public Vector2 getCenterTilePos() {
         for (int row = 0; row < mapSize; row++) {
             for (int col = 0; col < mapSize; col++) {
                 if (map[row][col] == CENTER) {
-                    return Helpers.gridToWorldPosition(row, col, Tile.TILE_SIZE, (float)Tile.TILE_SIZE / 2);
+                    return gridToWorldPosition(row, col, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
                 }
             }
         }
