@@ -51,7 +51,7 @@ public class TileMap {
         cropLandTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         grassTexture = new Texture("tiles/grass.png");
-        grassTextureTwo = new Texture("tiles/grass2.png");
+        grassTextureTwo = new Texture("tiles/grass.png");
         grassTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassMushroomTexture = new Texture("tiles/grass_mushroom.png");
         grassMushroomTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -62,18 +62,18 @@ public class TileMap {
 
         waterTexture = new Texture("tiles/water.png");
         waterTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        waterFar = new Texture("tiles/water.png");
+        waterFar = new Texture("tiles/water_far.png");
         waterFar.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        waterBorder = new Texture("tiles/water.png");
+        waterBorder = new Texture("tiles/water_border.png");
         waterBorder.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
-        enemySpawnPointTexture = new Texture("tiles/bridge2.png");
+        enemySpawnPointTexture = new Texture("tiles/middle.png");
         enemySpawnPointTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        middleTexture = new Texture("tiles/bridge2.png");
+        middleTexture = new Texture("tiles/middle.png");
         middleTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        pathTextureTop = new Texture("tiles/bridge2.png");
+        pathTextureTop = new Texture("tiles/path.png");
         pathTextureTop.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        bridgeTexture = new Texture("tiles/bridge2.png");
+        bridgeTexture = new Texture("tiles/bridge.png");
         bridgeTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         objectTileTexture = new Texture("objects/tomato_full_grown.png");
@@ -354,6 +354,17 @@ public class TileMap {
                 map[closestRow][closestCol] = SPAWN_POINT;
             }
         }
+    }
+
+    public Tile getTileAtPosition(int x, int y) {
+        for (Tile tile : baseTiles) {
+            Vector2 pos = tile.getTileMapPos();
+            if (pos.x == x && pos.y == y) {
+                return tile;
+            }
+        }
+
+        throw new IllegalArgumentException("No tile found at position: (" + x + ", " + y + ")");
     }
 
     /**

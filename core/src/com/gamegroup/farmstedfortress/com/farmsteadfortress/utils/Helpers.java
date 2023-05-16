@@ -5,8 +5,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+
+import java.util.List;
 
 public class Helpers {
 
@@ -61,10 +65,20 @@ public class Helpers {
         return Gdx.app.getType() == Application.ApplicationType.Desktop;
     }
 
-    // Similarly, you can add methods for other platforms
     public static boolean isMobile() {
         return Gdx.app.getType() == Application.ApplicationType.Android ||
                 Gdx.app.getType() == Application.ApplicationType.iOS;
     }
 
+    public static boolean uiContains(List<Stage> uiStages, int screenX, int screenY) {
+        for (Stage stage : uiStages) {
+            Vector3 stageCoordinates = new Vector3(screenX, screenY, 0);
+            stage.getCamera().unproject(stageCoordinates);
+            Actor hitActor = stage.hit(stageCoordinates.x, stageCoordinates.y, true);
+            if (hitActor != null) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

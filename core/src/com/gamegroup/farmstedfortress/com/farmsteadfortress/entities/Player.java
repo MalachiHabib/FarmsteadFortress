@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+
 import java.util.List;
 
 /**
@@ -87,7 +88,7 @@ public class Player {
     }
 
     /**
-     * Returns the current position of the player.
+     * Returns the current position of thwe player.
      *
      * @return The position of the player.
      */

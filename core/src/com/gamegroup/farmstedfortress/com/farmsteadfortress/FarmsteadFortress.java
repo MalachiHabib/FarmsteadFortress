@@ -48,10 +48,10 @@ public class FarmsteadFortress extends Game {
     public void render() {
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
+
         super.render();
         vfxManager.endInputCapture();
         vfxManager.applyEffects();
-
         vfxManager.renderToScreen();
     }
 

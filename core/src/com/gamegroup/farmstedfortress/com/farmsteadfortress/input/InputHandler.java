@@ -8,18 +8,26 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.entities.Enemy;
 import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.entities.plants.PlantFactory;
+import com.farmsteadfortress.entities.plants.TomatoPlant;
 import com.farmsteadfortress.path.PathCalculator;
 import com.farmsteadfortress.path.PathResult;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+import com.farmsteadfortress.utils.Helpers;
+
+import java.util.ArrayList;
 
 
 public class InputHandler extends InputAdapter implements GestureDetector.GestureListener, InputProcessor {
@@ -34,24 +42,22 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private Tile targetTile;
     private int clickedScreenX;
     private int clickedScreenY;
-
+    private Hotbar hotbar;
+    private ArrayList<Stage> uiStages;
     private boolean isPanning;
     private boolean isZooming;
-
     private float panSpeed = 0.1f;
     private float zoomSpeed = 0.1f;
 
-    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, Enemy enemy) {
+    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, Enemy enemy, InputMultiplexer inputMultiplexer, Hotbar hotbar) {
         hoverTexture = new Texture("tiles/highlight.png");
         this.tileMap = tileMap;
         this.camera = camera;
         this.player = player;
         this.enemy = enemy;
         this.pathCalculator = new PathCalculator();
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(new GestureDetector(this));
+        this.hotbar = hotbar;
         inputMultiplexer.addProcessor(this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
 
         if (isDesktop()) {
             panSpeed = 10f;
@@ -116,43 +122,55 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         return super.mouseMoved(screenX, screenY);
     }
 
+    private boolean hotbarContains(int screenX, int screenY) {
+        Vector3 stageCoordinates = new Vector3(screenX, screenY, 0);
+        hotbar.getStage().getCamera().unproject(stageCoordinates);
+        Actor hitActor = hotbar.getStage().hit(stageCoordinates.x, stageCoordinates.y, true);
+        return hitActor != null;
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (Gdx.input.isTouched(1)) {
-            // More than one finger is touching the screen, so this is a multi-touch gesture
-            return false;
-        }
-        if (!isPanning && !isZooming) {
-            Tile playerTile = tileMap.getTileAt(player.getPosition());
-            if (playerTile != null) {
-                Tile clickedTile = getTileAtPosition(tileMap, camera, screenX, screenY);
-                if (clickedTile != null && clickedTile.isIntractable()) {
-                    if (player.hasReachedTarget() || targetTile == null || !targetTile.equals(clickedTile)) {
-                        targetTile = clickedTile;
-                        Tile startTile = playerTile;
-                        int[] startTilePos = new int[]{(int) startTile.tileMapPos.x + 2, (int) startTile.tileMapPos.y};
-                        int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
-                        pathCalculator.clearTerrainWeights();
-                        pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
-                        pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
-                        updateHoverEffect(screenX, screenY);
-                        if (pathResult.isSuccess()) {
-                            player.setPath(pathResult.getPath());
+        if (Helpers.uiContains(uiStages, screenX, screenY)) {
+            return false; // Ignore the touch event if it occurred within the any UI's region
+        } else {
+
+            if (Gdx.input.isTouched(1)) {
+                // More than one finger is touching the screen, so this is a multi-touch gesture
+                return false;
+            }
+            if (!isPanning && !isZooming) {
+                Tile playerTile = tileMap.getTileAt(player.getPosition());
+                if (playerTile != null) {
+                    Tile clickedTile = getTileAtPosition(tileMap, camera, screenX, screenY);
+                    if (clickedTile != null && clickedTile.isIntractable()) {
+                        if (player.hasReachedTarget() || targetTile == null || !targetTile.equals(clickedTile)) {
+                            targetTile = clickedTile;
+                            Tile startTile = playerTile;
+                            int[] startTilePos = new int[]{(int) startTile.tileMapPos.x + 2, (int) startTile.tileMapPos.y};
+                            int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
+                            pathCalculator.clearTerrainWeights();
+                            pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
+                            pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
+                            updateHoverEffect(screenX, screenY);
+                            if (pathResult.isSuccess()) {
+                                player.setPath(pathResult.getPath());
+                            }
                         }
+                        clickedScreenX = screenX;
+                        clickedScreenY = screenY;
                     }
-                    clickedScreenX = screenX;
-                    clickedScreenY = screenY;
+                }
+
+                Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
+                Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
+
+                if (enemy.containsPoint(touchPosition)) {
+                    enemy.onClick();
                 }
             }
-
-            Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
-            Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
-
-            if (enemy.containsPoint(touchPosition)) {
-                enemy.onClick();
-            }
+            return true;
         }
-        return true;
     }
 
     @Override
@@ -167,8 +185,13 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         if (player.hasReachedTarget() && targetTile != null
                 && pathResult.isSuccess()) {
             targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
+
+            // Create a new TomatoPlant and add it to the tile
+            TomatoPlant tomatoPlant = PlantFactory.createTomatoPlant(targetTile);
+            targetTile.setPlant(tomatoPlant);
         }
     }
+
 
     private void updateHoverEffect(int screenX, int screenY) {
         Tile currentTile = getTileAtPosition(tileMap, camera, screenX, screenY);
@@ -249,5 +272,9 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     @Override
     public void pinchStop() {
         isZooming = false;
+    }
+
+    public void setUiStages(ArrayList<Stage> uiStages) {
+        this.uiStages = uiStages;
     }
 }

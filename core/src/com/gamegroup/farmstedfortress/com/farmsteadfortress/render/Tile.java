@@ -3,6 +3,8 @@ package com.farmsteadfortress.render;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.farmsteadfortress.entities.plants.Plant;
+import com.farmsteadfortress.entities.plants.TomatoPlant;
 
 /**
  * Represents a tile in the game world.
@@ -41,6 +43,19 @@ public class Tile {
     public Vector2 tileMapPos;
     public Vector2 worldPos;
     private TileType tileType;
+    private Plant plant;
+
+
+    public Vector2 getTileMapPos() {
+        return tileMapPos;
+    }
+    public void setPlant(Plant plant) {
+        this.plant = plant;
+    }
+
+    public Plant getPlant() {
+        return this.plant;
+    }
 
     /**
      * Creates a Tile object.
@@ -59,12 +74,16 @@ public class Tile {
     }
 
     /**
-     * Renders the tile using the provided SpriteBatch.
+     * Renders the tile and plant using the provided SpriteBatch.
      *
      * @param batch The SpriteBatch used for rendering.
      */
     public void render(SpriteBatch batch) {
         batch.draw(tileTexture, worldPos.x, worldPos.y);
+        if (plant != null) {
+            System.out.println("render plant");
+            plant.draw(batch);
+        }
     }
 
     /**

@@ -1,11 +1,15 @@
 package com.farmsteadfortress.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.farmsteadfortress.inventory.Inventory;
+import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.entities.Enemy;
 import com.farmsteadfortress.entities.EnemyFactory;
 import com.farmsteadfortress.entities.Player;
@@ -13,6 +17,9 @@ import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+import com.farmsteadfortress.ui.Shop;
+
+import java.util.ArrayList;
 
 public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
@@ -22,22 +29,42 @@ public class GameScreen extends ScreenAdapter {
     private Player player;
     private InputHandler inputHandler;
     private ShapeRenderer shapeRenderer;
+    private InputMultiplexer inputMultiplexer;
+    private Hotbar hotbar;
+    private Shop shop;
+    private ArrayList<Stage> uiStages;
+    private Inventory inventory;
 
     public GameScreen(SpriteBatch batch) {
+
         this.batch = batch;
         camera = new OrthographicCamera(1920, 1080);
         camera.zoom = 1.5f;
         map = new TileMap();
         calculateCameraPosition();
-
+        inventory = new Inventory();
         enemy = EnemyFactory.createEnemy();
         enemy.setPath(map);
 
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
-        inputHandler = new InputHandler(map, camera, player, enemy);
-        Gdx.input.setInputProcessor(inputHandler);
 
+        uiStages = new ArrayList<>();
+        hotbar = new Hotbar(inventory);
+        shop = new Shop(inventory, hotbar);
+
+        inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
+        inputHandler = new InputHandler(map, camera, player, enemy, inputMultiplexer, hotbar);
+
+        uiStages.add(hotbar.getStage());
+        uiStages.add(shop.getStage());
+        inputHandler.setUiStages(uiStages);
+
+        inputMultiplexer.addProcessor(inputHandler);
+        inputMultiplexer.addProcessor(hotbar.getStage());
+        inputMultiplexer.addProcessor(shop.getStage());
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
         shapeRenderer.setAutoShapeType(true);
     }
 
@@ -61,12 +88,13 @@ public class GameScreen extends ScreenAdapter {
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        // Draw shapes using shapeRenderer
         shapeRenderer.end();
+        hotbar.render();
+        shop.render();
     }
 
     private void clearScreen() {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f); // Set your desired background color
+        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
@@ -90,7 +118,10 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
+        super.dispose();
         batch.dispose();
         shapeRenderer.dispose();
+        hotbar.dispose();
+        shop.dispose();
     }
 }
