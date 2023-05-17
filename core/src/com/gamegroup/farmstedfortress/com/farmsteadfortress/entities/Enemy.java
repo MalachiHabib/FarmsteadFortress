@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+import com.farmsteadfortress.utils.Helpers;
 
 
 import java.util.List;
@@ -29,7 +30,8 @@ public class Enemy {
     private float speed;
     private boolean outline;
     private Rectangle boundingBox;
-
+    private int health;
+    private int reward = 10;
 
     /**
      * Constructs an enemy entity.
@@ -38,7 +40,7 @@ public class Enemy {
      * @param animationSpeed the speed of the walking animation
      * @param speed          the movement speed of the enemy
      */
-    public Enemy(TextureAtlas atlas, float animationSpeed, float speed) {
+    public Enemy(TextureAtlas atlas, float animationSpeed, float speed, int health) {
         this.walkingAnimation = new Animation<TextureRegion>(animationSpeed, atlas.getRegions());
         this.stateTime = 0f;
         this.position = new Vector2();
@@ -48,10 +50,37 @@ public class Enemy {
         this.direction = new Vector2();
         this.outline = false;
         this.boundingBox = new Rectangle();
+        this.health = health;
     }
 
     public void onClick() {
         outline = !outline;
+    }
+
+    public void attacked(Player player) {
+        System.out.println("attacked");
+        health -= player.getAttackDamage();
+
+        if (health <= 0) {
+            player.addMoney(reward);
+            die();
+        }
+    }
+
+    public void die() {
+
+    }
+
+    public Vector2 getPosition() {
+        TextureRegion currentFrame = walkingAnimation.getKeyFrame(stateTime, true);
+        float originX = currentFrame.getRegionWidth() / 2f;
+        float originY = currentFrame.getRegionHeight() / 2f;
+        float yOffset = Tile.TILE_SIZE / 2f;
+
+        float posX = position.x - originX + (Tile.TILE_SIZE - currentFrame.getRegionWidth() / 2.25f);
+        float posY = position.y - originY + yOffset + (Tile.TILE_SIZE - currentFrame.getRegionHeight() / 2.25f);
+
+        return new Vector2(posX, posY);
     }
 
     public boolean containsPoint(Vector2 point) {

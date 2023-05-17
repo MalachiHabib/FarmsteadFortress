@@ -41,14 +41,13 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private PathResult pathResult;
     private Tile lastHoveredTile;
     private Tile targetTile;
-    private int clickedScreenX;
-    private int clickedScreenY;
     private Hotbar hotbar;
     private ArrayList<Stage> uiStages;
     private boolean isPanning;
     private boolean isZooming;
     private float panSpeed = 0.1f;
     private float zoomSpeed = 0.1f;
+    private Tile playerTile;
 
     public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, Enemy enemy, InputMultiplexer inputMultiplexer, Hotbar hotbar) {
         hoverTexture = new Texture("tiles/highlight.png");
@@ -89,7 +88,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             camera.zoom = MathUtils.lerp(camera.zoom, targetZoom, zoomSpeed);
         }
 
-        // Keyboard movement
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             camera.position.y += panSpeed;
         }
@@ -128,20 +126,17 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             return false;
         } else {
             if (Gdx.input.isTouched(1)) {
-                // More than one finger is touching the screen, so this is a multi-touch gesture
                 return false;
             }
 
             if (!isPanning && !isZooming) {
-                Tile playerTile = tileMap.getTileAt(player.getPosition());
+                playerTile = tileMap.getTileAt(player.getPosition());
                 if (playerTile != null) {
                     Tile clickedTile = getTileAtPosition(tileMap, camera, screenX, screenY);
                     if (clickedTile != null && clickedTile.isIntractable()) {
-
                         if (player.hasReachedTarget() || targetTile == null || !targetTile.equals(clickedTile)) {
                             targetTile = clickedTile;
-                            Tile startTile = playerTile;
-                            int[] startTilePos = new int[]{(int) startTile.tileMapPos.x + 2, (int) startTile.tileMapPos.y};
+                            int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 2, (int) playerTile.tileMapPos.y};
                             int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
                             pathCalculator.clearTerrainWeights();
                             pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
@@ -150,6 +145,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
                             if (pathResult.isSuccess()) {
                                 player.setPath(pathResult.getPath());
+                                player.setWalking(true);
                                 Item selectedItem = hotbar.getSelectedSlotItem();
                                 if (selectedItem != null && selectedItem instanceof Seed && player.getInventory().contains(selectedItem)) {
                                     player.getInventory().removeItem(selectedItem);
@@ -159,9 +155,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                                 }
                             }
                         }
-
-                        clickedScreenX = screenX;
-                        clickedScreenY = screenY;
                     }
                 }
 
@@ -170,6 +163,10 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
                 if (enemy.containsPoint(touchPosition)) {
                     enemy.onClick();
+                    player.targetEnemy(enemy, tileMap, pathCalculator);
+
+                } else {
+                    player.stopFollowing();
                 }
             }
             return true;
@@ -188,17 +185,13 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         if (player.hasReachedTarget() && targetTile != null
                 && pathResult.isSuccess()) {
             targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
-
-            // Create a new plant based on the type of seed the player has selected
             if (player.getPlantToBePlanted() != null) {
                 Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile);
                 targetTile.setPlant(plant);
-                player.setPlantToBePlanted(null);  // Clear the plant to be planted
+                player.setPlantToBePlanted(null);
             }
         }
     }
-
-
 
     private void updateHoverEffect(int screenX, int screenY) {
         Tile currentTile = getTileAtPosition(tileMap, camera, screenX, screenY);

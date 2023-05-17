@@ -22,7 +22,7 @@ public class EnemyFactory {
     public static Enemy createEnemy() {
         TextureAtlas atlas = new TextureAtlas(DEFAULT_TEXTURE_ATLAS_PATH);
         setTextureFilters(atlas);
-        return new Enemy(atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED);
+        return new Enemy(atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED, 20);
     }
 
     /**

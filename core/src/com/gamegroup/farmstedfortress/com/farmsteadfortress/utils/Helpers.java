@@ -34,13 +34,11 @@ public class Helpers {
      *
      * @param worldX     The x-coordinate in world units.
      * @param worldY     The y-coordinate in world units.
-     * @param tileWidth  The width of a tile in world units.
-     * @param tileHeight The height of a tile in world units.
      * @return An int array containing the grid coordinates [gridX, gridY].
      */
-    public static int[] worldToGridPosition(float worldX, float worldY, float tileWidth, float tileHeight) {
-        int gridX = Math.round((worldX / tileWidth - worldY / tileHeight) / 2);
-        int gridY = Math.round((worldX / tileWidth + worldY / tileHeight) / 2);
+    public static int[] worldToGridPosition(float worldX, float worldY) {
+        int gridX = Math.round((worldX / Tile.TILE_SIZE - worldY / Tile.TILE_SIZE) / 2);
+        int gridY = Math.round((worldX / Tile.TILE_SIZE + worldY / Tile.TILE_SIZE) / 2);
         return new int[]{gridX, gridY};
     }
 

@@ -122,10 +122,12 @@ public class Shop {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                        player.setMoney(-5);
+                    if (player.getMoney() >= seed.getPrice()) {
+                        player.addMoney(-5);
                         inventory.addItem(seed);
                         inventory.printInventory();
                         hotbar.updateHotbar();
+                    }
                 }
             });
             buttons.add(button);

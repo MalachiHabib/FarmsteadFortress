@@ -16,6 +16,7 @@ import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 import com.farmsteadfortress.ui.Hotbar;
+import com.farmsteadfortress.ui.MoneyDisplay;
 import com.farmsteadfortress.ui.Shop;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class GameScreen extends ScreenAdapter {
     private Hotbar hotbar;
     private Shop shop;
     private ArrayList<Stage> uiStages;
-
+    private MoneyDisplay moneyDisplay;
 
     public GameScreen(SpriteBatch batch) {
 
@@ -49,6 +50,7 @@ public class GameScreen extends ScreenAdapter {
         uiStages = new ArrayList<>();
         hotbar = new Hotbar(player.getInventory());
         shop = new Shop(hotbar, player);
+        moneyDisplay = new MoneyDisplay(player);
 
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
@@ -89,22 +91,14 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.end();
         hotbar.render();
         shop.render();
+        moneyDisplay.render();
     }
 
-    private void clearScreen() {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-    }
 
     private void updatePlants(float delta) {
         for (Tile tile : map.getBaseTiles()) {
             tile.update(delta);
         }
-    }
-
-
-    private void updateCamera() {
-        camera.update();
     }
 
     private void calculateCameraPosition() {
@@ -121,6 +115,10 @@ public class GameScreen extends ScreenAdapter {
         camera.position.set(centerX + offsetX, centerY + offsetY, 0);
     }
 
+    private void updateCamera() {
+        camera.update();
+    }
+
     @Override
     public void dispose() {
         super.dispose();
@@ -128,5 +126,11 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.dispose();
         hotbar.dispose();
         shop.dispose();
+        moneyDisplay.dispose();
+    }
+
+    private void clearScreen() {
+        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 }

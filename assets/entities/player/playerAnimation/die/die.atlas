@@ -1,0 +1,146 @@
+
+die.png
+size: 2048, 1024
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+01
+  rotate: false
+  xy: 1748, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+02
+  rotate: false
+  xy: 972, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+03
+  rotate: false
+  xy: 196, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+04
+  rotate: false
+  xy: 1360, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+05
+  rotate: false
+  xy: 584, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+06
+  rotate: false
+  xy: 2, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+07
+  rotate: false
+  xy: 1166, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+08
+  rotate: false
+  xy: 390, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+09
+  rotate: false
+  xy: 1554, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+10
+  rotate: false
+  xy: 778, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+11
+  rotate: false
+  xy: 196, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+12
+  rotate: false
+  xy: 1360, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+13
+  rotate: false
+  xy: 584, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+14
+  rotate: false
+  xy: 1748, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+15
+  rotate: false
+  xy: 972, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+16
+  rotate: false
+  xy: 390, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+17
+  rotate: false
+  xy: 1554, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+18
+  rotate: false
+  xy: 778, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+19
+  rotate: false
+  xy: 2, 2
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
+20
+  rotate: false
+  xy: 1166, 388
+  size: 192, 384
+  orig: 192, 384
+  offset: 0, 0
+  index: -1
