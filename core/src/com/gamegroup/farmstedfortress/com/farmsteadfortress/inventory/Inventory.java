@@ -28,4 +28,8 @@ public class Inventory {
             System.out.println(item.getName());
         }
     }
+
+    public boolean contains(Item selectedItem) {
+        return items.contains(selectedItem, true);
+    }
 }

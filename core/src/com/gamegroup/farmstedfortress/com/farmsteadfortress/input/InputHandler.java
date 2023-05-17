@@ -14,17 +14,18 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.entities.Enemy;
 import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.entities.plants.Plant;
 import com.farmsteadfortress.entities.plants.PlantFactory;
-import com.farmsteadfortress.entities.plants.TomatoPlant;
+import com.farmsteadfortress.items.Item;
+import com.farmsteadfortress.items.seeds.Seed;
 import com.farmsteadfortress.path.PathCalculator;
 import com.farmsteadfortress.path.PathResult;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.utils.Helpers;
 
 import java.util.ArrayList;
@@ -115,35 +116,28 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         return true;
     }
 
-
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         updateHoverEffect(screenX, screenY);
         return super.mouseMoved(screenX, screenY);
     }
 
-    private boolean hotbarContains(int screenX, int screenY) {
-        Vector3 stageCoordinates = new Vector3(screenX, screenY, 0);
-        hotbar.getStage().getCamera().unproject(stageCoordinates);
-        Actor hitActor = hotbar.getStage().hit(stageCoordinates.x, stageCoordinates.y, true);
-        return hitActor != null;
-    }
-
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (Helpers.uiContains(uiStages, screenX, screenY)) {
-            return false; // Ignore the touch event if it occurred within the any UI's region
+            return false;
         } else {
-
             if (Gdx.input.isTouched(1)) {
                 // More than one finger is touching the screen, so this is a multi-touch gesture
                 return false;
             }
+
             if (!isPanning && !isZooming) {
                 Tile playerTile = tileMap.getTileAt(player.getPosition());
                 if (playerTile != null) {
                     Tile clickedTile = getTileAtPosition(tileMap, camera, screenX, screenY);
                     if (clickedTile != null && clickedTile.isIntractable()) {
+
                         if (player.hasReachedTarget() || targetTile == null || !targetTile.equals(clickedTile)) {
                             targetTile = clickedTile;
                             Tile startTile = playerTile;
@@ -153,10 +147,19 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                             pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
                             pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
                             updateHoverEffect(screenX, screenY);
+
                             if (pathResult.isSuccess()) {
                                 player.setPath(pathResult.getPath());
+                                Item selectedItem = hotbar.getSelectedSlotItem();
+                                if (selectedItem != null && selectedItem instanceof Seed && player.getInventory().contains(selectedItem)) {
+                                    player.getInventory().removeItem(selectedItem);
+                                    hotbar.updateHotbar();
+                                    player.setPlantToBePlanted(((Seed) selectedItem).getPlantType());
+                                    System.out.println(player.getPlantToBePlanted());
+                                }
                             }
                         }
+
                         clickedScreenX = screenX;
                         clickedScreenY = screenY;
                     }
@@ -186,11 +189,15 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                 && pathResult.isSuccess()) {
             targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
 
-            // Create a new TomatoPlant and add it to the tile
-            TomatoPlant tomatoPlant = PlantFactory.createTomatoPlant(targetTile);
-            targetTile.setPlant(tomatoPlant);
+            // Create a new plant based on the type of seed the player has selected
+            if (player.getPlantToBePlanted() != null) {
+                Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile);
+                targetTile.setPlant(plant);
+                player.setPlantToBePlanted(null);  // Clear the plant to be planted
+            }
         }
     }
+
 
 
     private void updateHoverEffect(int screenX, int screenY) {

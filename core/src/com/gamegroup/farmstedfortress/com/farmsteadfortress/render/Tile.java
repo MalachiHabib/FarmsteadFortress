@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.plants.Plant;
-import com.farmsteadfortress.entities.plants.TomatoPlant;
 
 /**
  * Represents a tile in the game world.
@@ -81,8 +80,13 @@ public class Tile {
     public void render(SpriteBatch batch) {
         batch.draw(tileTexture, worldPos.x, worldPos.y);
         if (plant != null) {
-            System.out.println("render plant");
             plant.draw(batch);
+        }
+    }
+
+    public void update(float delta) {
+        if (plant != null) {
+            plant.update(delta);
         }
     }
 

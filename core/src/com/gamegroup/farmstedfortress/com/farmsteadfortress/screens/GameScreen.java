@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.farmsteadfortress.inventory.Inventory;
-import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.entities.Enemy;
 import com.farmsteadfortress.entities.EnemyFactory;
 import com.farmsteadfortress.entities.Player;
@@ -17,6 +15,7 @@ import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.ui.Shop;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class GameScreen extends ScreenAdapter {
     private Hotbar hotbar;
     private Shop shop;
     private ArrayList<Stage> uiStages;
-    private Inventory inventory;
+
 
     public GameScreen(SpriteBatch batch) {
 
@@ -42,15 +41,14 @@ public class GameScreen extends ScreenAdapter {
         camera.zoom = 1.5f;
         map = new TileMap();
         calculateCameraPosition();
-        inventory = new Inventory();
         enemy = EnemyFactory.createEnemy();
         enemy.setPath(map);
 
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
 
         uiStages = new ArrayList<>();
-        hotbar = new Hotbar(inventory);
-        shop = new Shop(inventory, hotbar);
+        hotbar = new Hotbar(player.getInventory());
+        shop = new Shop(hotbar, player);
 
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
@@ -76,7 +74,7 @@ public class GameScreen extends ScreenAdapter {
         inputHandler.handleCameraInput();
         enemy.update(delta, map);
         player.update(delta);
-
+        updatePlants(delta);
         batch.setProjectionMatrix(camera.combined);
         batch.enableBlending();
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -97,6 +95,13 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
+
+    private void updatePlants(float delta) {
+        for (Tile tile : map.getBaseTiles()) {
+            tile.update(delta);
+        }
+    }
+
 
     private void updateCamera() {
         camera.update();

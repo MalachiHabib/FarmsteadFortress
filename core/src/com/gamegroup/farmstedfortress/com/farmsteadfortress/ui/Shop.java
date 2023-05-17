@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.inventory.Inventory;
 import com.farmsteadfortress.items.seeds.TomatoSeed;
 
@@ -35,16 +36,18 @@ public class Shop {
     private Table buttonTable;
     private BitmapFont font;
     private boolean isShopOpen;
+    Player player;
     private Inventory inventory;
     private Hotbar hotbar;
 
-    public Shop(Inventory inventory, Hotbar hotbar) {
+    public Shop(Hotbar hotbar, Player player) {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
         table = new Table();
         buttons = new Array<>();
         font = new BitmapFont();
-        this.inventory = inventory;
+        this.inventory = player.getInventory();
+        this.player = player;
         this.hotbar = hotbar;
 
         createBackground();
@@ -119,9 +122,10 @@ public class Shop {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    inventory.addItem(seed);
-                    inventory.printInventory();
-                    hotbar.updateHotbar();
+                        player.setMoney(-5);
+                        inventory.addItem(seed);
+                        inventory.printInventory();
+                        hotbar.updateHotbar();
                 }
             });
             buttons.add(button);

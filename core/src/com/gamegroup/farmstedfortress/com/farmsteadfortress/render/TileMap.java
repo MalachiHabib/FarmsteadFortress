@@ -75,10 +75,6 @@ public class TileMap {
         pathTextureTop.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         bridgeTexture = new Texture("tiles/bridge.png");
         bridgeTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-
-        objectTileTexture = new Texture("objects/tomato_full_grown.png");
-        objectTileTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-
         baseTiles = new LinkedList<>();
         objectTiles = new LinkedList<>();
 
@@ -101,7 +97,6 @@ public class TileMap {
                         path = pathResult.getPath();
                         successfulPaths.add(path);
                         setPathPoints(path);
-                        //pathResult.printPathWithOrder();
                     }
                 }
                 if (successfulPathCount == 3) {

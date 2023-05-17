@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.farmsteadfortress.entities.plants.Plant;
+import com.farmsteadfortress.inventory.Inventory;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 
@@ -24,6 +26,9 @@ public class Player {
     private int currentPathIndex;
     private float speed;
     private TileMap map;
+    private Inventory inventory;
+    private Plant.PlantType plantToBePlanted;
+    private int money = 0;
 
     public Player(TextureAtlas atlas, float animationSpeed, float speed, Vector2 spawnPosition, TileMap map) {
         this.walkingAnimation = new Animation<TextureRegion>(animationSpeed, atlas.getRegions());
@@ -33,6 +38,27 @@ public class Player {
         this.currentPath = null;
         this.currentPathIndex = 0;
         this.map = map;
+        inventory = new Inventory();
+        this.money = 500;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int amount) {
+        money += amount;
+    }
+
+    public Plant.PlantType getPlantToBePlanted() {
+        return plantToBePlanted;
+    }
+
+    public void setPlantToBePlanted(Plant.PlantType plantToBePlanted) {
+        this.plantToBePlanted = plantToBePlanted;
+    }
+    public Inventory getInventory() {
+        return inventory;
     }
 
     /**

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -24,6 +25,7 @@ public class Hotbar {
     private TextureRegionDrawable highlightDrawable;
     private Drawable defaultDrawable;
     private Inventory inventory;
+    private Item selectedSlotItem;
 
     public Hotbar(Inventory inventory) {
         this.stage = new Stage(new ScreenViewport());
@@ -49,23 +51,19 @@ public class Hotbar {
                 button.getStyle().imageUp = defaultDrawable;
             }
         }
-
-        if (highlightedButton != null) {
-            highlightedButton.getStyle().imageUp = highlightDrawable;
-            highlightedButton = null;
-        }
     }
 
-
     private void createHotbar() {
-        defaultDrawable = new TextureRegionDrawable(new Texture(Gdx.files.internal("gui/hotbar-slot.png")));
-
         for (int i = 0; i < 9; i++) {
             final ImageButton button = new ImageButton(defaultDrawable);
+            final ImageButton highlightButton = new ImageButton(highlightDrawable);
+            highlightButton.setVisible(false);
+            final Stack stack = new Stack();
+            stack.add(button);
+            stack.add(highlightButton);
             buttons.add(button);
-            table.add(button).size(100, 100).pad(10);
+            table.add(stack).size(100, 100).pad(10);
 
-            // Populate the hotbar slot with inventory item, if available
             if (i < inventory.getItems().size) {
                 Item item = inventory.getItems().get(i);
                 Drawable itemDrawable = new TextureRegionDrawable(item.getTexture());
@@ -77,7 +75,17 @@ public class Hotbar {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Clicked hotbar slot: " + slotIndex);
+                    if (highlightedButton != null) {
+                        // Set the second ImageButton in the Stack to invisible
+                        ((Stack) highlightedButton.getParent()).getChildren().get(1).setVisible(false);
+                    }
                     highlightedButton = button;
+                    stack.getChildren().get(1).setVisible(true);
+                    if (slotIndex < inventory.getItems().size) {
+                        selectedSlotItem = inventory.getItems().get(slotIndex);
+                    } else {
+                        selectedSlotItem = null;
+                    }
                     render();
                 }
             });
@@ -85,10 +93,13 @@ public class Hotbar {
         table.bottom();
     }
 
+    public Item getSelectedSlotItem() {
+        return selectedSlotItem;
+    }
+
     public void render() {
         stage.draw();
     }
-
 
     public void dispose() {
         stage.dispose();
