@@ -1,0 +1,62 @@
+
+playerGoSE.png
+size: 512, 128
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+1
+  rotate: false
+  xy: 64, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 374, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 188, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+4
+  rotate: false
+  xy: 2, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+5
+  rotate: false
+  xy: 312, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+6
+  rotate: false
+  xy: 126, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+7
+  rotate: false
+  xy: 436, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+8
+  rotate: false
+  xy: 250, 2
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
