@@ -1,5 +1,7 @@
 package com.farmsteadfortress.screens;
 
+import static com.farmsteadfortress.entities.enemies.EnemyFactory.EnemyType.BASIC_ENEMY;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
@@ -8,8 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.farmsteadfortress.entities.Enemy;
-import com.farmsteadfortress.entities.EnemyFactory;
+import com.farmsteadfortress.entities.enemies.Enemy;
+import com.farmsteadfortress.entities.enemies.EnemyFactory;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.input.InputHandler;
@@ -42,7 +44,7 @@ public class GameScreen extends ScreenAdapter {
         camera.zoom = 1.5f;
         map = new TileMap();
         calculateCameraPosition();
-        enemy = EnemyFactory.createEnemy();
+        enemy = EnemyFactory.createEnemy(BASIC_ENEMY);
         enemy.setPath(map);
 
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
