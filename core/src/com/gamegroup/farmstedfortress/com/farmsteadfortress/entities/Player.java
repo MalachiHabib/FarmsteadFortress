@@ -67,30 +67,18 @@ public class Player {
     public Player(float animationSpeed, float speed, Vector2 spawnPosition, TileMap map) {
         TextureAtlas idleAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_nw.atlas"));
         TextureAtlas idleAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_s.atlas"));
-        TextureAtlas idleAtlasSE = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_se.atlas"));
-        TextureAtlas idleAtlasSW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_sw.atlas"));
-        TextureAtlas idleAtlasW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_w.atlas"));
 
         idleAnimationNW = new Animation<TextureRegion>(animationSpeed, idleAtlasNW.getRegions(), Animation.PlayMode.LOOP);
         idleAnimationS = new Animation<TextureRegion>(animationSpeed, idleAtlasS.getRegions(), Animation.PlayMode.LOOP);
-        idleAnimationSE = new Animation<TextureRegion>(animationSpeed, idleAtlasSE.getRegions(), Animation.PlayMode.LOOP);
-        idleAnimationSW = new Animation<TextureRegion>(animationSpeed, idleAtlasSW.getRegions(), Animation.PlayMode.LOOP);
-        idleAnimationW = new Animation<TextureRegion>(animationSpeed, idleAtlasW.getRegions(), Animation.PlayMode.LOOP);
 
         TextureAtlas dieAtlas = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/die/die.atlas"));
         dieAnimation = new Animation<TextureRegion>(animationSpeed, dieAtlas.getRegions(), Animation.PlayMode.LOOP);
 
         TextureAtlas walkAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/go_nw.atlas"));
         TextureAtlas walkAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/go_s.atlas"));
-        TextureAtlas walkAtlasSE = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/go_se.atlas"));
-        TextureAtlas walkAtlasSW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/go_sw.atlas"));
-        TextureAtlas walkAtlasW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/go_w.atlas"));
 
         walkAnimationNW = new Animation<TextureRegion>(animationSpeed, walkAtlasNW.getRegions(), Animation.PlayMode.LOOP);
         walkAnimationS = new Animation<TextureRegion>(animationSpeed, walkAtlasS.getRegions(), Animation.PlayMode.LOOP);
-        walkAnimationSE = new Animation<TextureRegion>(animationSpeed, walkAtlasSE.getRegions(), Animation.PlayMode.LOOP);
-        walkAnimationSW = new Animation<TextureRegion>(animationSpeed, walkAtlasSW.getRegions(), Animation.PlayMode.LOOP);
-        walkAnimationW = new Animation<TextureRegion>(animationSpeed, walkAtlasW.getRegions(), Animation.PlayMode.LOOP);
 
         TextureAtlas attackAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/attack/attack_nw.atlas"));
         TextureAtlas attackAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/attack/attack_s.atlas"));
@@ -141,9 +129,16 @@ public class Player {
      */
     public void setPath(List<int[]> path) {
         currentPathIndex = 0;
-        currentPath = (path != null && path.size() > 2) ? path.subList(3, path.size()) : path;
+        if (path != null && path.size() > 1) {
+            if (path.size() > 3) {
+                currentPath = path.subList(3, path.size());
+            } else {
+                currentPath = path.subList(1, path.size());
+            }
+        } else {
+            currentPath = path;
+        }
     }
-
 
     public void setDirection(Direction direction) {
         currentDirection = direction;
@@ -160,28 +155,55 @@ public class Player {
     public void updateDirection() {
         if (currentPath != null && currentPathIndex < currentPath.size()) {
             int[] currentTile = currentPath.get(currentPathIndex);
-            if (currentPathIndex + 1 < currentPath.size()) {
-                int[] nextTile = currentPath.get(currentPathIndex + 1);
+            int[] endTile = currentPath.get(currentPath.size() - 1);
 
-                int dx = nextTile[0] - currentTile[0];
-                int dy = nextTile[1] - currentTile[1];
+            int dx = endTile[0] - currentTile[0];
+            int dy = endTile[1] - currentTile[1];
 
-                if (dx > 0) { // Moving east
-                    setDirection(Direction.W);
-                    flipCurrentFrame = true;
-                } else if (dx < 0) { // Moving west
-                    setDirection(Direction.W);
-                    flipCurrentFrame = false;
-                } else if (dy > 0) { // Moving north
-                    setDirection(Direction.SW);
-                    flipCurrentFrame = true;
-                } else if (dy < 0) { // Moving south
-                    setDirection(Direction.SW);
-                    flipCurrentFrame = false;
-                }
+            // Check if player is moving diagonally up and to the right (NE)
+            if (dx > 0 && dy > 0) {
+                setDirection(Direction.NW);
+                flipCurrentFrame = true;
+            }
+            // Check if player is moving diagonally down and to the right (SE)
+            else if (dx > 0 && dy < 0) {
+                setDirection(Direction.S);
+                flipCurrentFrame = true;
+            }
+            // Check if player is moving diagonally up and to the left (NW)
+            else if (dx < 0 && dy > 0) {
+                setDirection(Direction.NW);
+                flipCurrentFrame = false;
+            }
+            // Check if player is moving diagonally down and to the left (SW)
+            else if (dx < 0 && dy < 0) {
+                setDirection(Direction.S);
+                flipCurrentFrame = false;
+            }
+            // Check if player is moving straight down
+            else if (dy < 0) {
+                setDirection(Direction.S);
+                flipCurrentFrame = true;
+            }
+            // Check if player is moving straight up
+            else if (dy > 0) {
+                setDirection(Direction.NW);
+                flipCurrentFrame = false;
+            }
+            // Check if player is moving straight to the right
+            else if (dx > 0) {
+                setDirection(Direction.S);
+                flipCurrentFrame = true;
+            }
+            // Check if player is moving straight to the left
+            else if (dx < 0) {
+                setDirection(Direction.S);
+                flipCurrentFrame = false;
             }
         }
     }
+
+
 
 
     /**
@@ -213,49 +235,7 @@ public class Player {
      * @param batch The SpriteBatch used for rendering.
      */
     public void render(SpriteBatch batch) {
-        Animation<TextureRegion> currentAnimation = idleAnimationS;
-        if (isWalking()) {
-            switch (currentDirection) {
-                case NW:
-                    currentAnimation = walkAnimationNW;
-                    break;
-                case S:
-                    currentAnimation = walkAnimationS;
-                    break;
-                case SE:
-                    currentAnimation = walkAnimationSE;
-                    break;
-                case SW:
-                    currentAnimation = walkAnimationSW;
-                    break;
-                case W:
-                    currentAnimation = walkAnimationW;
-                    break;
-                default:
-                    throw new IllegalStateException("Invalid direction: " + currentDirection);
-            }
-        } else {
-            switch (currentDirection) {
-                case NW:
-                    currentAnimation = idleAnimationNW;
-                    break;
-                case S:
-                    currentAnimation = idleAnimationS;
-                    break;
-                case SE:
-                    currentAnimation = idleAnimationSE;
-                    break;
-                case SW:
-                    currentAnimation = idleAnimationSW;
-                    break;
-                case W:
-                    currentAnimation = idleAnimationW;
-                    break;
-                default:
-                    throw new IllegalStateException("Invalid direction: " + currentDirection);
-            }
-        }
-
+        Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         float yOffset = Tile.TILE_SIZE / 2f;
         float posX = position.x;
@@ -283,56 +263,15 @@ public class Player {
      * @return The position of the player.
      */
     public Vector2 getPosition() {
-        Animation<TextureRegion> currentAnimation;
-
-        if (isWalking()) {
-            switch (currentDirection) {
-                case NW:
-                    currentAnimation = walkAnimationNW;
-                    break;
-                case S:
-                    currentAnimation = walkAnimationS;
-                    break;
-                case SE:
-                    currentAnimation = walkAnimationSE;
-                    break;
-                case SW:
-                    currentAnimation = walkAnimationSW;
-                    break;
-                case W:
-                    currentAnimation = walkAnimationW;
-                    break;
-                default:
-                    throw new IllegalStateException("Invalid direction: " + currentDirection);
-            }
-        } else {
-            switch (currentDirection) {
-                case NW:
-                    currentAnimation = idleAnimationNW;
-                    break;
-                case S:
-                    currentAnimation = idleAnimationS;
-                    break;
-                case SE:
-                    currentAnimation = idleAnimationSE;
-                    break;
-                case SW:
-                    currentAnimation = idleAnimationSW;
-                    break;
-                case W:
-                    currentAnimation = idleAnimationW;
-                    break;
-                default:
-                    throw new IllegalStateException("Invalid direction: " + currentDirection);
-            }
-        }
-
+        Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        float yOffset = Tile.TILE_SIZE / 2f;  // Y Offset
+
         float originX = currentFrame.getRegionWidth() / 2f;
         float originY = currentFrame.getRegionHeight() / 2f;
 
         float posX = position.x - originX + (Tile.TILE_SIZE - currentFrame.getRegionWidth());
-        float posY = position.y - originY  + (Tile.TILE_SIZE - currentFrame.getRegionHeight());
+        float posY = position.y - originY + (Tile.TILE_SIZE - currentFrame.getRegionHeight()) + yOffset;  // Apply the Y offset here
 
         return new Vector2(posX, posY);
     }
@@ -439,5 +378,20 @@ public class Player {
 
     public void stopFollowing() {
         targetedEnemy = null;
+    }
+
+    private Animation<TextureRegion> getCurrentAnimation() {
+        Animation<TextureRegion> currentAnimation;
+        switch (currentDirection) {
+            case NW:
+                currentAnimation = isWalking() ? walkAnimationNW : idleAnimationNW;
+                break;
+            case S:
+                currentAnimation = isWalking() ? walkAnimationS : idleAnimationS;
+                break;
+            default:
+                throw new IllegalStateException("Invalid direction: " + currentDirection);
+        }
+        return currentAnimation;
     }
 }
