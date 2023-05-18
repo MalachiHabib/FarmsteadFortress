@@ -21,30 +21,22 @@ import java.util.List;
  * Represents a player entity in the game.
  */
 public class Player {
-    private enum Direction {
-        NW, S, SE, SW, W
-    }
-
     private Animation<TextureRegion> idleAnimationNW;
     private Animation<TextureRegion> idleAnimationS;
     private Animation<TextureRegion> idleAnimationSE;
     private Animation<TextureRegion> idleAnimationSW;
     private Animation<TextureRegion> idleAnimationW;
-
     private Animation<TextureRegion> walkAnimationNW;
     private Animation<TextureRegion> walkAnimationS;
     private Animation<TextureRegion> walkAnimationSE;
     private Animation<TextureRegion> walkAnimationSW;
     private Animation<TextureRegion> walkAnimationW;
-
     private Animation<TextureRegion> attackNW;
     private Animation<TextureRegion> attackS;
     private Animation<TextureRegion> attackSE;
     private Animation<TextureRegion> attackSW;
     private Animation<TextureRegion> attackW;
-
     private Animation<TextureRegion> dieAnimation;
-
     private boolean flipCurrentFrame;
     private boolean isWalking;
     private float stateTime;
@@ -56,7 +48,6 @@ public class Player {
     private Inventory inventory;
     private Plant.PlantType plantToBePlanted;
     private Enemy targetedEnemy = null;
-
     private int money = 0;
     private float attackRange = 500f;
     private int attackDamage = 5;
@@ -130,7 +121,9 @@ public class Player {
     public void setPath(List<int[]> path) {
         currentPathIndex = 0;
         if (path != null && path.size() > 1) {
-            if (path.size() > 3) {
+            if (path.size() == 3) {
+                currentPath = path.subList(2, path.size());
+            } else if (path.size() > 3) {
                 currentPath = path.subList(3, path.size());
             } else {
                 currentPath = path.subList(1, path.size());
@@ -144,12 +137,12 @@ public class Player {
         currentDirection = direction;
     }
 
-    public void setWalking(boolean walking) {
-        isWalking = walking;
-    }
-
     public boolean isWalking() {
         return isWalking;
+    }
+
+    public void setWalking(boolean walking) {
+        isWalking = walking;
     }
 
     public void updateDirection() {
@@ -203,9 +196,6 @@ public class Player {
         }
     }
 
-
-
-
     /**
      * Updates the player's position and state.
      *
@@ -238,9 +228,11 @@ public class Player {
         Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         float yOffset = Tile.TILE_SIZE / 2f;
-        float posX = position.x;
+        float xOffset = 18f;
+        float posX = position.x + xOffset;
         float posY = position.y + yOffset;
-        batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 2, currentFrame.getRegionHeight() / 2, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), flipCurrentFrame ? -1 : 1, 1, 0);
+        float scaleFactor = 1.25f;
+        batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 3, currentFrame.getRegionHeight() / 3, currentFrame.getRegionWidth() / scaleFactor, currentFrame.getRegionHeight() / scaleFactor, flipCurrentFrame ? -1 : 1, 1, 0);
     }
 
     /**
@@ -263,15 +255,21 @@ public class Player {
      * @return The position of the player.
      */
     public Vector2 getPosition() {
+        return calculatePositionOffset();
+    }
+
+    private Vector2 calculatePositionOffset() {
         Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-        float yOffset = Tile.TILE_SIZE / 2f;  // Y Offset
+        float yOffset = Tile.TILE_SIZE / 2f;
+        float xOffset = 18f;
+        float scaleFactor = 1.25f;
 
-        float originX = currentFrame.getRegionWidth() / 2f;
-        float originY = currentFrame.getRegionHeight() / 2f;
+        float originX = (currentFrame.getRegionWidth() / scaleFactor) / 2f;
+        float originY = (currentFrame.getRegionHeight() / scaleFactor) / 2f;
 
-        float posX = position.x - originX + (Tile.TILE_SIZE - currentFrame.getRegionWidth());
-        float posY = position.y - originY + (Tile.TILE_SIZE - currentFrame.getRegionHeight()) + yOffset;  // Apply the Y offset here
+        float posX = position.x - originX + (Tile.TILE_SIZE - (currentFrame.getRegionWidth() / scaleFactor)) + xOffset;
+        float posY = position.y - originY + (Tile.TILE_SIZE - (currentFrame.getRegionHeight() / scaleFactor)) + yOffset;
 
         return new Vector2(posX, posY);
     }
@@ -393,5 +391,9 @@ public class Player {
                 throw new IllegalStateException("Invalid direction: " + currentDirection);
         }
         return currentAnimation;
+    }
+
+    private enum Direction {
+        NW, S, SE, SW, W
     }
 }
