@@ -156,6 +156,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                             }
                         }
                     }
+
                 }
 
                 Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
@@ -164,8 +165,8 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                 if (enemy.containsPoint(touchPosition)) {
                     enemy.onClick();
                     player.targetEnemy(enemy, tileMap, pathCalculator);
-
                 } else {
+                    System.out.println("stop following");
                     player.stopFollowing();
                 }
             }

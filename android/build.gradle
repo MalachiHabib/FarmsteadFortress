@@ -31,6 +31,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        renderScript true
+        aidl true
+    }
 }
 
 
@@ -63,6 +67,10 @@ task copyAndroidNatives {
 
 tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") }.configureEach { packageTask ->
     packageTask.dependsOn 'copyAndroidNatives'
+}
+
+android {
+    namespace 'com.gamegroup.farmsteadfortress'
 }
 
 task run(type: Exec) {

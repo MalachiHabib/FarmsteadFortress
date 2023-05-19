@@ -68,7 +68,7 @@ public class Enemy {
     }
 
     public void die() {
-
+        System.out.println("died");
     }
 
     public Vector2 getPosition() {
