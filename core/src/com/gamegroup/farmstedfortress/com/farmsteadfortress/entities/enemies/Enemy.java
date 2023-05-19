@@ -1,4 +1,4 @@
-package com.farmsteadfortress.entities;
+package com.farmsteadfortress.entities.enemies;
 
 import static com.farmsteadfortress.utils.Helpers.gridToWorldPosition;
 
@@ -10,28 +10,27 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
-import com.farmsteadfortress.utils.Helpers;
-
 
 import java.util.List;
 
 /**
- * Represents an enemy entity in the game.
+ * Represents a generic enemy entity in the game.
  */
-public class Enemy {
-    private Animation<TextureRegion> walkingAnimation;
-    private float stateTime;
-    private Vector2 direction;
-    private Vector2 position;
-    private List<int[]> currentPath;
-    private int currentPathIndex;
-    private float speed;
-    private boolean outline;
-    private Rectangle boundingBox;
-    private int health;
-    private int reward = 10;
+public abstract class Enemy {
+    protected Animation<TextureRegion> walkingAnimation;
+    protected float stateTime;
+    protected Vector2 direction;
+    protected Vector2 position;
+    protected List<int[]> currentPath;
+    protected int currentPathIndex;
+    protected float speed;
+    protected boolean outline;
+    protected Rectangle boundingBox;
+    protected int health;
+    protected int reward;
 
     /**
      * Constructs an enemy entity.
@@ -39,6 +38,7 @@ public class Enemy {
      * @param atlas          the texture atlas containing the walking animation frames
      * @param animationSpeed the speed of the walking animation
      * @param speed          the movement speed of the enemy
+     * @param health         the enemy's health
      */
     public Enemy(TextureAtlas atlas, float animationSpeed, float speed, int health) {
         this.walkingAnimation = new Animation<TextureRegion>(animationSpeed, atlas.getRegions());
@@ -53,24 +53,32 @@ public class Enemy {
         this.health = health;
     }
 
+    /**
+     * Abstract method for the enemy being attacked, to be implemented by subclasses.
+     *
+     * @param player the player attacking the enemy
+     */
+    public abstract void attacked(Player player);
+
+    /**
+     * Toggles the enemy's outline status when clicked.
+     */
     public void onClick() {
         outline = !outline;
     }
 
-    public void attacked(Player player) {
-        System.out.println("attacked");
-        health -= player.getAttackDamage();
-
-        if (health <= 0) {
-            player.addMoney(reward);
-            die();
-        }
-    }
-
+    /**
+     * Describes the enemy's death.
+     */
     public void die() {
         System.out.println("died");
     }
 
+    /**
+     * Retrieves the enemy's position.
+     *
+     * @return the enemy's position as a Vector2
+     */
     public Vector2 getPosition() {
         TextureRegion currentFrame = walkingAnimation.getKeyFrame(stateTime, true);
         float originX = currentFrame.getRegionWidth() / 2f;
@@ -83,6 +91,13 @@ public class Enemy {
         return new Vector2(posX, posY);
     }
 
+
+    /**
+     * Checks if the enemy contains the specified point.
+     *
+     * @param point the point to check
+     * @return true if the enemy contains the point, false otherwise
+     */
     public boolean containsPoint(Vector2 point) {
         return boundingBox.contains(point);
     }
@@ -115,7 +130,6 @@ public class Enemy {
             }
         }
     }
-
 
     /**
      * Sets the path for the enemy to follow.
