@@ -128,56 +128,69 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (Helpers.uiContains(uiStages, screenX, screenY)) {
+        if (isTouchWithinUI(screenX, screenY) || isSecondFingerTouched()) {
             return false;
-        } else {
-            if (Gdx.input.isTouched(1)) {
-                return false;
-            }
+        }
 
-            if (!isPanning && !isZooming) {
-                playerTile = tileMap.getTileAt(player.getPosition());
-                if (playerTile != null) {
-                    Tile clickedTile = getTileAtPosition(tileMap, camera, screenX, screenY);
-                    if (clickedTile != null && clickedTile.isIntractable()) {
-                        if (player.hasReachedTarget() || targetTile == null || !targetTile.equals(clickedTile)) {
-                            targetTile = clickedTile;
-                            int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 3, (int) playerTile.tileMapPos.y + 2};
-                            int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
-                            pathCalculator.clearTerrainWeights();
-                            pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
-                            pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
-                            updateHoverEffect(screenX, screenY);
+        if (!isPanning && !isZooming) {
+            handlePlayerActions(screenX, screenY);
+            handleEnemyActions(screenX, screenY);
+        }
 
-                            if (pathResult.isSuccess()) {
-                                player.setPath(pathResult.getPath());
-                                player.setWalking(true);
-                                Item selectedItem = hotbar.getSelectedSlotItem();
-                                if (selectedItem != null && selectedItem instanceof Seed && player.getInventory().contains(selectedItem)) {
-                                    player.getInventory().removeItem(selectedItem);
-                                    hotbar.updateHotbar();
-                                    player.setPlantToBePlanted(((Seed) selectedItem).getPlantType());
-                                }
-                            }
+        return true;
+    }
+
+    private boolean isTouchWithinUI(int screenX, int screenY) {
+        return Helpers.uiContains(uiStages, screenX, screenY);
+    }
+
+    private boolean isSecondFingerTouched() {
+        return Gdx.input.isTouched(1);
+    }
+
+    private void handlePlayerActions(int screenX, int screenY) {
+        playerTile = tileMap.getTileAt(player.getPosition());
+
+        if (playerTile != null) {
+            Tile clickedTile = getTileAtPosition(tileMap, camera, screenX, screenY);
+
+            if (clickedTile != null && clickedTile.isIntractable()) {
+                if (player.hasReachedTarget() || targetTile != null) {
+                    targetTile = clickedTile;
+                    int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 3, (int) playerTile.tileMapPos.y + 2};
+                    int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
+                    pathCalculator.clearTerrainWeights();
+                    pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
+                    pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
+                    updateHoverEffect(screenX, screenY);
+
+                    if (pathResult.isSuccess()) {
+                        player.setPath(pathResult.getPath());
+                        player.setWalking(true);
+                        Item selectedItem = hotbar.getSelectedSlotItem();
+
+                        if (selectedItem instanceof Seed && player.getInventory().contains(selectedItem)) {
+                            player.getInventory().removeItem(selectedItem);
+                            hotbar.updateHotbar();
+                            player.setPlantToBePlanted(((Seed) selectedItem).getPlantType());
                         }
                     }
-
-                }
-
-                Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
-                Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
-
-                for (Enemy enemy : enemies) {
-                    if (enemy.containsPoint(touchPosition)) {
-                        enemy.onClick();
-                        player.targetEnemy(enemy, tileMap, pathCalculator);
-                    } else {
-                        System.out.println("stop following");
-                        player.stopFollowing();
-                    }
                 }
             }
-            return true;
+        }
+    }
+
+    private void handleEnemyActions(int screenX, int screenY) {
+        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
+        Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
+
+        for (Enemy enemy : enemies) {
+            if (enemy.containsPoint(touchPosition)) {
+                enemy.onClick();
+                player.targetEnemy(enemy, tileMap, pathCalculator);
+            } else {
+                player.stopFollowing();
+            }
         }
     }
 

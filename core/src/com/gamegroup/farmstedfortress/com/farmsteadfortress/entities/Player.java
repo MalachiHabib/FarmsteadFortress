@@ -112,8 +112,10 @@ public class Player {
 
         if (path.size() > 3) {
             startPathIndex = 3;
-        } else if (path.size() > 1) {
+        } else if (path.size() > 2) {
             startPathIndex = 2;
+        } else if (path.size() > 1) {
+            startPathIndex = 1;
         } else {
             startPathIndex = 0;
         }
