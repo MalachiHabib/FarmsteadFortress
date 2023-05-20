@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.render.Tile;
 
@@ -51,9 +52,10 @@ public class FernPlant extends Plant {
         batch.draw(currentTexture, this.position.x, this.position.y + 10f + Tile.TILE_SIZE / 2f);
     }
 
-    public int harvest() {
-        System.out.println("harvest");
+    public int harvest(Player player) {
         if (currentStage == GrowthStage.ADULT) {
+            System.out.println(player.getMoney());
+            player.addMoney(1);
             currentStage = GrowthStage.SEEDLING;
             growthTimer = 0;
             return reward;

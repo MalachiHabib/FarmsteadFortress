@@ -39,7 +39,6 @@ public class GameScreen extends ScreenAdapter {
     private MoneyDisplay moneyDisplay;
 
     public GameScreen(SpriteBatch batch) {
-
         this.batch = batch;
         camera = new OrthographicCamera(1920, 1080);
         camera.zoom = 1.5f;
@@ -58,7 +57,7 @@ public class GameScreen extends ScreenAdapter {
         uiStages = new ArrayList<>();
         hotbar = new Hotbar(player.getInventory());
         shop = new Shop(hotbar, player);
-        moneyDisplay = new MoneyDisplay(player);
+        moneyDisplay = new MoneyDisplay();
 
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
@@ -78,6 +77,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        moneyDisplay.update(player);
         clearScreen();
         updateCamera();
         inputHandler.update();

@@ -157,8 +157,7 @@ public abstract class Enemy {
      * @return the rotation angle in degrees
      */
     private float getRotationAngle() {
-        float angle = direction.angleDeg();
-        return angle;
+        return direction.angleDeg();
     }
 
     /**
