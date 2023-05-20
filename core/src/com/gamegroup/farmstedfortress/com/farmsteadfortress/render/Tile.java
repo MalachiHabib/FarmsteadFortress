@@ -144,7 +144,7 @@ public class Tile {
 
         float xLimit = Math.abs(relY - halfHeight) / halfHeight * halfWidth;
 
-        //Consider the tile to contain the point if it's within some small threshold of the tile's center
+
         return relY >= halfHeight - 5f && relY < TILE_SIZE + 5f && relX >= halfWidth - xLimit - 5f && relX < halfWidth + xLimit + 5f;
     }
 

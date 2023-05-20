@@ -22,10 +22,7 @@ import java.util.List;
  * Represents a player entity in the game.
  */
 public class Player {
-    private enum Direction {
-        N, S
-    }
-
+    Animation<TextureRegion> currentAnimation;
     private Animation<TextureRegion> idleAnimationN;
     private Animation<TextureRegion> idleAnimationS;
 
@@ -36,8 +33,6 @@ public class Player {
     private Animation<TextureRegion> attackAnimationS;
 
     private Animation<TextureRegion> dieAnimation;
-
-    Animation<TextureRegion> currentAnimation;
     private boolean flipCurrentFrame;
     private boolean isAttacking = false;
     private boolean isWalking;
@@ -52,14 +47,12 @@ public class Player {
     private Inventory inventory;
     private Plant.PlantType plantToBePlanted;
     private Enemy targetedEnemy = null;
-
     private int money = 0;
     private float attackRange = 500f;
     private int attackDamage = 5;
     private float timeSinceLastAttack = 0f;
     private float timeBetweenAttacks = 1f;
     private Direction currentDirection = Direction.S;
-
     public Player(float animationSpeed, float speed, Vector2 spawnPosition, TileMap map) {
         TextureAtlas idleAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_nw.atlas"));
         TextureAtlas idleAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_s.atlas"));
@@ -115,27 +108,29 @@ public class Player {
     public void setPath(List<int[]> path) {
         isNewPathSet = true;
         currentPathIndex = 0;
-        if (path != null && path.size() > 1) {
-            if (path.size() > 3) {
-                currentPath = path.subList(3, path.size());
-            } else {
-                currentPath = path.subList(1, path.size());
-            }
+        int startPathIndex;
+
+        if (path.size() > 3) {
+            startPathIndex = 3;
+        } else if (path.size() > 1) {
+            startPathIndex = 2;
         } else {
-            currentPath = path;
+            startPathIndex = 0;
         }
+
+        currentPath = path.subList(startPathIndex, path.size());
     }
 
     public void setDirection(Direction direction) {
         currentDirection = direction;
     }
 
-    public void setWalking(boolean walking) {
-        isWalking = walking;
-    }
-
     public boolean isWalking() {
         return isWalking;
+    }
+
+    public void setWalking(boolean walking) {
+        isWalking = walking;
     }
 
     public void updateDirection() {
@@ -357,5 +352,9 @@ public class Player {
             }
         }
         return currentAnimation;
+    }
+
+    private enum Direction {
+        N, S
     }
 }

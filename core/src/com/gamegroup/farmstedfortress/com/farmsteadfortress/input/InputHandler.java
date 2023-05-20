@@ -142,7 +142,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                     if (clickedTile != null && clickedTile.isIntractable()) {
                         if (player.hasReachedTarget() || targetTile == null || !targetTile.equals(clickedTile)) {
                             targetTile = clickedTile;
-                            int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 2, (int) playerTile.tileMapPos.y};
+                            int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 3, (int) playerTile.tileMapPos.y + 2};
                             int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
                             pathCalculator.clearTerrainWeights();
                             pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
