@@ -15,6 +15,7 @@ import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Represents a generic enemy entity in the game.
@@ -112,7 +113,6 @@ public abstract class Enemy {
         if (currentPath == null) {
             setPath(map);
         }
-
         boundingBox.set(position.x, position.y, walkingAnimation.getKeyFrame(stateTime).getRegionWidth(), walkingAnimation.getKeyFrame(stateTime).getRegionHeight());
         if (currentPath != null && !currentPath.isEmpty()) {
             if (currentPathIndex < currentPath.size()) {
@@ -137,8 +137,10 @@ public abstract class Enemy {
      * @param map the tile map
      */
     public void setPath(TileMap map) {
-        if (!map.getEnemyPaths().isEmpty()) {
-            currentPath = map.getEnemyPaths().get(0);
+        List<List<int[]>> paths = map.getEnemyPaths();
+        if (!paths.isEmpty()) {
+            Random rand = new Random();
+            currentPath = paths.get(rand.nextInt(paths.size()));
             if (currentPath != null && !currentPath.isEmpty()) {
                 int[] firstCoordinate = currentPath.get(0);
                 int firstRow = firstCoordinate[0];

@@ -15,8 +15,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.entities.enemies.Enemy;
+import com.farmsteadfortress.entities.plants.FernPlant;
 import com.farmsteadfortress.entities.plants.Plant;
 import com.farmsteadfortress.entities.plants.PlantFactory;
 import com.farmsteadfortress.items.Item;
@@ -29,6 +30,7 @@ import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.utils.Helpers;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class InputHandler extends InputAdapter implements GestureDetector.GestureListener, InputProcessor {
@@ -36,7 +38,10 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private OrthographicCamera camera;
     private Texture hoverTexture;
     private Player player;
-    private Enemy enemy;
+
+    private List<Enemy> enemies;
+    private Enemy selectedEnemy;
+
     private PathCalculator pathCalculator;
     private PathResult pathResult;
     private Tile lastHoveredTile;
@@ -49,12 +54,13 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private float zoomSpeed = 0.1f;
     private Tile playerTile;
 
-    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, Enemy enemy, InputMultiplexer inputMultiplexer, Hotbar hotbar) {
+    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, List<Enemy> enemies, InputMultiplexer inputMultiplexer, Hotbar hotbar) {
         hoverTexture = new Texture("tiles/highlight.png");
         this.tileMap = tileMap;
         this.camera = camera;
         this.player = player;
-        this.enemy = enemy;
+        this.enemies = enemies;
+        this.selectedEnemy = null;
         this.pathCalculator = new PathCalculator();
         this.hotbar = hotbar;
         inputMultiplexer.addProcessor(this);
@@ -151,7 +157,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                                     player.getInventory().removeItem(selectedItem);
                                     hotbar.updateHotbar();
                                     player.setPlantToBePlanted(((Seed) selectedItem).getPlantType());
-                                    System.out.println(player.getPlantToBePlanted());
                                 }
                             }
                         }
@@ -162,12 +167,14 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                 Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
                 Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
 
-                if (enemy.containsPoint(touchPosition)) {
-                    enemy.onClick();
-                    player.targetEnemy(enemy, tileMap, pathCalculator);
-                } else {
-                    System.out.println("stop following");
-                    player.stopFollowing();
+                for (Enemy enemy : enemies) {
+                    if (enemy.containsPoint(touchPosition)) {
+                        enemy.onClick();
+                        player.targetEnemy(enemy, tileMap, pathCalculator);
+                    } else {
+                        System.out.println("stop following");
+                        player.stopFollowing();
+                    }
                 }
             }
             return true;
@@ -183,38 +190,61 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     }
 
     public void update() {
-        if (player.hasReachedTarget() && targetTile != null
-                && pathResult.isSuccess()) {
-            targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
-            if (player.getPlantToBePlanted() != null) {
-                Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile);
-                targetTile.setPlant(plant);
-                player.setPlantToBePlanted(null);
+        boolean hasReachedTarget = targetTile != null && player.hasReachedTarget() && pathResult.isSuccess();
+        boolean hasPlantToPlant = player.getPlantToBePlanted() != null;
+        boolean hasFern = targetTile != null && targetTile.getPlant() instanceof FernPlant;
+
+        if (hasReachedTarget) {
+            if (hasFern) {
+                ((FernPlant) targetTile.getPlant()).harvest();
+            } else {
+                targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
+
+                if (hasPlantToPlant) {
+                    Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile);
+                    targetTile.setPlant(plant);
+                    player.setPlantToBePlanted(null);
+                }
             }
         }
     }
 
+
     private void updateHoverEffect(int screenX, int screenY) {
         Tile currentTile = getTileAtPosition(tileMap, camera, screenX, screenY);
+
         if (currentTile != null) {
             if (currentTile.isIntractable()) {
                 if (currentTile != lastHoveredTile) {
                     if (lastHoveredTile != null) {
                         lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
+                        if (lastHoveredTile.getPlant() != null) {
+                            lastHoveredTile.getPlant().setHighLight(false);
+                        }
+                    }
+
+                    currentTile.setHoverTexture(hoverTexture);
+                    if (currentTile.getPlant() != null) {
+                        currentTile.getPlant().setHighLight(true);
                     }
 
                     lastHoveredTile = currentTile;
-                    currentTile.setHoverTexture(hoverTexture);
                 }
             } else {
                 if (lastHoveredTile != null) {
                     lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
+                    if (lastHoveredTile.getPlant() != null) {
+                        lastHoveredTile.getPlant().setHighLight(false);
+                    }
                     lastHoveredTile = null;
                 }
             }
         } else {
             if (lastHoveredTile != null) {
                 lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
+                if (lastHoveredTile.getPlant() != null) {
+                    lastHoveredTile.getPlant().setHighLight(false);
+                }
                 lastHoveredTile = null;
             }
         }

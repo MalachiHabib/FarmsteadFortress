@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.farmsteadfortress.entities.enemies.Enemy;
-import com.farmsteadfortress.entities.enemies.EnemyFactory;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.PlayerFactory;
+import com.farmsteadfortress.entities.enemies.Enemy;
+import com.farmsteadfortress.entities.enemies.EnemyFactory;
 import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
@@ -22,12 +22,13 @@ import com.farmsteadfortress.ui.MoneyDisplay;
 import com.farmsteadfortress.ui.Shop;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private TileMap map;
-    private Enemy enemy;
+    private List<Enemy> enemies;
     private Player player;
     private InputHandler inputHandler;
     private ShapeRenderer shapeRenderer;
@@ -44,8 +45,13 @@ public class GameScreen extends ScreenAdapter {
         camera.zoom = 1.5f;
         map = new TileMap();
         calculateCameraPosition();
-        enemy = EnemyFactory.createEnemy(BASIC_ENEMY);
-        enemy.setPath(map);
+
+        this.enemies = new ArrayList<>();
+        for (int i = 0; i < 1; i++) {
+            Enemy enemy = EnemyFactory.createEnemy(BASIC_ENEMY);
+            enemy.setPath(map);
+            this.enemies.add(enemy);
+        }
 
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
 
@@ -56,7 +62,7 @@ public class GameScreen extends ScreenAdapter {
 
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
-        inputHandler = new InputHandler(map, camera, player, enemy, inputMultiplexer, hotbar);
+        inputHandler = new InputHandler(map, camera, player, enemies, inputMultiplexer, hotbar);
 
         uiStages.add(hotbar.getStage());
         uiStages.add(shop.getStage());
@@ -76,15 +82,23 @@ public class GameScreen extends ScreenAdapter {
         updateCamera();
         inputHandler.update();
         inputHandler.handleCameraInput();
-        enemy.update(delta, map);
+
+        for (Enemy enemy : enemies) {
+            enemy.update(delta, map);
+        }
+
         player.update(delta);
-        updatePlants(delta);
+        updatePlants(delta, enemies);
         batch.setProjectionMatrix(camera.combined);
         batch.enableBlending();
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         batch.begin();
         map.render(batch);
-        enemy.render(batch);
+
+        for (Enemy enemy : enemies) {
+            enemy.render(batch);
+        }
+
         player.render(batch);
         batch.end();
 
@@ -97,9 +111,9 @@ public class GameScreen extends ScreenAdapter {
     }
 
 
-    private void updatePlants(float delta) {
+    private void updatePlants(float delta, List<Enemy> enemies) {
         for (Tile tile : map.getBaseTiles()) {
-            tile.update(delta);
+            tile.update(delta, enemies);
         }
     }
 

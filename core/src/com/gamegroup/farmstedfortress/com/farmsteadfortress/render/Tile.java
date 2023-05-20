@@ -3,7 +3,10 @@ package com.farmsteadfortress.render;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.entities.plants.Plant;
+
+import java.util.List;
 
 /**
  * Represents a tile in the game world.
@@ -44,7 +47,6 @@ public class Tile {
     private TileType tileType;
     private Plant plant;
 
-
     public Vector2 getTileMapPos() {
         return tileMapPos;
     }
@@ -84,9 +86,9 @@ public class Tile {
         }
     }
 
-    public void update(float delta) {
+    public void update(float delta, List<Enemy> enemies) {
         if (plant != null) {
-            plant.update(delta);
+            plant.update(delta, enemies);
         }
     }
 

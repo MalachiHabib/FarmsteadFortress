@@ -11,6 +11,8 @@ import static com.farmsteadfortress.utils.Helpers.gridToWorldPosition;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.farmsteadfortress.entities.plants.Plant;
+import com.farmsteadfortress.entities.plants.PlantFactory;
 import com.farmsteadfortress.path.PathCalculator;
 import com.farmsteadfortress.path.PathResult;
 
@@ -478,18 +480,12 @@ public class TileMap {
      */
     private void fillMapWithObjects() {
         Random random = new Random();
-
         for (Tile baseTile : baseTiles) {
-            if (baseTile.getTileType().equals(Tile.TileType.CROP_LAND)) {
-                float x = baseTile.getPosition().x;
-                float y = baseTile.getPosition().y;
-                Vector2 tileMapPos = baseTile.tileMapPos;
-
+            Plant plant = PlantFactory.createPlant(Plant.PlantType.FERN, baseTile);
+            if (baseTile.getTileType().equals(Tile.TileType.GRASS)) {
                 int randomNumber = random.nextInt(10);
-
-                // Centers the object on the middle of the tile
                 if (randomNumber < 1) {
-                    objectTiles.add(new Tile(objectTileTexture, tileMapPos, new Vector2(x, y + 115), Tile.TileType.OBJECT_TILE));
+                    baseTile.setPlant(plant);
                 }
             }
         }

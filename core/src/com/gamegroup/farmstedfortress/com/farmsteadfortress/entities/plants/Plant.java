@@ -1,10 +1,15 @@
 package com.farmsteadfortress.entities.plants;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.render.Tile;
+
+import java.util.List;
 
 public abstract class Plant {
     protected Texture texture;
@@ -16,9 +21,11 @@ public abstract class Plant {
     protected float attackRange;
     protected int cost;
     protected Tile tile;
-    protected ObjectMap<GrowthStage, Texture> textures;
+    protected ObjectMap<GrowthStage, TextureRegion> textures;
     protected GrowthStage currentStage;
     protected float growthTimer;
+    protected boolean isHighlighted = false;
+
     public Plant(float growTime, Vector2 position, int health, int damage, float attackSpeed, float attackRange, int cost, Tile tile) {
         this.growTime = growTime;
         this.position = position;
@@ -31,14 +38,22 @@ public abstract class Plant {
         this.textures = new ObjectMap<>();
         this.currentStage = GrowthStage.SEEDLING;
         this.growthTimer = 0;
-        initializeTextures();
     }
 
-    public void update(float delta) {
+    public void update(float delta, List<Enemy> enemies) {
         growthTimer += delta;
         if (growthTimer > growTime) {
             nextGrowthStage();
             growthTimer = 0;
+        }
+
+        if (currentStage == GrowthStage.ADULT) {
+            for (Enemy enemy : enemies) {
+                if (position.dst(enemy.getPosition()) <= attackRange) {
+                    attack(delta);
+                    break;
+                }
+            }
         }
     }
 
@@ -56,12 +71,21 @@ public abstract class Plant {
         }
     }
 
-    public void draw(SpriteBatch batch) {
-        Texture currentTexture = textures.get(currentStage);
-        batch.draw(currentTexture, this.position.x, this.position.y + 10f + Tile.TILE_SIZE / 2f);
+    public void setHighLight(boolean isHighlighted) {
+        this.isHighlighted = isHighlighted;
     }
 
-    protected abstract void initializeTextures();
+    public void draw(SpriteBatch batch) {
+        TextureRegion currentTexture = textures.get(currentStage);
+        if (isHighlighted) {
+            batch.setColor(Color.BLUE);
+        }
+        batch.draw(currentTexture, this.position.x, this.position.y + 10f + Tile.TILE_SIZE / 2f);
+        batch.setColor(Color.WHITE);
+    }
+
+
+    protected abstract void initialiseTextures();
 
     protected abstract void attack(float delta);
 
@@ -73,6 +97,7 @@ public abstract class Plant {
     }
 
     public enum PlantType {
-        TOMATO
+        TOMATO,
+        FERN
     }
 }
