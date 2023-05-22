@@ -17,6 +17,7 @@ import com.farmsteadfortress.entities.enemies.EnemyFactory;
 import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+import com.farmsteadfortress.ui.Health;
 import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.ui.MoneyDisplay;
 import com.farmsteadfortress.ui.Shop;
@@ -37,6 +38,7 @@ public class GameScreen extends ScreenAdapter {
     private Shop shop;
     private ArrayList<Stage> uiStages;
     private MoneyDisplay moneyDisplay;
+    private Health health;
 
     public GameScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -58,6 +60,7 @@ public class GameScreen extends ScreenAdapter {
         hotbar = new Hotbar(player.getInventory());
         shop = new Shop(hotbar, player);
         moneyDisplay = new MoneyDisplay();
+        health = new Health();
 
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
@@ -78,6 +81,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         moneyDisplay.update(player);
+        health.update(player);
         clearScreen();
         updateCamera();
         inputHandler.update();
@@ -108,6 +112,7 @@ public class GameScreen extends ScreenAdapter {
         hotbar.render();
         shop.render();
         moneyDisplay.render();
+        health.render();
     }
 
 
@@ -143,6 +148,7 @@ public class GameScreen extends ScreenAdapter {
         hotbar.dispose();
         shop.dispose();
         moneyDisplay.dispose();
+        health.dispose();
     }
 
     private void clearScreen() {
