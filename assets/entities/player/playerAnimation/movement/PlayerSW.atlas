@@ -1,0 +1,62 @@
+
+PlayerSW.png
+size: 1024, 256
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+SouthWest2
+  rotate: false
+  xy: 584, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+SouthWest3
+  rotate: false
+  xy: 2, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+SouthWest1
+  rotate: false
+  xy: 2, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+SouthWest5
+  rotate: false
+  xy: 390, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+SouthWest7
+  rotate: false
+  xy: 390, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+SouthWest6
+  rotate: false
+  xy: 778, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+SouthWest8
+  rotate: false
+  xy: 196, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+SouthWest4
+  rotate: false
+  xy: 196, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1

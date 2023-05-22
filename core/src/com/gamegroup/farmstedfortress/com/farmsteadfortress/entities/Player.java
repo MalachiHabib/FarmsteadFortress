@@ -23,15 +23,7 @@ import java.util.List;
  */
 public class Player {
     Animation<TextureRegion> currentAnimation;
-    private Animation<TextureRegion> idleAnimationN;
-    private Animation<TextureRegion> idleAnimationS;
-
-    private Animation<TextureRegion> walkAnimationN;
-    private Animation<TextureRegion> walkAnimationS;
-
-    private Animation<TextureRegion> attackAnimationN;
-    private Animation<TextureRegion> attackAnimationS;
-
+    private Animation<TextureRegion> idleAnimation, walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW, walkAnimationNE, walkAnimationNW, walkAnimationSW, walkAnimationSE;
     private Animation<TextureRegion> dieAnimation;
     private boolean flipCurrentFrame;
     private boolean isAttacking = false;
@@ -40,7 +32,6 @@ public class Player {
     private Vector2 position;
     private List<int[]> currentPath;
     private int currentPathIndex;
-    private boolean isNewPathSet = false;
     private Tile lastKnownEnemyTile = null;
     private float speed;
     private TileMap map;
@@ -54,27 +45,30 @@ public class Player {
     private float timeSinceLastAttack = 0f;
     private float timeBetweenAttacks = 1f;
     private Direction currentDirection = Direction.S;
+    private List<int[]> originalPath;
+
     public Player(float animationSpeed, float speed, Vector2 spawnPosition, TileMap map) {
-        TextureAtlas idleAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_nw.atlas"));
-        TextureAtlas idleAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/idle_s.atlas"));
 
-        idleAnimationN = new Animation<TextureRegion>(animationSpeed, idleAtlasNW.getRegions(), Animation.PlayMode.LOOP);
-        idleAnimationS = new Animation<TextureRegion>(animationSpeed, idleAtlasS.getRegions(), Animation.PlayMode.LOOP);
+        TextureAtlas idleAtlas = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/PlayerIdle.atlas"));
+        idleAnimation = new Animation<TextureRegion>(animationSpeed, idleAtlas.getRegions(), Animation.PlayMode.LOOP);
 
-        TextureAtlas dieAtlas = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/die/die.atlas"));
-        dieAnimation = new Animation<TextureRegion>(animationSpeed, dieAtlas.getRegions(), Animation.PlayMode.LOOP);
+        TextureAtlas walkAtlasN = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerN.atlas"));
+        TextureAtlas walkAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerS.atlas"));
+        TextureAtlas walkAtlasE = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerE.atlas"));
+        TextureAtlas walkAtlasW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerW.atlas"));
+        TextureAtlas walkAtlasNE = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerNE.atlas"));
+        TextureAtlas walkAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerNW.atlas"));
+        TextureAtlas walkAtlasSE = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerSE.atlas"));
+        TextureAtlas walkAtlasSW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/PlayerSW.atlas"));
 
-        TextureAtlas walkAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/go_nw.atlas"));
-        TextureAtlas walkAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/movement/go_s.atlas"));
-
-        walkAnimationN = new Animation<TextureRegion>(animationSpeed, walkAtlasNW.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationN = new Animation<TextureRegion>(animationSpeed, walkAtlasN.getRegions(), Animation.PlayMode.LOOP);
         walkAnimationS = new Animation<TextureRegion>(animationSpeed, walkAtlasS.getRegions(), Animation.PlayMode.LOOP);
-
-        TextureAtlas attackAtlasNW = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/attack/attack_nw.atlas"));
-        TextureAtlas attackAtlasS = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/attack/attack_s.atlas"));
-
-        attackAnimationN = new Animation<TextureRegion>(animationSpeed, attackAtlasNW.getRegions(), Animation.PlayMode.LOOP);
-        attackAnimationS = new Animation<TextureRegion>(animationSpeed, attackAtlasS.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationE = new Animation<TextureRegion>(animationSpeed, walkAtlasE.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationW = new Animation<TextureRegion>(animationSpeed, walkAtlasW.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationNE = new Animation<TextureRegion>(animationSpeed, walkAtlasNE.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationNW = new Animation<TextureRegion>(animationSpeed, walkAtlasNW.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationSE = new Animation<TextureRegion>(animationSpeed, walkAtlasSE.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationSW = new Animation<TextureRegion>(animationSpeed, walkAtlasSW.getRegions(), Animation.PlayMode.LOOP);
 
         this.stateTime = 0f;
         this.position = spawnPosition;
@@ -116,11 +110,12 @@ public class Player {
     }
 
     public void setPath(List<int[]> path) {
-        isNewPathSet = true;
         currentPathIndex = 0;
+        originalPath = path;
         int startPathIndex;
-
-        if (path.size() > 3) {
+        if (path.size() > 4) {
+            startPathIndex = 4;
+        } else if (path.size() > 3) {
             startPathIndex = 3;
         } else if (path.size() > 2) {
             startPathIndex = 2;
@@ -146,65 +141,58 @@ public class Player {
     }
 
     public void updateDirection() {
-        if (currentPath != null && currentPathIndex < currentPath.size()) {
-            int[] currentTile = currentPath.get(currentPathIndex);
-            int[] endTile = currentPath.get(currentPath.size() - 1);
+        if (originalPath != null && currentPathIndex < originalPath.size()) {
+            int[] currentTile = originalPath.get(currentPathIndex);
+            int[] endTile = originalPath.get(originalPath.size() - 1);
+
+            System.out.println("Current Tile: [" + currentTile[0] + ", " + currentTile[1] + "]");
+            System.out.println("End Tile: [" + endTile[0] + ", " + endTile[1] + "]");
 
             int dx = endTile[0] - currentTile[0];
             int dy = endTile[1] - currentTile[1];
 
             if (dx > 0) {
-                setDirection(dy > 0 ? Direction.N : Direction.S);
-                flipCurrentFrame = true;
+                if (dy > 0) {
+                    setDirection(Direction.NE);
+                    System.out.println("Direction: NE");
+                } else if (dy < 0) {
+                    setDirection(Direction.SE);
+                    System.out.println("Direction: SE");
+                } else {
+                    setDirection(Direction.E);
+                    System.out.println("Direction: E");
+                }
             } else if (dx < 0) {
-                setDirection(dy > 0 ? Direction.N : Direction.S);
-                flipCurrentFrame = false;
-            } else if (dy < 0) {
-                setDirection(Direction.S);
-                flipCurrentFrame = true;
-            } else if (dy > 0) {
-                setDirection(Direction.N);
-                flipCurrentFrame = false;
+                if (dy > 0) {
+                    setDirection(Direction.NW);
+                    System.out.println("Direction: NW");
+                } else if (dy < 0) {
+                    setDirection(Direction.SW);
+                    System.out.println("Direction: SW");
+                } else {
+                    setDirection(Direction.W);
+                    System.out.println("Direction: W");
+                }
             } else {
-                adjustDirectionBasedOnPosition(currentTile);
+                if (dy > 0) {
+                    setDirection(Direction.N);
+                    System.out.println("Direction: N");
+                } else if (dy < 0) {
+                    setDirection(Direction.S);
+                    System.out.println("Direction: S");
+                }
             }
-        }
-    }
-
-    private void adjustDirectionBasedOnPosition(int[] currentTile) {
-        Vector2 position = getPosition();
-        if (position.x > currentTile[0]) {
-            setDirection(Direction.S);
-            flipCurrentFrame = true;
-        } else if (position.x < currentTile[0]) {
-            setDirection(Direction.S);
-            flipCurrentFrame = false;
-        } else if (position.y > currentTile[1]) {
-            setDirection(Direction.N);
-            flipCurrentFrame = false;
-        } else if (position.y < currentTile[1]) {
-            setDirection(Direction.S);
-            flipCurrentFrame = true;
         }
     }
 
     public void update(float delta) {
         stateTime += delta;
-        if (isAttacking) {
-            if (attackAnimationN.isAnimationFinished(stateTime) || attackAnimationS.isAnimationFinished(stateTime)) {
-                setAttacking(false);
-                timeSinceLastAttack = 0f;
-            }
-        } else if (isWalking() && currentPath != null && !currentPath.isEmpty()) {
+        if (isWalking() && currentPath != null && !currentPath.isEmpty()) {
             int[] targetPoint = currentPath.get(currentPathIndex);
             Vector2 targetPosition = calculateTargetPosition(targetPoint);
             moveTowardsTarget(targetPosition, delta);
             checkTargetReached(targetPosition);
-
-            if (isNewPathSet) {
-                updateDirection();
-                isNewPathSet = false;
-            }
+            updateDirection();
         }
 
         timeSinceLastAttack += delta;
@@ -336,37 +324,41 @@ public class Player {
         targetedEnemy = null;
     }
 
-    private Animation<TextureRegion> getAttackAnimation() {
+    private Animation<TextureRegion> getCurrentAnimation() {
         switch (currentDirection) {
             case N:
-                return attackAnimationN;
+                currentAnimation = isWalking() ? walkAnimationN : idleAnimation;
+                break;
             case S:
-                return attackAnimationS;
+                currentAnimation = isWalking() ? walkAnimationS : idleAnimation;
+                break;
+            case E:
+                currentAnimation = isWalking() ? walkAnimationE : idleAnimation;
+                break;
+            case W:
+                currentAnimation = isWalking() ? walkAnimationW : idleAnimation;
+                break;
+            case NE:
+                currentAnimation = isWalking() ? walkAnimationNE : idleAnimation;
+                break;
+            case NW:
+                currentAnimation = isWalking() ? walkAnimationNW : idleAnimation;
+                break;
+            case SE:
+                currentAnimation = isWalking() ? walkAnimationSE : idleAnimation;
+                break;
+            case SW:
+                currentAnimation = isWalking() ? walkAnimationSW : idleAnimation;
+                break;
             default:
                 throw new IllegalStateException("Invalid direction: " + currentDirection);
-        }
-    }
-
-    private Animation<TextureRegion> getCurrentAnimation() {
-
-        if (isAttacking) {
-            currentAnimation = getAttackAnimation();
-        } else {
-            switch (currentDirection) {
-                case N:
-                    currentAnimation = isWalking() ? walkAnimationN : idleAnimationN;
-                    break;
-                case S:
-                    currentAnimation = isWalking() ? walkAnimationS : idleAnimationS;
-                    break;
-                default:
-                    throw new IllegalStateException("Invalid direction: " + currentDirection);
-            }
         }
         return currentAnimation;
     }
 
+
     private enum Direction {
-        N, S
+        N, S, E, W, NE, NW, SE, SW
+
     }
 }

@@ -1,0 +1,62 @@
+
+PlayerN.png
+size: 1024, 256
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+North1
+  rotate: false
+  xy: 196, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+North3
+  rotate: false
+  xy: 196, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+North2
+  rotate: false
+  xy: 778, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+North4
+  rotate: false
+  xy: 2, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+North8
+  rotate: false
+  xy: 2, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+North5
+  rotate: false
+  xy: 584, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+North7
+  rotate: false
+  xy: 584, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+North6
+  rotate: false
+  xy: 390, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1

@@ -37,7 +37,6 @@ public class TileMap {
     List<List<int[]>> successfulPaths;
     List<PathResult> pathResults;
     private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassTextureTwo, grassMushroomTexture, grassRocksTextureOne, grassRocksTextureTwo, enemySpawnPointTexture;
-    private Texture objectTileTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
 

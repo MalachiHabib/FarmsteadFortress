@@ -14,7 +14,7 @@ public class EnemyFactory {
     private static final String BASIC_ENEMY_TEXTURE_ATLAS_PATH = "entities/player/playerAtlas.atlas";
 
     public enum EnemyType {
-        BASIC_ENEMY,
+        BASIC_ENEMY, BOSS_ENEMY,
     }
 
     /**
@@ -34,7 +34,7 @@ public class EnemyFactory {
 
     /**
      * Creates a BasicEnemy instance.
-     *
+     *a
      * @return The created BasicEnemy instance.
      */
     private static BasicEnemy createBasicEnemy() {

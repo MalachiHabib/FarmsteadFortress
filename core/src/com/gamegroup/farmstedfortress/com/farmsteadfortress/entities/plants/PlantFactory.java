@@ -26,9 +26,10 @@ public class PlantFactory {
         int damage = 10;
         float attackSpeed = 1.0f;
         float attackRange = 250f;
+        float timeBetweenAttacks = 3f;
         int cost = 50;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
-        return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, cost, tile, tomatoAtlas);
+        return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, cost, tile, tomatoAtlas);
     }
 
     private static FernPlant createFernPlant(Tile tile) {

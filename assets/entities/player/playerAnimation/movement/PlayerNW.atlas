@@ -1,0 +1,62 @@
+
+PlayerNW.png
+size: 2048, 256
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+NorthWest1
+  rotate: false
+  xy: 2, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+NorthWest2
+  rotate: false
+  xy: 972, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+NorthWest3
+  rotate: false
+  xy: 390, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+NorthWest4
+  rotate: false
+  xy: 1360, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+NorthWest5
+  rotate: false
+  xy: 778, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+NorthWest6
+  rotate: false
+  xy: 196, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+NorthWest7
+  rotate: false
+  xy: 1166, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+NorthWest8
+  rotate: false
+  xy: 584, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1

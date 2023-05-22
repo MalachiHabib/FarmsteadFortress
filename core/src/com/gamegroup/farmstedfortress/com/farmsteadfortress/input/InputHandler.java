@@ -128,6 +128,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //issue is that it is touching wihtin the ui some reason.
         if (isTouchWithinUI(screenX, screenY) || isSecondFingerTouched()) {
             return false;
         }
@@ -149,6 +150,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     }
 
     private void handlePlayerActions(int screenX, int screenY) {
+        System.out.println("touch");
         playerTile = tileMap.getTileAt(player.getPosition());
 
         if (playerTile != null) {
@@ -157,7 +159,8 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             if (clickedTile != null && clickedTile.isIntractable()) {
                 if (player.hasReachedTarget() || targetTile != null) {
                     targetTile = clickedTile;
-                    int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 3, (int) playerTile.tileMapPos.y + 2};
+                    //TODO: Try to fix the direction of player.
+                    int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 1, (int) playerTile.tileMapPos.y + 2};
                     int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
                     pathCalculator.clearTerrainWeights();
                     pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);

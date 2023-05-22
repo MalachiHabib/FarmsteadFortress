@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.entities.enemies.Enemy;
-import com.farmsteadfortress.entities.enemies.EnemyFactory;
 import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
@@ -21,8 +20,11 @@ import com.farmsteadfortress.ui.Health;
 import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.ui.MoneyDisplay;
 import com.farmsteadfortress.ui.Shop;
+import com.farmsteadfortress.ui.SpawnWaveUI;
+import com.farmsteadfortress.waves.WaveController;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GameScreen extends ScreenAdapter {
@@ -38,6 +40,8 @@ public class GameScreen extends ScreenAdapter {
     private Shop shop;
     private ArrayList<Stage> uiStages;
     private MoneyDisplay moneyDisplay;
+    private WaveController waveController;
+    private SpawnWaveUI spawnWaveUI;
     private Health health;
 
     public GameScreen(SpriteBatch batch) {
@@ -48,28 +52,28 @@ public class GameScreen extends ScreenAdapter {
         calculateCameraPosition();
 
         this.enemies = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            Enemy enemy = EnemyFactory.createEnemy(BASIC_ENEMY);
-            enemy.setPath(map);
-            this.enemies.add(enemy);
-        }
-
+        waveController = new WaveController(enemies);
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
 
         uiStages = new ArrayList<>();
-        hotbar = new Hotbar(player.getInventory());
+        hotbar = new Hotbar(player.getInventory(), shop);
         shop = new Shop(hotbar, player);
+        hotbar = new Hotbar(player.getInventory(), shop);
         moneyDisplay = new MoneyDisplay();
         health = new Health();
 
+        spawnWaveUI = new SpawnWaveUI(waveController);
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
         inputHandler = new InputHandler(map, camera, player, enemies, inputMultiplexer, hotbar);
 
+        uiStages.add(spawnWaveUI.getStage());
         uiStages.add(hotbar.getStage());
         uiStages.add(shop.getStage());
         inputHandler.setUiStages(uiStages);
 
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(spawnWaveUI.getStage());
         inputMultiplexer.addProcessor(inputHandler);
         inputMultiplexer.addProcessor(hotbar.getStage());
         inputMultiplexer.addProcessor(shop.getStage());
@@ -111,8 +115,11 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.end();
         hotbar.render();
         shop.render();
+        hotbar.render();
         moneyDisplay.render();
         health.render();
+        spawnWaveUI.render();
+        spawnWaveUI.updateWaveNumber(waveController.getCurrentWave());
     }
 
 
@@ -148,6 +155,7 @@ public class GameScreen extends ScreenAdapter {
         hotbar.dispose();
         shop.dispose();
         moneyDisplay.dispose();
+        spawnWaveUI.getStage().dispose();
         health.dispose();
     }
 
