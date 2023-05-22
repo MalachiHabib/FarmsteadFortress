@@ -1,7 +1,5 @@
 package com.farmsteadfortress.screens;
 
-import static com.farmsteadfortress.entities.enemies.EnemyFactory.EnemyType.BASIC_ENEMY;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
@@ -10,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.crashinvaders.vfx.effects.VignettingEffect;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.entities.enemies.Enemy;
@@ -24,7 +23,6 @@ import com.farmsteadfortress.ui.SpawnWaveUI;
 import com.farmsteadfortress.waves.WaveController;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class GameScreen extends ScreenAdapter {
@@ -43,6 +41,7 @@ public class GameScreen extends ScreenAdapter {
     private WaveController waveController;
     private SpawnWaveUI spawnWaveUI;
     private Health health;
+    private VignettingEffect vignettingEffect;
 
     public GameScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -80,10 +79,15 @@ public class GameScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         shapeRenderer.setAutoShapeType(true);
+
+        // Initialize the vignetting effect
+        vignettingEffect = new VignettingEffect(false);
+        vignettingEffect.setIntensity(0.5f);
     }
 
     @Override
     public void render(float delta) {
+        hotbar.updateHotbar();
         moneyDisplay.update(player);
         health.update(player);
         clearScreen();
@@ -113,6 +117,8 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.end();
+
+        // Render the UI elements
         hotbar.render();
         shop.render();
         hotbar.render();

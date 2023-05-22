@@ -128,7 +128,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //issue is that it is touching wihtin the ui some reason.
+        //issue is that it is touching within the ui some reason.
         if (isTouchWithinUI(screenX, screenY) || isSecondFingerTouched()) {
             return false;
         }

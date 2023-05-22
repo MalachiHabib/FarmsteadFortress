@@ -22,32 +22,27 @@ import com.farmsteadfortress.items.seeds.TomatoSeed;
 
 public class Shop {
     Player player;
-    private Stage stage;
-    private Skin skin;
-    private Table table;
-    private Array<ImageButton> buttons;
-    private Label shopLabel;
+    private final Stage stage;
+    private final Skin skin;
+    private final Array<ImageButton> buttons;
     private Image backgroundImage;
-    private ScrollPane scrollPane;
-    private Table buttonTable;
-    private BitmapFont font;
-    private Inventory inventory;
-    private Hotbar hotbar;
+    private final Inventory inventory;
+    private final Hotbar hotbar;
     private boolean isOpen;
 
 
     public Shop(Hotbar hotbar, Player player) {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
-        table = new Table();
+        Table table = new Table();
         buttons = new Array<>();
-        font = new BitmapFont();
+        BitmapFont font = new BitmapFont();
         this.inventory = player.getInventory();
         this.player = player;
         this.hotbar = hotbar;
         this.isOpen = false;
-        createShopLabel();
         createShop();
+        createShopLabel();
     }
 
     public boolean isOpen() {
@@ -72,18 +67,17 @@ public class Shop {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = bmfont;
         labelStyle.fontColor = Color.WHITE;
-        shopLabel = new Label("SHOP", labelStyle);
-        shopLabel.setFontScale(3);
+        Label shopLabel = new Label("SHOP", labelStyle);
+        shopLabel.setFontScale(2f);
         shopLabel.pack();
-
-        shopLabel.setPosition(Gdx.graphics.getWidth() / 2 - shopLabel.getWidth() / 2, 3 * Gdx.graphics.getHeight() / 4);
+        shopLabel.setPosition(Gdx.graphics.getWidth() * 0.85f,  Gdx.graphics.getHeight() * 0.825f);
         stage.addActor(shopLabel);
     }
 
     private void createShop() {
-        buttonTable = new Table();
+        Table buttonTable = new Table();
         buttonTable.right().bottom();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 10; i++) {
             final TomatoSeed seed = new TomatoSeed();
             ImageButton button = new ImageButton(new TextureRegionDrawable(seed.getTexture()));
             button.addListener(new ClickListener() {
@@ -93,7 +87,6 @@ public class Shop {
                         player.addMoney(-5);
                         inventory.addItem(seed);
                         inventory.printInventory();
-                        hotbar.updateHotbar();
                     }
                 }
             });
@@ -103,15 +96,15 @@ public class Shop {
         }
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-        scrollPane = new ScrollPane(buttonTable, scrollPaneStyle);
-        scrollPane.setSize(Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight());
+        ScrollPane scrollPane = new ScrollPane(buttonTable, scrollPaneStyle);
+        scrollPane.setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight());
 
-        scrollPane.setPosition(Gdx.graphics.getWidth() - scrollPane.getWidth(), 3 * Gdx.graphics.getHeight() / 4 - scrollPane.getHeight() / 2);
+        scrollPane.setPosition(Gdx.graphics.getWidth() - scrollPane.getWidth(), 2.5f * Gdx.graphics.getHeight() / 4 - scrollPane.getHeight() / 2);
 
         Image shopBackground = new Image(new Texture(Gdx.files.internal("gui/shop-right-background.png")));
         shopBackground.setSize(scrollPane.getWidth() / 1.8f , Gdx.graphics.getHeight());
         shopBackground.setPosition(Gdx.graphics.getWidth() - shopBackground.getWidth(), 0);
-        shopBackground.setColor(1f,1f,1f,0.5f);
+        shopBackground.setColor(1f,1f,1f,0.7f);
 
         stage.addActor(shopBackground);
         stage.addActor(scrollPane);
