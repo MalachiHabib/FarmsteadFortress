@@ -5,11 +5,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.render.Tile;
 
 public class TomatoPlant extends Plant {
-
     private TextureAtlas atlas;
-    public TomatoPlant(float growTime, Vector2 position, int health, int damage, float attackSpeed, float attackRange, int cost, Tile tile, TextureAtlas atlas) {
+    private float timeBetweenAttacks;
+    private float timeSinceLastAttack = 0;
+
+    public TomatoPlant(float growTime, Vector2 position, int health, int damage, float attackSpeed,
+                       float attackRange, float timeBetweenAttacks, int cost, Tile tile, TextureAtlas atlas) {
         super(growTime, position, health, damage, attackSpeed, attackRange, cost, tile);
         this.atlas = atlas;
+        this.timeBetweenAttacks = timeBetweenAttacks;
         initialiseTextures();
     }
 
@@ -23,6 +27,11 @@ public class TomatoPlant extends Plant {
 
     @Override
     protected void attack(float delta) {
-        System.out.println("Shooting a tomato!");
+        timeSinceLastAttack += delta;
+
+        if (timeSinceLastAttack >= timeBetweenAttacks) {
+            System.out.println("Shooting a tomato!");
+            timeSinceLastAttack = 0;
+        }
     }
 }

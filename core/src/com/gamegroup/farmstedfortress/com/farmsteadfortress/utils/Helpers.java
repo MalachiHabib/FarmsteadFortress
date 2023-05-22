@@ -7,8 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.farmsteadfortress.inventory.Inventory;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
+import com.farmsteadfortress.ui.Hotbar;
 
 import java.util.List;
 
@@ -78,5 +82,46 @@ public class Helpers {
             }
         }
         return false;
+    }
+
+    public static void handleButtonClick(final ImageButton button, final Stack stack, final int slotIndex, Stage stage, Inventory inventory, Hotbar hotbar, boolean isCircleButton) {
+        ImageButton currentHighlightedButton = isCircleButton ? hotbar.highlightedCircleButton : hotbar.highlightedButton;
+        if (currentHighlightedButton != null) {
+            if (currentHighlightedButton == button) {
+                ((Stack) currentHighlightedButton.getParent()).getChildren().get(1).setVisible(false);
+                if (isCircleButton) {
+                    hotbar.highlightedCircleButton = null;
+                } else {
+                    hotbar.highlightedButton = null;
+                }
+                hotbar.selectedSlotItem = null;
+            } else {
+                ((Stack) currentHighlightedButton.getParent()).getChildren().get(1).setVisible(false);
+                if (isCircleButton) {
+                    hotbar.highlightedCircleButton = button;
+                } else {
+                    hotbar.highlightedButton = button;
+                }
+                if (slotIndex < inventory.getItems().size) {
+                    hotbar.selectedSlotItem = inventory.getItems().get(slotIndex);
+                } else {
+                    hotbar.selectedSlotItem = null;
+                }
+                stack.getChildren().get(1).setVisible(true);
+            }
+        } else {
+            if (isCircleButton) {
+                hotbar.highlightedCircleButton = button;
+            } else {
+                hotbar.highlightedButton = button;
+            }
+            if (slotIndex < inventory.getItems().size) {
+                hotbar.selectedSlotItem = inventory.getItems().get(slotIndex);
+            } else {
+                hotbar.selectedSlotItem = null;
+            }
+            stack.getChildren().get(1).setVisible(true);
+        }
+        stage.draw();
     }
 }

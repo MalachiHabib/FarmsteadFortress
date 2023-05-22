@@ -190,4 +190,8 @@ public abstract class Enemy {
             batch.setColor(Color.WHITE);
         }
     }
+
+    public boolean isDead() {
+        return health <= 0;
+    }
 }
