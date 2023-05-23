@@ -64,7 +64,7 @@ public class GameScreen extends ScreenAdapter {
         spawnWaveUI = new SpawnWaveUI(waveController);
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
-        inputHandler = new InputHandler(map, camera, player, enemies, inputMultiplexer, hotbar);
+        inputHandler = new InputHandler(map, camera, player, enemies, inputMultiplexer, hotbar, shop);
 
         uiStages.add(spawnWaveUI.getStage());
         uiStages.add(hotbar.getStage());
@@ -75,7 +75,6 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer.addProcessor(spawnWaveUI.getStage());
         inputMultiplexer.addProcessor(inputHandler);
         inputMultiplexer.addProcessor(hotbar.getStage());
-        inputMultiplexer.addProcessor(shop.getStage());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         shapeRenderer.setAutoShapeType(true);
@@ -87,6 +86,9 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        if (shop.isOpen()) {
+            inputMultiplexer.addProcessor(shop.getStage());
+        }
         hotbar.updateHotbar();
         moneyDisplay.update(player);
         health.update(player);

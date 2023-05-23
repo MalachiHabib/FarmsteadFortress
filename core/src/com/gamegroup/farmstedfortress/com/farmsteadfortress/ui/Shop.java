@@ -80,10 +80,11 @@ public class Shop {
         for (int i = 0; i < 10; i++) {
             final TomatoSeed seed = new TomatoSeed();
             ImageButton button = new ImageButton(new TextureRegionDrawable(seed.getTexture()));
+            button.setName("shopActor");
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if (player.getMoney() >= seed.getPrice()) {
+                    if (isOpen && player.getMoney() >= seed.getPrice()) {
                         player.addMoney(-5);
                         inventory.addItem(seed);
                         inventory.printInventory();
@@ -97,11 +98,11 @@ public class Shop {
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         ScrollPane scrollPane = new ScrollPane(buttonTable, scrollPaneStyle);
+        scrollPane.setName("shopActor");
         scrollPane.setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight());
-
         scrollPane.setPosition(Gdx.graphics.getWidth() - scrollPane.getWidth(), 2.5f * Gdx.graphics.getHeight() / 4 - scrollPane.getHeight() / 2);
-
         Image shopBackground = new Image(new Texture(Gdx.files.internal("gui/shop-right-background.png")));
+        shopBackground.setName("shopActor");
         shopBackground.setSize(scrollPane.getWidth() / 1.8f , Gdx.graphics.getHeight());
         shopBackground.setPosition(Gdx.graphics.getWidth() - shopBackground.getWidth(), 0);
         shopBackground.setColor(1f,1f,1f,0.7f);

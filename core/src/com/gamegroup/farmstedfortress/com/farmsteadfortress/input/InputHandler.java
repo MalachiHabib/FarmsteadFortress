@@ -27,6 +27,7 @@ import com.farmsteadfortress.path.PathResult;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 import com.farmsteadfortress.ui.Hotbar;
+import com.farmsteadfortress.ui.Shop;
 import com.farmsteadfortress.utils.Helpers;
 
 import java.util.ArrayList;
@@ -53,8 +54,9 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private float panSpeed = 0.1f;
     private float zoomSpeed = 0.1f;
     private Tile playerTile;
+    private Shop shop;
 
-    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, List<Enemy> enemies, InputMultiplexer inputMultiplexer, Hotbar hotbar) {
+    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, List<Enemy> enemies, InputMultiplexer inputMultiplexer, Hotbar hotbar, Shop shop) {
         hoverTexture = new Texture("tiles/highlight.png");
         this.tileMap = tileMap;
         this.camera = camera;
@@ -63,6 +65,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         this.selectedEnemy = null;
         this.pathCalculator = new PathCalculator();
         this.hotbar = hotbar;
+        this.shop = shop;
         inputMultiplexer.addProcessor(this);
 
         if (isDesktop()) {
@@ -128,7 +131,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //issue is that it is touching within the ui some reason.
+        //issue is that it is touching within the ui some reason. something with the shop
         if (isTouchWithinUI(screenX, screenY) || isSecondFingerTouched()) {
             return false;
         }
@@ -142,7 +145,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     }
 
     private boolean isTouchWithinUI(int screenX, int screenY) {
-        return Helpers.uiContains(uiStages, screenX, screenY);
+        return Helpers.uiContains(uiStages, screenX, screenY, shop);
     }
 
     private boolean isSecondFingerTouched() {
