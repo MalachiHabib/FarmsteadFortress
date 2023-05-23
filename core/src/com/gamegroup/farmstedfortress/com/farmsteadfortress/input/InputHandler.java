@@ -27,7 +27,7 @@ import com.farmsteadfortress.path.PathResult;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 import com.farmsteadfortress.ui.Hotbar;
-import com.farmsteadfortress.ui.Shop;
+import com.farmsteadfortress.ui.ShopUI;
 import com.farmsteadfortress.utils.Helpers;
 
 import java.util.ArrayList;
@@ -54,9 +54,9 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private float panSpeed = 0.1f;
     private float zoomSpeed = 0.1f;
     private Tile playerTile;
-    private Shop shop;
+    private ShopUI shop;
 
-    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, List<Enemy> enemies, InputMultiplexer inputMultiplexer, Hotbar hotbar, Shop shop) {
+    public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, List<Enemy> enemies, InputMultiplexer inputMultiplexer, Hotbar hotbar, ShopUI shop) {
         hoverTexture = new Texture("tiles/highlight.png");
         this.tileMap = tileMap;
         this.camera = camera;

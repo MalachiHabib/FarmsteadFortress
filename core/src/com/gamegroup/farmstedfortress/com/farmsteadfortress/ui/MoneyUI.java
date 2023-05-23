@@ -12,13 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.farmsteadfortress.entities.Player;
 
-public class MoneyDisplay {
+public class MoneyUI {
     private Stage stage;
     private Label moneyLabel;
     private BitmapFont font;
     private int currentBalance;
 
-    public MoneyDisplay() {
+    public MoneyUI() {
         stage = new Stage(new ScreenViewport());
         Table table = new Table();
         table.top().left();

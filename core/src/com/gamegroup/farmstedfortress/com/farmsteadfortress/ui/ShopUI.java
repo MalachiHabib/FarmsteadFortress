@@ -20,18 +20,18 @@ import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.inventory.Inventory;
 import com.farmsteadfortress.items.seeds.TomatoSeed;
 
-public class Shop {
-    Player player;
+public class ShopUI {
     private final Stage stage;
     private final Skin skin;
     private final Array<ImageButton> buttons;
-    private Image backgroundImage;
     private final Inventory inventory;
     private final Hotbar hotbar;
+    Player player;
+    private Image backgroundImage;
     private boolean isOpen;
 
 
-    public Shop(Hotbar hotbar, Player player) {
+    public ShopUI(Hotbar hotbar, Player player) {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
         Table table = new Table();
@@ -70,7 +70,7 @@ public class Shop {
         Label shopLabel = new Label("SHOP", labelStyle);
         shopLabel.setFontScale(2f);
         shopLabel.pack();
-        shopLabel.setPosition(Gdx.graphics.getWidth() * 0.85f,  Gdx.graphics.getHeight() * 0.825f);
+        shopLabel.setPosition(Gdx.graphics.getWidth() * 0.85f, Gdx.graphics.getHeight() * 0.825f);
         stage.addActor(shopLabel);
     }
 
@@ -92,20 +92,25 @@ public class Shop {
                 }
             });
             buttons.add(button);
-            buttonTable.add(button).size(100, 80).pad(10);
+            buttonTable.add(button).size(60, 60).pad(10);
             if ((i + 1) % 2 == 0) buttonTable.row();
         }
+
+        buttonTable.pad(Gdx.graphics.getHeight() * 0.3f); // Adjust padding value as per requirement
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         ScrollPane scrollPane = new ScrollPane(buttonTable, scrollPaneStyle);
         scrollPane.setName("shopActor");
         scrollPane.setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight());
-        scrollPane.setPosition(Gdx.graphics.getWidth() - scrollPane.getWidth(), 2.5f * Gdx.graphics.getHeight() / 4 - scrollPane.getHeight() / 2);
+        scrollPane.setPosition(Gdx.graphics.getWidth() - scrollPane.getWidth() + 95, 2.5f * Gdx.graphics.getHeight() / 4 - scrollPane.getHeight() / 2 - 20);
         Image shopBackground = new Image(new Texture(Gdx.files.internal("gui/shop-right-background.png")));
         shopBackground.setName("shopActor");
-        shopBackground.setSize(scrollPane.getWidth() / 1.8f , Gdx.graphics.getHeight());
+        shopBackground.setSize(scrollPane.getWidth() / 1.8f, Gdx.graphics.getHeight());
         shopBackground.setPosition(Gdx.graphics.getWidth() - shopBackground.getWidth(), 0);
-        shopBackground.setColor(1f,1f,1f,0.7f);
+
+        // Center the button table within the shopBackground
+        buttonTable.center();
+        buttonTable.setFillParent(true);
 
         stage.addActor(shopBackground);
         stage.addActor(scrollPane);

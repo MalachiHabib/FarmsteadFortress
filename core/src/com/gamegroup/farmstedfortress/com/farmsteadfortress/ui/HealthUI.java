@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.farmsteadfortress.entities.Player;
 
-public class Health {
+public class HealthUI {
     public Stage stage;
 
     private Label healthLabel;
@@ -27,7 +27,7 @@ public class Health {
     // maybe adapt health bar to enemies and plants
     // maybe display above hot bar
 
-    public Health(){
+    public HealthUI(){
         // this draws only the player health so may need to separate this out into other functions
         // or could only draw one type of health bar and reuse it for the player and enemies
         stage = new Stage(new ScreenViewport());

@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
-import com.farmsteadfortress.ui.Shop;
+import com.farmsteadfortress.ui.ShopUI;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class Helpers {
                 Gdx.app.getType() == Application.ApplicationType.iOS;
     }
 
-    public static boolean uiContains(List<Stage> uiStages, int screenX, int screenY, Shop shop) {
+    public static boolean uiContains(List<Stage> uiStages, int screenX, int screenY, ShopUI shop) {
         for (Stage stage : uiStages) {
             Vector3 stageCoordinates = new Vector3(screenX, screenY, 0);
             stage.getCamera().unproject(stageCoordinates);

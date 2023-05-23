@@ -15,11 +15,11 @@ import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.input.InputHandler;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
-import com.farmsteadfortress.ui.Health;
+import com.farmsteadfortress.ui.HealthUI;
 import com.farmsteadfortress.ui.Hotbar;
-import com.farmsteadfortress.ui.MoneyDisplay;
-import com.farmsteadfortress.ui.Shop;
-import com.farmsteadfortress.ui.SpawnWaveUI;
+import com.farmsteadfortress.ui.MoneyUI;
+import com.farmsteadfortress.ui.ShopUI;
+import com.farmsteadfortress.ui.WaveCountUI;
 import com.farmsteadfortress.waves.WaveController;
 
 import java.util.ArrayList;
@@ -35,12 +35,12 @@ public class GameScreen extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
     private InputMultiplexer inputMultiplexer;
     private Hotbar hotbar;
-    private Shop shop;
+    private ShopUI shop;
     private ArrayList<Stage> uiStages;
-    private MoneyDisplay moneyDisplay;
+    private MoneyUI moneyDisplay;
     private WaveController waveController;
-    private SpawnWaveUI spawnWaveUI;
-    private Health health;
+    private WaveCountUI spawnWaveUI;
+    private HealthUI health;
     private VignettingEffect vignettingEffect;
 
     public GameScreen(SpriteBatch batch) {
@@ -56,12 +56,13 @@ public class GameScreen extends ScreenAdapter {
 
         uiStages = new ArrayList<>();
         hotbar = new Hotbar(player.getInventory(), shop);
-        shop = new Shop(hotbar, player);
+        shop = new ShopUI(hotbar, player);
         hotbar = new Hotbar(player.getInventory(), shop);
-        moneyDisplay = new MoneyDisplay();
-        health = new Health();
+        hotbar.setWaveController(waveController);
+        moneyDisplay = new MoneyUI();
+        health = new HealthUI();
 
-        spawnWaveUI = new SpawnWaveUI(waveController);
+        spawnWaveUI = new WaveCountUI();
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
         inputHandler = new InputHandler(map, camera, player, enemies, inputMultiplexer, hotbar, shop);
@@ -86,6 +87,10 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        waveController.update(delta);
+        if (waveController.isWaveOver()) {
+            waveController.stopWave();
+        }
         if (shop.isOpen()) {
             inputMultiplexer.addProcessor(shop.getStage());
         }
