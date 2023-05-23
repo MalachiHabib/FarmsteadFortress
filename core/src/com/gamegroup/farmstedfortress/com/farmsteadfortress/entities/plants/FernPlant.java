@@ -33,7 +33,7 @@ public class FernPlant extends Plant {
     }
 
     @Override
-    protected void attack(float delta) {
+    protected void attack(float delta, Enemy enemy) {
         // Fern does not attack, leave it empty
     }
 

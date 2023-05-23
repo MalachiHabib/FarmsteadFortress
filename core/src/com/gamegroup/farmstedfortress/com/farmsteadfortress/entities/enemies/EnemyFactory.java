@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
+import java.util.List;
+
 /**
  * Factory class for creating Enemy instances.
  */
@@ -12,6 +14,7 @@ public class EnemyFactory {
     private static final float DEFAULT_ANIMATION_SPEED = 1 / 10f;
     private static final float DEFAULT_ENEMY_SPEED = 120f;
     private static final String BASIC_ENEMY_TEXTURE_ATLAS_PATH = "entities/player/playerAtlas.atlas";
+    private static List<Enemy> enemies;
 
     public enum EnemyType {
         BASIC_ENEMY, BOSS_ENEMY,
@@ -32,6 +35,9 @@ public class EnemyFactory {
         }
     }
 
+    public void setEnemies(List<Enemy> enemies) {
+        this.enemies = enemies;
+    }
     /**
      * Creates a BasicEnemy instance.
      *a
@@ -40,7 +46,7 @@ public class EnemyFactory {
     private static BasicEnemy createBasicEnemy() {
         TextureAtlas atlas = new TextureAtlas(BASIC_ENEMY_TEXTURE_ATLAS_PATH);
         setTextureFilters(atlas);
-        return new BasicEnemy(atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED, 20);
+        return new BasicEnemy(atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED, 20, enemies);
     }
 
     /**

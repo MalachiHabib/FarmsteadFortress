@@ -20,8 +20,9 @@ public class WaveController {
         this.currentWaveNumber = 1;
         this.timeSinceLastSpawn = 0f;
         this.spawnInterval = 0.4f + new Random().nextFloat() * (0.6f - 0.4f);
-
         this.currentWave = generateNextWave();
+        EnemyFactory enemyFactory = new EnemyFactory();
+        enemyFactory.setEnemies(enemies);
     }
 
     private Wave generateNextWave() {

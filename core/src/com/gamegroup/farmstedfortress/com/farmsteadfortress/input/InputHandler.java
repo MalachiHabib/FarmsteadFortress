@@ -218,7 +218,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                 ((FernPlant) targetTile.getPlant()).harvest(player);
             } else {
                 targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
-
                 if (hasPlantToPlant) {
                     Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile);
                     targetTile.setPlant(plant);

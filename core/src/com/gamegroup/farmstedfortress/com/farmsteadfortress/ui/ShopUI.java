@@ -70,7 +70,7 @@ public class ShopUI {
         Label shopLabel = new Label("SHOP", labelStyle);
         shopLabel.setFontScale(2f);
         shopLabel.pack();
-        shopLabel.setPosition(Gdx.graphics.getWidth() * 0.85f, Gdx.graphics.getHeight() * 0.825f);
+        shopLabel.setPosition(Gdx.graphics.getWidth() * 0.86f, Gdx.graphics.getHeight() * 0.84f);
         stage.addActor(shopLabel);
     }
 
@@ -92,17 +92,17 @@ public class ShopUI {
                 }
             });
             buttons.add(button);
-            buttonTable.add(button).size(60, 60).pad(10);
+            buttonTable.add(button).size(100, 80).pad(10);
             if ((i + 1) % 2 == 0) buttonTable.row();
         }
 
-        buttonTable.pad(Gdx.graphics.getHeight() * 0.3f); // Adjust padding value as per requirement
+        buttonTable.pad(Gdx.graphics.getHeight() * 0.27f);
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         ScrollPane scrollPane = new ScrollPane(buttonTable, scrollPaneStyle);
         scrollPane.setName("shopActor");
         scrollPane.setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight());
-        scrollPane.setPosition(Gdx.graphics.getWidth() - scrollPane.getWidth() + 95, 2.5f * Gdx.graphics.getHeight() / 4 - scrollPane.getHeight() / 2 - 20);
+        scrollPane.setPosition(Gdx.graphics.getWidth() - scrollPane.getWidth() + 108, 2.5f * Gdx.graphics.getHeight() / 4 - scrollPane.getHeight() / 2 - 20);
         Image shopBackground = new Image(new Texture(Gdx.files.internal("gui/shop-right-background.png")));
         shopBackground.setName("shopActor");
         shopBackground.setSize(scrollPane.getWidth() / 1.8f, Gdx.graphics.getHeight());

@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 
@@ -21,6 +20,7 @@ import java.util.Random;
  * Represents a generic enemy entity in the game.
  */
 public abstract class Enemy {
+    protected List<Enemy> enemies;
     protected Animation<TextureRegion> walkingAnimation;
     protected float stateTime;
     protected Vector2 direction;
@@ -41,7 +41,7 @@ public abstract class Enemy {
      * @param speed          the movement speed of the enemy
      * @param health         the enemy's health
      */
-    public Enemy(TextureAtlas atlas, float animationSpeed, float speed, int health) {
+    public Enemy(TextureAtlas atlas, float animationSpeed, float speed, int health, List<Enemy> enemies) {
         this.walkingAnimation = new Animation<TextureRegion>(animationSpeed, atlas.getRegions());
         this.stateTime = 0f;
         this.position = new Vector2();
@@ -52,14 +52,15 @@ public abstract class Enemy {
         this.outline = false;
         this.boundingBox = new Rectangle();
         this.health = health;
+        this.enemies = enemies;
     }
 
     /**
      * Abstract method for the enemy being attacked, to be implemented by subclasses.
      *
-     * @param player the player attacking the enemy
+     * @param damage, the amount of damage the enemy is hit.
      */
-    public abstract void attacked(Player player);
+    public abstract void attacked(int damage);
 
     /**
      * Toggles the enemy's outline status when clicked.

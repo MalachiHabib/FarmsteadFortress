@@ -113,7 +113,7 @@ public class Hotbar {
     }
 
     private void createHotbar() {
-        table.right().bottom().padTop(9).padRight(150);
+        table.right().bottom();
         for (int i = 0; i < 5; i++) {
             final ImageButton button = new ImageButton(defaultDrawable);
             final ImageButton highlightButton = new ImageButton(highlightDrawable);
@@ -122,7 +122,7 @@ public class Hotbar {
             stack.add(button);
             stack.add(highlightButton);
             buttons.add(button);
-            table.add(stack).size(50, 50).pad(10);
+            table.add(stack).size(75, 75).padRight(5).padTop(7.5f);
 
             if (i < inventory.getItems().size) {
                 Item item = inventory.getItems().get(i);
@@ -162,7 +162,7 @@ public class Hotbar {
             circleButtons.add(button);
 
             if (i == 0) {
-                circleTable.add(stack).size(55, 55).pad(10);
+                circleTable.add(stack).size(90, 90).padRight(10).padTop(1.5f);
                 button.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -173,7 +173,7 @@ public class Hotbar {
                     }
                 });
             } else {
-                circleTable.add(stack).size(55, 55).padRight(30);
+                circleTable.add(stack).size(90, 90).padRight(50);
                 button.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {

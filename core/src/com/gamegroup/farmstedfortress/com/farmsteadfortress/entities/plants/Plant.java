@@ -50,7 +50,7 @@ public abstract class Plant {
         if (currentStage == GrowthStage.ADULT) {
             for (Enemy enemy : enemies) {
                 if (position.dst(enemy.getPosition()) <= attackRange) {
-                    attack(delta);
+                    attack(delta, enemy);
                     break;
                 }
             }
@@ -87,7 +87,7 @@ public abstract class Plant {
 
     protected abstract void initialiseTextures();
 
-    protected abstract void attack(float delta);
+    protected abstract void attack(float delta, Enemy enemy);
 
     public enum GrowthStage {
         SEEDLING,

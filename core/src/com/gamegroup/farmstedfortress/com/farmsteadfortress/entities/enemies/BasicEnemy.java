@@ -1,8 +1,9 @@
 package com.farmsteadfortress.entities.enemies;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.farmsteadfortress.entities.Player;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+
+import java.util.List;
 
 /**
  * Represents a basic enemy entity in the game.
@@ -16,18 +17,19 @@ public class BasicEnemy extends Enemy {
      * @param speed          the movement speed of the enemy
      * @param health         the enemy's health
      */
-    public BasicEnemy(TextureAtlas atlas, float animationSpeed, float speed, int health) {
-        super(atlas, animationSpeed, speed, health);
+    public BasicEnemy(TextureAtlas atlas, float animationSpeed, float speed, int health, List<Enemy> enemies) {
+        super(atlas, animationSpeed, speed, health, enemies);
     }
 
     /**
      * Handles the basic enemy being attacked.
      *
-     * @param player the player attacking the enemy
+     * @param damage, the amount of damage the basic enemy has been hit
      */
     @Override
-    public void attacked(Player player) {
-        health -= player.getAttackDamage();
+    public void attacked(int damage) {
+        System.out.println(health);
+        health -= damage;
         if(health <= 0) {
             die();
         }
@@ -39,7 +41,7 @@ public class BasicEnemy extends Enemy {
      */
     @Override
     public void die() {
-        // implementation for what happens when the basic enemy dies...
+        enemies.remove(this);
     }
 
     /**

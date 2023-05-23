@@ -21,7 +21,7 @@ public class PlantFactory {
     }
 
     private static TomatoPlant createTomatoPlant(Tile tile) {
-        float growTime = 5.0f;
+        float growTime = 2.5f;
         int health = 100;
         int damage = 10;
         float attackSpeed = 1.0f;

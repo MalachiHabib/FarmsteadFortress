@@ -89,7 +89,7 @@ public class Player {
         money += amount;
     }
 
-    public int getPlayerHealth(){
+    public int getHealth(){
         return health;
     }
 
@@ -176,10 +176,8 @@ public class Player {
             } else {
                 if (dy > 0) {
                     setDirection(Direction.N);
-                    System.out.println("Direction: N");
                 } else if (dy < 0) {
                     setDirection(Direction.S);
-                    System.out.println("Direction: S");
                 }
             }
         }
@@ -277,7 +275,7 @@ public class Player {
     }
 
     public void attack(Enemy enemy) {
-        enemy.attacked(this);
+        enemy.attacked(attackDamage);
         timeSinceLastAttack = 0f;
         setAttacking(true);
     }
