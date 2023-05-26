@@ -18,6 +18,7 @@ import com.farmsteadfortress.render.TileMap;
 import com.farmsteadfortress.ui.HUD;
 import com.farmsteadfortress.ui.Hotbar;
 import com.farmsteadfortress.ui.ShopUI;
+import com.farmsteadfortress.ui.WaveOverUI;
 import com.farmsteadfortress.waves.WaveController;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class GameScreen extends ScreenAdapter {
     private WaveController waveController;
     private VignettingEffect vignettingEffect;
     private HUD hud;
+    private WaveOverUI waveOverUI;
     public GameScreen(SpriteBatch batch) {
         this.batch = batch;
         camera = new OrthographicCamera(1920, 1080);
@@ -54,6 +56,7 @@ public class GameScreen extends ScreenAdapter {
         shop = new ShopUI(hotbar, player);
         hud = new HUD();
         hotbar = new Hotbar(player.getInventory(), shop);
+        waveOverUI = new WaveOverUI();
         hotbar.setWaveController(waveController);
         inputMultiplexer = new InputMultiplexer();
         shapeRenderer = new ShapeRenderer();
@@ -79,9 +82,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         waveController.update(delta);
-        if (waveController.isWaveOver()) {
-            waveController.stopWave();
-        }
+
         if (shop.isOpen()) {
             inputMultiplexer.addProcessor(shop.getStage());
         }
@@ -122,6 +123,11 @@ public class GameScreen extends ScreenAdapter {
         hud.updateLivesCount(player);
         hud.updatePlayerBalance(player);
         hud.updateWaveCount(waveController.getCurrentWave());
+
+        if (waveController.isWaveOver() && waveController.getCurrentWave().getWaveNumber() != 1) {
+            waveOverUI.render(delta);
+            waveController.stopWave();
+        }
     }
 
 

@@ -190,13 +190,20 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
         Vector2 touchPosition = new Vector2(worldCoordinates.x, worldCoordinates.y);
 
+        List<Enemy> clickedEnemies = new ArrayList<>();
         for (Enemy enemy : enemies) {
             if (enemy.containsPoint(touchPosition)) {
-                enemy.onClick();
-                player.targetEnemy(enemy, tileMap, pathCalculator);
-            } else {
-                player.stopFollowing();
+                clickedEnemies.add(enemy);
             }
+        }
+
+        for (Enemy enemy : clickedEnemies) {
+            enemy.onClick();
+            player.targetEnemy(enemy, tileMap, pathCalculator);
+        }
+
+        if (clickedEnemies.isEmpty()) {
+            player.stopFollowing();
         }
     }
 
@@ -218,6 +225,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                 ((FernPlant) targetTile.getPlant()).harvest(player);
             } else {
                 targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
+
                 if (hasPlantToPlant) {
                     Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile);
                     targetTile.setPlant(plant);
@@ -227,7 +235,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         }
     }
 
-
     private void updateHoverEffect(int screenX, int screenY) {
         Tile currentTile = getTileAtPosition(tileMap, camera, screenX, screenY);
 
@@ -235,38 +242,44 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             if (currentTile.isIntractable()) {
                 if (currentTile != lastHoveredTile) {
                     if (lastHoveredTile != null) {
-                        lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                         if (lastHoveredTile.getPlant() != null) {
                             lastHoveredTile.getPlant().setHighLight(false);
+                        } else {
+                            lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                         }
                     }
 
-                    currentTile.setHoverTexture(hoverTexture);
                     if (currentTile.getPlant() != null) {
                         currentTile.getPlant().setHighLight(true);
+                    } else {
+                        currentTile.setHoverTexture(hoverTexture);
                     }
 
                     lastHoveredTile = currentTile;
                 }
             } else {
                 if (lastHoveredTile != null) {
-                    lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                     if (lastHoveredTile.getPlant() != null) {
                         lastHoveredTile.getPlant().setHighLight(false);
+                    } else {
+                        lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                     }
                     lastHoveredTile = null;
                 }
             }
         } else {
             if (lastHoveredTile != null) {
-                lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                 if (lastHoveredTile.getPlant() != null) {
                     lastHoveredTile.getPlant().setHighLight(false);
+                } else {
+                    lastHoveredTile.setHoverTexture(lastHoveredTile.getOriginalTileTexture());
                 }
                 lastHoveredTile = null;
             }
         }
     }
+
+
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {

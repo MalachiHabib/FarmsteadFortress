@@ -1,47 +1,33 @@
 
-FernAtlas.png
-size: 2048, 256
+BeeSouth.png
+size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-fern_3
-  rotate: false
-  xy: 196, 2
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-fern_3_highlight
-  rotate: false
-  xy: 584, 2
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-fern_2
-  rotate: false
-  xy: 778, 2
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-fern_2_highlight
-  rotate: false
-  xy: 2, 2
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-fern_1
+South1
   rotate: false
   xy: 390, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-fern_1_highlight
+South2
   rotate: false
-  xy: 972, 2
+  xy: 2, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+South3
+  rotate: false
+  xy: 584, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+South4
+  rotate: false
+  xy: 196, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0

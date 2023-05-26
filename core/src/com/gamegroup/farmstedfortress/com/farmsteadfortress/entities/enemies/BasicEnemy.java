@@ -22,20 +22,6 @@ public class BasicEnemy extends Enemy {
     }
 
     /**
-     * Handles the basic enemy being attacked.
-     *
-     * @param damage, the amount of damage the basic enemy has been hit
-     */
-    @Override
-    public void attacked(int damage) {
-        System.out.println(health);
-        health -= damage;
-        if(health <= 0) {
-            die();
-        }
-    }
-
-    /**
      * Describes the basic enemy's death.
      * Overridden from the Enemy superclass.
      */

@@ -167,7 +167,6 @@ public class Hotbar {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         if (waveController != null) {
-                            System.out.println("start");
                             waveController.startWave();
                         }
                     }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class TileMap {
@@ -30,13 +31,14 @@ public class TileMap {
     private static final String CENTER = "C";
     private static final String SPAWN_POINT = "S";
     private static final String PATH = "P";
-
+    private static final String EXTRA_WEIGHTED_GROUND = "XWG";
+    private static final int ISLAND_SIZE = 40;
+    private List<int[]> path;
+    private List<List<int[]>> successfulPaths;
+    private List<PathResult> pathResults;
     private int mapSize;
     private String[][] map;
-    List<int[]> path;
-    List<List<int[]>> successfulPaths;
-    List<PathResult> pathResults;
-    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassTextureTwo, grassMushroomTexture, grassRocksTextureOne, grassRocksTextureTwo, enemySpawnPointTexture;
+    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassYellowTexture, grassBlueTexture, enemySpawnPointTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
 
@@ -52,14 +54,11 @@ public class TileMap {
         cropLandTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         grassTexture = new Texture("tiles/grass.png");
-        grassTextureTwo = new Texture("tiles/grass.png");
         grassTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        grassMushroomTexture = new Texture("tiles/grass_mushroom.png");
-        grassMushroomTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        grassRocksTextureOne = new Texture("tiles/grass_rocks.png");
-        grassRocksTextureOne.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        grassRocksTextureTwo = new Texture("tiles/grass_rocks2.png");
-        grassRocksTextureTwo.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        grassYellowTexture = new Texture("tiles/grass_yellowish.png");
+        grassYellowTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        grassBlueTexture = new Texture("tiles/grass_blueish.png");
+        grassBlueTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         waterTexture = new Texture("tiles/water.png");
         waterTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -119,10 +118,9 @@ public class TileMap {
      * @param path List of int[] representing the x, y coordinates of the path.
      */
     public void setPathPoints(List<int[]> path) {
-        int islandSize = 40;
-        int islandStart = (mapSize - islandSize) / 2;
-        int islandCenterX = islandStart + islandSize / 2;
-        int islandCenterY = islandStart + islandSize / 2;
+        int islandStart = (mapSize - ISLAND_SIZE) / 2;
+        int islandCenterX = islandStart + ISLAND_SIZE / 2;
+        int islandCenterY = islandStart + ISLAND_SIZE / 2;
 
         for (int[] point : path) {
             int row = point[0];
@@ -130,7 +128,7 @@ public class TileMap {
             if (row >= 0 && row < mapSize && col >= 0 && col < mapSize) {
                 if (row == islandCenterX && col == islandCenterY) {
                     map[row][col] = CENTER; // set the tile to "P" to indicate it's part of the path
-                } else if (map[row][col] != SPAWN_POINT) {
+                } else if (!Objects.equals(map[row][col], SPAWN_POINT)) {
                     map[row][col] = PATH; // set the tile to "P" to indicate it's part of the path
                 }
             }
@@ -220,14 +218,13 @@ public class TileMap {
      * @param random Random object for creating random values.
      */
     private void createIsland(Random random) {
-        int islandSize = 40;
-        int islandStart = (mapSize - islandSize) / 2;
-        int islandCenterX = islandStart + islandSize / 2;
-        int islandCenterY = islandStart + islandSize / 2;
-        int maxDistanceFromCenter = islandSize / 2;
+        int islandStart = (mapSize - ISLAND_SIZE) / 2;
+        int islandCenterX = islandStart + ISLAND_SIZE / 2;
+        int islandCenterY = islandStart + ISLAND_SIZE / 2;
+        int maxDistanceFromCenter = ISLAND_SIZE / 2;
 
-        for (int row = islandStart; row < islandStart + islandSize; row++) {
-            for (int col = islandStart; col < islandStart + islandSize; col++) {
+        for (int row = islandStart; row < islandStart + ISLAND_SIZE; row++) {
+            for (int col = islandStart; col < islandStart + ISLAND_SIZE; col++) {
                 double distanceFromCenter = Math.sqrt(Math.pow(row - islandCenterX, 2) + Math.pow(col - islandCenterY, 2));
                 double distanceFactor = 1.0 - (distanceFromCenter / maxDistanceFromCenter);
                 double randValue = random.nextDouble();
@@ -285,7 +282,11 @@ public class TileMap {
                 if (originalMap[row][col].equals(WATER) || originalMap[row][col].equals(GROUND) || originalMap[row][col].equals(WEIGHTED_GROUND)) {
                     if (groundCount > 4) {
                         if (random.nextDouble() < DIFFICULTY) {
-                            newMap[row][col] = WEIGHTED_GROUND;
+                            if (originalMap[row][col].equals(WEIGHTED_GROUND) && random.nextDouble() < 0.95) {
+                                newMap[row][col] = EXTRA_WEIGHTED_GROUND;
+                            } else {
+                                newMap[row][col] = WEIGHTED_GROUND;
+                            }
                         } else {
                             newMap[row][col] = GROUND;
                         }
@@ -350,17 +351,6 @@ public class TileMap {
                 map[closestRow][closestCol] = SPAWN_POINT;
             }
         }
-    }
-
-    public Tile getTileAtPosition(int x, int y) {
-        for (Tile tile : baseTiles) {
-            Vector2 pos = tile.getTileMapPos();
-            if (pos.x == x && pos.y == y) {
-                return tile;
-            }
-        }
-
-        throw new IllegalArgumentException("No tile found at position: (" + x + ", " + y + ")");
     }
 
     /**
@@ -431,7 +421,7 @@ public class TileMap {
                     case CENTER:
                         baseTiles.add(new Tile(middleTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.CENTER));
                         break;
-
+                    case EXTRA_WEIGHTED_GROUND:
                     case GROUND:
                     case WEIGHTED_GROUND:
                         Texture groundSelectedTexture;
@@ -441,18 +431,17 @@ public class TileMap {
                             groundSelectedTexture = grassTexture;
                             tileType = Tile.TileType.GRASS;
                         } else if (randomNum <= 90) {
-                            groundSelectedTexture = grassTextureTwo;
-                            tileType = Tile.TileType.MUSHROOM;
+                            groundSelectedTexture = grassYellowTexture;
+                            tileType = Tile.TileType.GRASS_YELLOW;
                         } else if (randomNum <= 95) {
-                            groundSelectedTexture = grassTexture;
-                            tileType = Tile.TileType.ROCK;
+                            groundSelectedTexture = grassBlueTexture;
+                            tileType = Tile.TileType.GRASS_BLUE;
                         } else {
                             groundSelectedTexture = grassTexture;
                             tileType = Tile.TileType.ROCK;
                         }
                         baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
                         break;
-
                     case WATER:
                         Texture selectedTexture;
                         if (adjacentNonWater) {
@@ -481,7 +470,7 @@ public class TileMap {
         Random random = new Random();
         for (Tile baseTile : baseTiles) {
             Plant plant = PlantFactory.createPlant(Plant.PlantType.FERN, baseTile);
-            if (baseTile.getTileType().equals(Tile.TileType.GRASS)) {
+            if (baseTile.getTileType().equals(Tile.TileType.GRASS) || baseTile.getTileType().equals(Tile.TileType.GRASS_BLUE) || baseTile.getTileType().equals(Tile.TileType.GRASS_YELLOW)) {
                 int randomNumber = random.nextInt(10);
                 if (randomNumber < 1) {
                     baseTile.setPlant(plant);

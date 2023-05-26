@@ -28,7 +28,8 @@ public class Tile {
         BRIDGE,
         PATH,
         CENTER,
-        SPAWN_POINT
+        GRASS_YELLOW,
+        GRASS_BLUE, SPAWN_POINT
     }
 
     private static final TileType[] INTRACTABLE_TILES = {
@@ -37,7 +38,9 @@ public class Tile {
             TileType.MUSHROOM,
             TileType.ROCK,
             TileType.ROCK_TWO,
-            TileType.OBJECT_TILE
+            TileType.OBJECT_TILE,
+            TileType.GRASS_BLUE,
+            TileType.GRASS_YELLOW
     };
 
     private Texture tileTexture;

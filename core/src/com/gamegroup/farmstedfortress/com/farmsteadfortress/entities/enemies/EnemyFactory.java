@@ -13,7 +13,7 @@ public class EnemyFactory {
 
     private static final float DEFAULT_ANIMATION_SPEED = 1 / 10f;
     private static final float DEFAULT_ENEMY_SPEED = 120f;
-    private static final String BASIC_ENEMY_TEXTURE_ATLAS_PATH = "entities/player/playerAtlas.atlas";
+    private static final String BASIC_ENEMY_TEXTURE_ATLAS_PATH = "entities/player/PlayerAtlas.atlas";
     private static List<Enemy> enemies;
 
     public enum EnemyType {

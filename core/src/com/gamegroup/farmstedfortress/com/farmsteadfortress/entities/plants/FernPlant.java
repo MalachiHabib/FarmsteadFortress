@@ -14,23 +14,41 @@ public class FernPlant extends Plant {
     private TextureAtlas atlas;
     private int reward;
     private TextureRegion highlightedTexture;
+    private String fernType;
 
     public FernPlant(float growTime, Vector2 position, int health, int reward, Tile tile, TextureAtlas atlas) {
         super(growTime, position, health, 0, 0, 0, 0, tile);
         this.atlas = atlas;
         this.reward = reward;
+
+        switch(tile.getTileType()) {
+            case GRASS:
+                fernType = "fern_1";
+                break;
+            case GRASS_YELLOW:
+                fernType = "fern_2";
+                break;
+            case GRASS_BLUE:
+                fernType = "fern_3";
+                break;
+            default:
+                break;
+        }
+
         initialiseTextures();
-        highlightedTexture = atlas.findRegion("grass_fern_highlight");
+        highlightedTexture = atlas.findRegion(fernType + "_highlight");
         currentStage = GrowthStage.ADULT;
     }
 
     @Override
     protected void initialiseTextures() {
-        textures.put(GrowthStage.SEEDLING, atlas.findRegion("grass_fern_highlight"));
-        textures.put(GrowthStage.SPROUT, atlas.findRegion("grass_fern"));
-        textures.put(GrowthStage.SMALL_PLANT, atlas.findRegion("grass_fern"));
-        textures.put(GrowthStage.ADULT, atlas.findRegion("grass_fern"));
+        TextureRegion fernTexture = atlas.findRegion(fernType);
+        textures.put(GrowthStage.SEEDLING, fernTexture);
+        textures.put(GrowthStage.SPROUT, fernTexture);
+        textures.put(GrowthStage.SMALL_PLANT, fernTexture);
+        textures.put(GrowthStage.ADULT, fernTexture);
     }
+
 
     @Override
     protected void attack(float delta, Enemy enemy) {

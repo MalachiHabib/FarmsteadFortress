@@ -145,33 +145,24 @@ public class Player {
             int[] currentTile = originalPath.get(currentPathIndex);
             int[] endTile = originalPath.get(originalPath.size() - 1);
 
-            System.out.println("Current Tile: [" + currentTile[0] + ", " + currentTile[1] + "]");
-            System.out.println("End Tile: [" + endTile[0] + ", " + endTile[1] + "]");
-
             int dx = endTile[0] - currentTile[0];
             int dy = endTile[1] - currentTile[1];
 
             if (dx > 0) {
                 if (dy > 0) {
                     setDirection(Direction.NE);
-                    System.out.println("Direction: NE");
                 } else if (dy < 0) {
                     setDirection(Direction.SE);
-                    System.out.println("Direction: SE");
                 } else {
                     setDirection(Direction.E);
-                    System.out.println("Direction: E");
                 }
             } else if (dx < 0) {
                 if (dy > 0) {
                     setDirection(Direction.NW);
-                    System.out.println("Direction: NW");
                 } else if (dy < 0) {
                     setDirection(Direction.SW);
-                    System.out.println("Direction: SW");
                 } else {
                     setDirection(Direction.W);
-                    System.out.println("Direction: W");
                 }
             } else {
                 if (dy > 0) {
@@ -208,7 +199,7 @@ public class Player {
     public void render(SpriteBatch batch) {
         Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-        float yOffset = Tile.TILE_SIZE / 2f;
+        float yOffset = Tile.TILE_SIZE / 2f + 15f;
         float posX = position.x;
         float posY = position.y + yOffset;
         batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 2, currentFrame.getRegionHeight() / 2, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), flipCurrentFrame ? -1 : 1, 1, 0);
@@ -226,7 +217,7 @@ public class Player {
     public Vector2 getPosition() {
         Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-        float yOffset = Tile.TILE_SIZE / 2f;
+        float yOffset = Tile.TILE_SIZE / 2f + 15f;
 
         float originX = currentFrame.getRegionWidth() / 2f;
         float originY = currentFrame.getRegionHeight() / 2f;

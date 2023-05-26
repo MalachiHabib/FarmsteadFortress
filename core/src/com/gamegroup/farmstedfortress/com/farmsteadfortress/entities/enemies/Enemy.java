@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.render.Tile;
@@ -32,6 +33,18 @@ public abstract class Enemy {
     protected Rectangle boundingBox;
     protected int health;
     protected int reward;
+    private boolean isWalking;
+    private Animation<TextureRegion> currentAnimation;
+    private Animation<TextureRegion> idleAnimation, walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW;
+    private Animation<TextureRegion> dieAnimation;
+    private boolean isAttacked;
+    private ShaderProgram attackShader;
+    private static final float EFFECT_DURATION = 1.5f;
+    private static final Color EFFECT_COLOR = Color.WHITE;
+
+    private float effectTimer;
+    private boolean isUnderEffect;
+
 
     /**
      * Constructs an enemy entity.
@@ -42,6 +55,22 @@ public abstract class Enemy {
      * @param health         the enemy's health
      */
     public Enemy(TextureAtlas atlas, float animationSpeed, float speed, int health, List<Enemy> enemies) {
+
+        TextureAtlas idleAtlas = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/PlayerIdle.atlas"));
+        idleAnimation = new Animation<TextureRegion>(animationSpeed, idleAtlas.getRegions(), Animation.PlayMode.LOOP);
+
+        TextureAtlas walkAtlasN = new TextureAtlas(Gdx.files.internal("entities/Warhog/HogNorth.atlas"));
+        TextureAtlas walkAtlasS = new TextureAtlas(Gdx.files.internal("entities/Warhog/HogSouth.atlas"));
+        TextureAtlas walkAtlasE = new TextureAtlas(Gdx.files.internal("entities/Warhog/HogEast.atlas"));
+        TextureAtlas walkAtlasW = new TextureAtlas(Gdx.files.internal("entities/Warhog/HogWest.atlas"));
+
+        walkAnimationN = new Animation<TextureRegion>(animationSpeed, walkAtlasN.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationS = new Animation<TextureRegion>(animationSpeed, walkAtlasS.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationE = new Animation<TextureRegion>(animationSpeed, walkAtlasE.getRegions(), Animation.PlayMode.LOOP);
+        walkAnimationW = new Animation<TextureRegion>(animationSpeed, walkAtlasW.getRegions(), Animation.PlayMode.LOOP);
+        currentAnimation = walkAnimationN;
+        isWalking = false;
+
         this.walkingAnimation = new Animation<TextureRegion>(animationSpeed, atlas.getRegions());
         this.stateTime = 0f;
         this.position = new Vector2();
@@ -53,6 +82,19 @@ public abstract class Enemy {
         this.boundingBox = new Rectangle();
         this.health = health;
         this.enemies = enemies;
+        isAttacked = false;
+        attackShader = null;
+        this.effectTimer = 0f;
+        this.isUnderEffect = false;
+        ShaderProgram.pedantic = false;
+        String vertexShader = Gdx.files.internal("shaders/attackShader.vert").readString();
+        String fragmentShader = Gdx.files.internal("shaders/attackShader.frag").readString();
+        attackShader = new ShaderProgram(vertexShader, fragmentShader);
+
+        if (!attackShader.isCompiled()) {
+            System.err.println("Error compiling attack shader: " + attackShader.getLog());
+        }
+
     }
 
     /**
@@ -60,7 +102,19 @@ public abstract class Enemy {
      *
      * @param damage, the amount of damage the enemy is hit.
      */
-    public abstract void attacked(int damage);
+    public void attacked(int damage) {
+        health -= damage;
+        if (isDead()) {
+            die();
+        } else {
+            startEffect();
+        }
+    }
+
+    private void startEffect() {
+        effectTimer = EFFECT_DURATION;
+        isUnderEffect = true;
+    }
 
     /**
      * Toggles the enemy's outline status when clicked.
@@ -93,6 +147,41 @@ public abstract class Enemy {
         return new Vector2(posX, posY);
     }
 
+    private void updateDirection() {
+        if (currentPath != null && !currentPath.isEmpty()) {
+            int[] coordinate = currentPath.get(currentPathIndex);
+            int row = coordinate[0];
+            int col = coordinate[1];
+            Vector2 targetPosition = gridToWorldPosition(row, col, Tile.TILE_SIZE, (float) Tile.TILE_SIZE / 2);
+            direction.set(targetPosition.x - position.x, targetPosition.y - position.y).nor();
+
+            if (Math.abs(direction.y) > Math.abs(direction.x)) {
+                if (direction.y > 0) {
+                    currentAnimation = walkAnimationN;
+                } else {
+                    currentAnimation = walkAnimationS;
+                }
+            } else {
+                if (direction.x > 0) {
+                    currentAnimation = walkAnimationE;
+                } else {
+                    currentAnimation = walkAnimationW;
+                }
+            }
+        }
+    }
+
+    private Animation<TextureRegion> getCurrentAnimation() {
+        if (direction.y > 0) {
+            return walkAnimationN;
+        } else if (direction.y < 0) {
+            return walkAnimationS;
+        } else if (direction.x > 0) {
+            return walkAnimationE;
+        } else {
+            return walkAnimationW;
+        }
+    }
 
     /**
      * Checks if the enemy contains the specified point.
@@ -114,9 +203,14 @@ public abstract class Enemy {
         if (currentPath == null) {
             setPath(map);
         }
+
+        updateDirection();
+
+        stateTime += deltaTime;
+
         boundingBox.set(position.x, position.y, walkingAnimation.getKeyFrame(stateTime).getRegionWidth(), walkingAnimation.getKeyFrame(stateTime).getRegionHeight());
         if (currentPath != null && !currentPath.isEmpty()) {
-            if (currentPathIndex < currentPath.size()) {
+            if (currentPathIndex < currentPath.size() - 1) {
                 int[] coordinate = currentPath.get(currentPathIndex);
                 int row = coordinate[0];
                 int col = coordinate[1];
@@ -125,12 +219,27 @@ public abstract class Enemy {
                 position.x += direction.x * speed * deltaTime;
                 position.y += direction.y * speed * deltaTime;
 
-                if (position.dst(targetPosition) < 5f) {
+                float distanceToTarget = position.dst(targetPosition);
+                if (distanceToTarget <= speed * deltaTime) {
+                    position.set(targetPosition);
                     currentPathIndex++;
                 }
+                isWalking = true;
+            } else {
+                isWalking = false;
+            }
+        } else {
+            isWalking = false;
+        }
+
+        if (isUnderEffect) {
+            effectTimer -= deltaTime;
+            if (effectTimer <= 0f) {
+                isUnderEffect = false;
             }
         }
     }
+
 
     /**
      * Sets the path for the enemy to follow.
@@ -153,42 +262,26 @@ public abstract class Enemy {
     }
 
     /**
-     * Retrieves the rotation angle for rendering the enemy.
-     *
-     * @return the rotation angle in degrees
-     */
-    private float getRotationAngle() {
-        return direction.angleDeg();
-    }
-
-    /**
      * Renders the enemy on the screen.
      *
      * @param batch the sprite batch used for rendering
      */
     public void render(SpriteBatch batch) {
-        float yOffset = Tile.TILE_SIZE / 2f;
-        float angle = getRotationAngle();
-        float originX = walkingAnimation.getKeyFrame(stateTime).getRegionWidth() / 2f;
-        float originY = walkingAnimation.getKeyFrame(stateTime).getRegionHeight() / 2f;
+        Animation<TextureRegion> currentAnimation = getCurrentAnimation();
+        TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        float yOffset = Tile.TILE_SIZE / 2f + 15f;
+        float posX = position.x;
+        float posY = position.y + yOffset;
 
-        stateTime += Gdx.graphics.getDeltaTime();
-
-        TextureRegion currentFrame = walkingAnimation.getKeyFrame(stateTime, true);
-        float posX = position.x - originX + (Tile.TILE_SIZE - currentFrame.getRegionWidth() / 2.25f);
-        float posY = position.y - originY + yOffset + (Tile.TILE_SIZE - currentFrame.getRegionHeight() / 2.25f);
-
-        if (outline) {
-            batch.setColor(Color.RED);
+        if (isUnderEffect) {
+            batch.setShader(attackShader);
+            attackShader.setUniformf("u_color", EFFECT_COLOR.r, EFFECT_COLOR.g, EFFECT_COLOR.b, 1f);
         }
-        batch.draw(currentFrame,
-                posX, posY,
-                originX, originY,
-                currentFrame.getRegionWidth(), currentFrame.getRegionHeight(),
-                1, 1,
-                angle);
-        if (outline) {
-            batch.setColor(Color.WHITE);
+
+        batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 2, currentFrame.getRegionHeight() / 2, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1, 1, 0);
+
+        if (isUnderEffect) {
+            batch.setShader(null);
         }
     }
 
