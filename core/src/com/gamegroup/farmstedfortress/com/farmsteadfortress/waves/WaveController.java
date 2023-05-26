@@ -36,10 +36,12 @@ public class WaveController {
     }
 
     public void startWave() {
-        if (!waveStarted) {
+        if (!waveStarted && isWaveOver()) {
             waveStarted = true;
             timeSinceLastSpawn = 0;
             currentWave = generateNextWave();
+        } else {
+            System.out.println("Cannot start new wave until current wave is over");
         }
     }
 
@@ -56,9 +58,12 @@ public class WaveController {
                     currentWave.setEnemyCount(currentWave.getEnemyCount() - 1);
                     timeSinceLastSpawn -= spawnInterval;
                     spawnInterval = 0.4f + new Random().nextFloat() * (0.6f - 0.4f);
-                } else {
-                    waveStarted = false;
                 }
+            }
+            if (isWaveOver()) {
+                waveStarted = false;
+                System.out.println("End of round " + currentWave.getWaveNumber());
+                currentWave = generateNextWave();
             }
         }
     }
@@ -70,7 +75,14 @@ public class WaveController {
 
     public boolean isWaveOver() {
         if (waveStarted) {
-            return currentWave.getEnemyCount() == 0;
+            if (currentWave.getEnemyCount() != 0) {
+                return false;
+            }
+            for (Enemy enemy : enemies) {
+                if (!enemy.isDead()) {
+                    return false;
+                }
+            }
         }
         return true;
     }
