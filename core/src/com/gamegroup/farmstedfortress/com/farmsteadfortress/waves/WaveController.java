@@ -1,5 +1,6 @@
 package com.farmsteadfortress.waves;
 
+import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.entities.enemies.EnemyFactory;
 
@@ -15,14 +16,15 @@ public class WaveController {
     private Wave currentWave;
     private boolean waveStarted = false;
 
-    public WaveController(List<Enemy> enemies) {
+    public WaveController(List<Enemy> enemies, Player player) {
         this.enemies = enemies;
-        this.currentWaveNumber = 1;
+        this.currentWaveNumber = 0;
         this.timeSinceLastSpawn = 0f;
         this.spawnInterval = 0.4f + new Random().nextFloat() * (0.6f - 0.4f);
         this.currentWave = generateNextWave();
         EnemyFactory enemyFactory = new EnemyFactory();
         enemyFactory.setEnemies(enemies);
+        enemyFactory.setPlayer(player);
     }
 
     private Wave generateNextWave() {

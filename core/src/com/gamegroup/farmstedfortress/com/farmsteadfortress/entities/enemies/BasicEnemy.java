@@ -2,6 +2,7 @@ package com.farmsteadfortress.entities.enemies;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.farmsteadfortress.entities.Player;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class BasicEnemy extends Enemy {
      * @param speed          the movement speed of the enemy
      * @param health         the enemy's health
      */
-    public BasicEnemy(TextureAtlas atlas, float animationSpeed, float speed, int health, List<Enemy> enemies) {
-        super(atlas, animationSpeed, speed, health, enemies);
+    public BasicEnemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
+        super(player, atlas, animationSpeed, speed, health, attackDamage,timeBetweenAttacks, enemies);
     }
 
     /**

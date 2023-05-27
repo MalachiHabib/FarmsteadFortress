@@ -47,9 +47,10 @@ public class GameScreen extends ScreenAdapter {
         map = new TileMap();
         calculateCameraPosition();
 
-        this.enemies = new ArrayList<>();
-        waveController = new WaveController(enemies);
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
+        this.enemies = new ArrayList<>();
+        waveController = new WaveController(enemies, player);
+
 
         uiStages = new ArrayList<>();
         hotbar = new Hotbar(player.getInventory(), shop);
@@ -124,7 +125,7 @@ public class GameScreen extends ScreenAdapter {
         hud.updatePlayerBalance(player);
         hud.updateWaveCount(waveController.getCurrentWave());
 
-        if (waveController.isWaveOver() && waveController.getCurrentWave().getWaveNumber() != 1) {
+        if (waveController.isWaveOver() && waveController.getCurrentWave().getWaveNumber() != 0) {
             waveOverUI.render(delta);
             waveController.stopWave();
         }

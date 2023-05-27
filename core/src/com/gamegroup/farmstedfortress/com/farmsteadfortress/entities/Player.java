@@ -40,7 +40,7 @@ public class Player {
     private Enemy targetedEnemy = null;
     private int money = 0;
     private int health = 0;
-    private float attackRange = 500f;
+    private float attackRange = 100f;
     private int attackDamage = 5;
     private float timeSinceLastAttack = 0f;
     private float timeBetweenAttacks = 1f;
@@ -91,10 +91,6 @@ public class Player {
 
     public int getHealth(){
         return health;
-    }
-
-    public void reducePlayerHealth(int damage){
-        health -= damage;
     }
 
     public Plant.PlantType getPlantToBePlanted() {
@@ -343,6 +339,21 @@ public class Player {
                 throw new IllegalStateException("Invalid direction: " + currentDirection);
         }
         return currentAnimation;
+    }
+
+    public void attacked(int damage) {
+        health -= damage;
+        if (isDead()) {
+            die();
+        }
+    }
+
+    private boolean isDead() {
+        return health <= 0;
+    }
+
+    private void die() {
+        System.out.println("died");
     }
 
 

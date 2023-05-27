@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 
@@ -21,6 +22,8 @@ import java.util.Random;
  * Represents a generic enemy entity in the game.
  */
 public abstract class Enemy {
+    private static final float EFFECT_DURATION = 1.5f;
+    private static final Color EFFECT_COLOR = Color.WHITE;
     protected List<Enemy> enemies;
     protected Animation<TextureRegion> walkingAnimation;
     protected float stateTime;
@@ -34,16 +37,18 @@ public abstract class Enemy {
     protected int health;
     protected int reward;
     private boolean isWalking;
+    private boolean reachedMiddle;
     private Animation<TextureRegion> currentAnimation;
     private Animation<TextureRegion> idleAnimation, walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW;
     private Animation<TextureRegion> dieAnimation;
     private boolean isAttacked;
     private ShaderProgram attackShader;
-    private static final float EFFECT_DURATION = 1.5f;
-    private static final Color EFFECT_COLOR = Color.WHITE;
-
+    private Player player;
     private float effectTimer;
     private boolean isUnderEffect;
+    private int attackDamage;
+    private float timeSinceLastAttack = 0;
+    private float timeBetweenAttacks;
 
 
     /**
@@ -54,7 +59,7 @@ public abstract class Enemy {
      * @param speed          the movement speed of the enemy
      * @param health         the enemy's health
      */
-    public Enemy(TextureAtlas atlas, float animationSpeed, float speed, int health, List<Enemy> enemies) {
+    public Enemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
 
         TextureAtlas idleAtlas = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/PlayerIdle.atlas"));
         idleAnimation = new Animation<TextureRegion>(animationSpeed, idleAtlas.getRegions(), Animation.PlayMode.LOOP);
@@ -68,9 +73,12 @@ public abstract class Enemy {
         walkAnimationS = new Animation<TextureRegion>(animationSpeed, walkAtlasS.getRegions(), Animation.PlayMode.LOOP);
         walkAnimationE = new Animation<TextureRegion>(animationSpeed, walkAtlasE.getRegions(), Animation.PlayMode.LOOP);
         walkAnimationW = new Animation<TextureRegion>(animationSpeed, walkAtlasW.getRegions(), Animation.PlayMode.LOOP);
-        currentAnimation = walkAnimationN;
-        isWalking = false;
-
+        this.attackDamage = attackDamage;
+        this.timeBetweenAttacks = timeBetweenAttacks;
+        this.currentAnimation = walkAnimationN;
+        this.isWalking = false;
+        this.player = player;
+        System.out.println(player.getHealth());
         this.walkingAnimation = new Animation<TextureRegion>(animationSpeed, atlas.getRegions());
         this.stateTime = 0f;
         this.position = new Vector2();
@@ -82,10 +90,12 @@ public abstract class Enemy {
         this.boundingBox = new Rectangle();
         this.health = health;
         this.enemies = enemies;
-        isAttacked = false;
-        attackShader = null;
+        this.isAttacked = false;
+        this.attackShader = null;
         this.effectTimer = 0f;
         this.isUnderEffect = false;
+        this.reachedMiddle = false;
+
         ShaderProgram.pedantic = false;
         String vertexShader = Gdx.files.internal("shaders/attackShader.vert").readString();
         String fragmentShader = Gdx.files.internal("shaders/attackShader.frag").readString();
@@ -94,7 +104,6 @@ public abstract class Enemy {
         if (!attackShader.isCompiled()) {
             System.err.println("Error compiling attack shader: " + attackShader.getLog());
         }
-
     }
 
     /**
@@ -205,7 +214,7 @@ public abstract class Enemy {
         }
 
         updateDirection();
-
+        timeSinceLastAttack += deltaTime;
         stateTime += deltaTime;
 
         boundingBox.set(position.x, position.y, walkingAnimation.getKeyFrame(stateTime).getRegionWidth(), walkingAnimation.getKeyFrame(stateTime).getRegionHeight());
@@ -227,6 +236,8 @@ public abstract class Enemy {
                 isWalking = true;
             } else {
                 isWalking = false;
+                reachedMiddle = true;
+                attackCenter();
             }
         } else {
             isWalking = false;
@@ -240,7 +251,16 @@ public abstract class Enemy {
         }
     }
 
+    public void attackCenter() {
+        if (reachedMiddle && canAttack()) {
+            player.attacked(attackDamage);
+            timeSinceLastAttack = 0f;
+        }
+    }
 
+    public boolean canAttack() {
+        return timeSinceLastAttack >= timeBetweenAttacks;
+    }
     /**
      * Sets the path for the enemy to follow.
      *

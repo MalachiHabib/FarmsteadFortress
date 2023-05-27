@@ -3,6 +3,7 @@ package com.farmsteadfortress.entities.enemies;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.farmsteadfortress.entities.Player;
 
 import java.util.List;
 
@@ -12,9 +13,10 @@ import java.util.List;
 public class EnemyFactory {
 
     private static final float DEFAULT_ANIMATION_SPEED = 1 / 10f;
-    private static final float DEFAULT_ENEMY_SPEED = 120f;
+    private static final float DEFAULT_ENEMY_SPEED = 100f;
     private static final String BASIC_ENEMY_TEXTURE_ATLAS_PATH = "entities/player/PlayerAtlas.atlas";
     private static List<Enemy> enemies;
+    private static Player player;
 
     public enum EnemyType {
         BASIC_ENEMY, BOSS_ENEMY,
@@ -38,6 +40,7 @@ public class EnemyFactory {
     public void setEnemies(List<Enemy> enemies) {
         this.enemies = enemies;
     }
+    public void setPlayer(Player player) {this.player = player;}
     /**
      * Creates a BasicEnemy instance.
      *a
@@ -46,7 +49,7 @@ public class EnemyFactory {
     private static BasicEnemy createBasicEnemy() {
         TextureAtlas atlas = new TextureAtlas(BASIC_ENEMY_TEXTURE_ATLAS_PATH);
         setTextureFilters(atlas);
-        return new BasicEnemy(atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED, 20, enemies);
+        return new BasicEnemy(player, atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED, 5, 2, 2.5f, enemies);
     }
 
     /**
