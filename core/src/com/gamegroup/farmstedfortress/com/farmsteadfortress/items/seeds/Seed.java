@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.farmsteadfortress.entities.plants.Plant;
 import com.farmsteadfortress.items.Item;
 
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class Seed extends Item {
     private int growthTime;
     private Plant.PlantType plantType;
@@ -14,6 +17,9 @@ public abstract class Seed extends Item {
         this.plantType = plantType;
     }
 
+    public static List<Seed> getSeedTypes() {
+        return Arrays.asList(new TomatoSeed(), new CauliflowerSeed());
+    }
     public Plant.PlantType getPlantType() {
         return plantType;
     }

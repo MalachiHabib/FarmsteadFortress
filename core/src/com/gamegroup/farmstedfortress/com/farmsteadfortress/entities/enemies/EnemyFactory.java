@@ -19,7 +19,7 @@ public class EnemyFactory {
     private static Player player;
 
     public enum EnemyType {
-        BASIC_ENEMY, BOSS_ENEMY,
+        BASIC_ENEMY, BOSS_ENEMY, CROW
     }
 
     /**

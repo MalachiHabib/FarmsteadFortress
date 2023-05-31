@@ -19,21 +19,19 @@ public abstract class Plant {
     protected int damage;
     protected float attackSpeed;
     protected float attackRange;
-    protected int cost;
     protected Tile tile;
     protected ObjectMap<GrowthStage, TextureRegion> textures;
     protected GrowthStage currentStage;
     protected float growthTimer;
     protected boolean isHighlighted = false;
 
-    public Plant(float growTime, Vector2 position, int health, int damage, float attackSpeed, float attackRange, int cost, Tile tile) {
+    public Plant(float growTime, Vector2 position, int health, int damage, float attackSpeed, float attackRange, Tile tile) {
         this.growTime = growTime;
         this.position = position;
         this.health = health;
         this.damage = damage;
         this.attackSpeed = attackSpeed;
         this.attackRange = attackRange;
-        this.cost = cost;
         this.tile = tile;
         this.textures = new ObjectMap<>();
         this.currentStage = GrowthStage.SEEDLING;
@@ -98,6 +96,6 @@ public abstract class Plant {
 
     public enum PlantType {
         TOMATO,
-        FERN
+        SUNFLOWER, FERN
     }
 }

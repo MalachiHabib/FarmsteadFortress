@@ -18,7 +18,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.inventory.Inventory;
-import com.farmsteadfortress.items.seeds.TomatoSeed;
+import com.farmsteadfortress.items.seeds.Seed;
+
+import java.util.List;
 
 public class ShopUI {
     private final Stage stage;
@@ -29,7 +31,6 @@ public class ShopUI {
     Player player;
     private Image backgroundImage;
     private boolean isOpen;
-
 
     public ShopUI(Hotbar hotbar, Player player) {
         stage = new Stage(new ScreenViewport());
@@ -77,8 +78,9 @@ public class ShopUI {
     private void createShop() {
         Table buttonTable = new Table();
         buttonTable.right().bottom();
-        for (int i = 0; i < 10; i++) {
-            final TomatoSeed seed = new TomatoSeed();
+        List<Seed> seedTypes = Seed.getSeedTypes();
+        for (int i = 0; i < seedTypes.size(); i++) {
+            final Seed seed = seedTypes.get(i);  // Make seed final
             ImageButton button = new ImageButton(new TextureRegionDrawable(seed.getTexture()));
             button.setName("shopActor");
             button.addListener(new ClickListener() {
@@ -95,7 +97,6 @@ public class ShopUI {
             buttonTable.add(button).size(100, 80).pad(10);
             if ((i + 1) % 2 == 0) buttonTable.row();
         }
-
         buttonTable.pad(Gdx.graphics.getHeight() * 0.27f);
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
@@ -115,6 +116,7 @@ public class ShopUI {
         stage.addActor(shopBackground);
         stage.addActor(scrollPane);
     }
+
 
 
     public void render() {

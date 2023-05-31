@@ -12,8 +12,8 @@ public class TomatoPlant extends Plant {
     private int attackDamage;
 
     public TomatoPlant(float growTime, Vector2 position, int health, int attackDamage, float attackSpeed,
-                       float attackRange, float timeBetweenAttacks, int cost, Tile tile, TextureAtlas atlas) {
-        super(growTime, position, health, attackDamage, attackSpeed, attackRange, cost, tile);
+                       float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas) {
+        super(growTime, position, health, attackDamage, attackSpeed, attackRange, tile);
         this.atlas = atlas;
         this.timeBetweenAttacks = timeBetweenAttacks;
         this.attackDamage = attackDamage;

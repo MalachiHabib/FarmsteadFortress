@@ -17,7 +17,7 @@ public class FernPlant extends Plant {
     private String fernType;
 
     public FernPlant(float growTime, Vector2 position, int health, int reward, Tile tile, TextureAtlas atlas) {
-        super(growTime, position, health, 0, 0, 0, 0, tile);
+        super(growTime, position, health, 0, 0, 0, tile);
         this.atlas = atlas;
         this.reward = reward;
 

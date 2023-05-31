@@ -469,7 +469,7 @@ public class TileMap {
     private void fillMapWithObjects() {
         Random random = new Random();
         for (Tile baseTile : baseTiles) {
-            Plant plant = PlantFactory.createPlant(Plant.PlantType.FERN, baseTile);
+            Plant plant = PlantFactory.createPlant(Plant.PlantType.FERN, baseTile, null);
             if (baseTile.getTileType().equals(Tile.TileType.GRASS) || baseTile.getTileType().equals(Tile.TileType.GRASS_BLUE) || baseTile.getTileType().equals(Tile.TileType.GRASS_YELLOW)) {
                 int randomNumber = random.nextInt(10);
                 if (randomNumber < 1) {
