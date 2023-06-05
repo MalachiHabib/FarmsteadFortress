@@ -3,10 +3,12 @@ package com.farmsteadfortress.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -15,6 +17,9 @@ import com.farmsteadfortress.FarmsteadFortress;
 public class MenuScreen implements Screen {
     FarmsteadFortress game;
     SpriteBatch menuBatch;
+
+    Texture bgTexture;
+    Image background;
     Skin skin;
     Stage stage;
     BitmapFont bmfont;
@@ -25,8 +30,18 @@ public class MenuScreen implements Screen {
 
     public void create() {
         menuBatch = new SpriteBatch();
+        bgTexture = new Texture(Gdx.files.internal("gui/msg-background.png"));
+
         skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
+
         stage = new Stage();
+
+        background = new Image(bgTexture);
+        //background.setScale(2f);
+        background.setSize(background.getWidth() * 4, background.getHeight() * 4);
+        //background.setOrigin(0, 0);
+        background.setPosition(Gdx.graphics.getWidth() / 2 - background.getWidth() / 2, Gdx.graphics.getHeight() / 2 - background.getHeight() /2 );
+        //background.setPosition(Gdx.graphics.getWidth() / 2 - bgTexture.getWidth() / 2, Gdx.graphics.getHeight() / 2 - bgTexture.getHeight() /2);
 
         final TextButton startButton = new TextButton("Start", skin, "default");
         startButton.setWidth(300f);
@@ -38,10 +53,14 @@ public class MenuScreen implements Screen {
         // maybe realign buttons more toward the center; seem to be very far apart
         // need to increase the size of the text on the buttons
 
+        // need to resize background
+        // need to center background properly
+
         int half = Gdx.graphics.getWidth() / 2;
         int quarter = (half) / 2;
-        startButton.setPosition(quarter - 150f, Gdx.graphics.getHeight() / 2 - 100f);
-        quitButton.setPosition(half + quarter - 150f, Gdx.graphics.getHeight() / 2 - 100f);
+        startButton.setPosition(quarter / 2 + quarter - 150f, Gdx.graphics.getHeight() / 4);
+        quitButton.setPosition( quarter / 2 + half - 150f, Gdx.graphics.getHeight() / 4);
+        stage.addActor(background);
         stage.addActor(startButton);
         stage.addActor(quitButton);
         Gdx.input.setInputProcessor(stage);
@@ -56,7 +75,7 @@ public class MenuScreen implements Screen {
                 Gdx.files.internal("gui/Lilian.png"),
                 false
         );
-        bmfont.getData().setScale(4, 4);
+        bmfont.getData().setScale(3, 3);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -86,14 +105,13 @@ public class MenuScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(55/255f, 125/255f, 176/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         menuBatch.begin();
         stage.draw();
-        bmfont.setColor(0, 0, 0, 1);
-        // could either stick with black or change at a later date
-        bmfont.draw(menuBatch, "Farmstead Fortress", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 5 / 6, 0f, 1, false);
+        bmfont.setColor(1, 1, 1, 1);
+        bmfont.draw(menuBatch, "Farmstead Fortress", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 3 / 4, 0f, 1, false);
         menuBatch.end();
     }
 

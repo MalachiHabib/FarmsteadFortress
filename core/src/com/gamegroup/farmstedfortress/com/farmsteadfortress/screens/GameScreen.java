@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
+    private SpriteBatch tutBatch;
     private OrthographicCamera camera;
     private TileMap map;
     private List<Enemy> enemies;
@@ -40,8 +42,10 @@ public class GameScreen extends ScreenAdapter {
     private VignettingEffect vignettingEffect;
     private HUD hud;
     private WaveOverUI waveOverUI;
+    private BitmapFont bmfont;
     public GameScreen(SpriteBatch batch) {
         this.batch = batch;
+        tutBatch = new SpriteBatch();
         camera = new OrthographicCamera(1920, 1080);
         camera.zoom = 1.5f;
         map = new TileMap();
@@ -78,6 +82,17 @@ public class GameScreen extends ScreenAdapter {
         // Initialize the vignetting effect
         vignettingEffect = new VignettingEffect(false);
         vignettingEffect.setIntensity(0.5f);
+
+        /*
+        BitmapFont sourced from
+        https://www.dafont.com/lilian-2.font?back=bitmap
+        follow link for more details
+         */
+        bmfont = new BitmapFont(
+                Gdx.files.internal("gui/Lilian.fnt"),
+                Gdx.files.internal("gui/Lilian.png"),
+                false
+        );
     }
 
     @Override
@@ -129,6 +144,17 @@ public class GameScreen extends ScreenAdapter {
             waveOverUI.render(delta);
             waveController.stopWave();
         }
+
+        // Tutorial
+//        tutBatch.begin();
+//        bmfont.setColor(1, 1, 1, 1);
+//        String tutorialText = "Welcome to Farmstead Fortess. \n" +
+//                "In this game you must protect the core of your island (indicated by the grey tile) from enemies by planting crops\n" +
+//                "These crops can be bought within the shop in the bottom right hand corner.\n" +
+//                "Bought crops will appear in your hotbar and can be placed by selecting it from the hot bar and clicking where to place it on the field.\n" +
+//                " You will only have a little bit of time before the enemies arrive so get ready and good luck!";
+//        bmfont.draw(tutBatch, tutorialText, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0f, 1, false );
+//        tutBatch.end();
     }
 
 
@@ -164,6 +190,7 @@ public class GameScreen extends ScreenAdapter {
         hotbar.dispose();
         shop.dispose();
         hud.dispose();
+        bmfont.dispose();
     }
 
     private void clearScreen() {
