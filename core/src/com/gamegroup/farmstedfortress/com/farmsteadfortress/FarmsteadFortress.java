@@ -30,8 +30,6 @@ public class FarmsteadFortress extends Game {
         batch = new SpriteBatch();
         screen = new GameScreen(batch);
         menuScreen = new MenuScreen(this);
-        //setScreen(new GameScreen(batch));
-
         setScreen(new MenuScreen(this));
 
     }

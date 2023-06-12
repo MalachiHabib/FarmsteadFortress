@@ -55,7 +55,6 @@ public class GameScreen extends ScreenAdapter {
         this.enemies = new ArrayList<>();
         waveController = new WaveController(enemies, player);
 
-
         uiStages = new ArrayList<>();
         hotbar = new Hotbar(player.getInventory(), shop);
         shop = new ShopUI(hotbar, player);
@@ -75,7 +74,7 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(inputHandler);
         inputMultiplexer.addProcessor(hotbar.getStage());
-        Gdx.input.setInputProcessor(inputMultiplexer);
+
 
         shapeRenderer.setAutoShapeType(true);
 
@@ -196,5 +195,10 @@ public class GameScreen extends ScreenAdapter {
     private void clearScreen() {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 }

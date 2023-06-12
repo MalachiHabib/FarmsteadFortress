@@ -31,11 +31,8 @@ public class MenuScreen implements Screen {
     public void create() {
         menuBatch = new SpriteBatch();
         bgTexture = new Texture(Gdx.files.internal("gui/msg-background.png"));
-
         skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
-
         stage = new Stage();
-
         background = new Image(bgTexture);
         //background.setScale(2f);
         background.setSize(background.getWidth() * 4, background.getHeight() * 4);
@@ -145,7 +142,8 @@ public class MenuScreen implements Screen {
      */
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
+        stage.clear();
     }
 
     /**
@@ -155,6 +153,6 @@ public class MenuScreen implements Screen {
     public void dispose() {
         skin.dispose();
         stage.dispose();
-        menuBatch.end();
+        menuBatch.dispose();
     }
 }
