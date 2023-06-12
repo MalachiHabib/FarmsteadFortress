@@ -199,7 +199,14 @@ public abstract class Enemy {
      * @return true if the enemy contains the point, false otherwise
      */
     public boolean containsPoint(Vector2 point) {
-        return boundingBox.contains(point);
+        float padding = 5f;
+        Rectangle paddedBoundingBox = new Rectangle(
+                boundingBox.x - padding / 2,
+                boundingBox.y - padding / 2,
+                boundingBox.width + padding,
+                boundingBox.height + padding
+        );
+        return paddedBoundingBox.contains(point);
     }
 
     /**

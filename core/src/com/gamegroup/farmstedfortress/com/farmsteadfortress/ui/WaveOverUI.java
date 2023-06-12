@@ -59,19 +59,7 @@ public class WaveOverUI {
     }
 
     public void render(float delta) {
-        if (timer > 0) {
-            timer -= delta;
-            stage.act(delta);
-            stage.draw();
-
-            if (timer <= 0) {
-                fadeOutAndReset();
-            }
-        }
-    }
-
-    private void fadeOutAndReset() {
-        label.addAction(Actions.sequence(Actions.fadeOut(0.5f), Actions.alpha(0)));
-        timer = DISPLAY_TIME;
+        stage.act(delta);
+        stage.draw();
     }
 }

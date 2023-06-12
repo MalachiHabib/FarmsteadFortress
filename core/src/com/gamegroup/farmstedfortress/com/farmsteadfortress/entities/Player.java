@@ -16,12 +16,18 @@ import com.farmsteadfortress.path.PathResult;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Represents a player entity in the game.
  */
 public class Player {
+
+    private enum Direction {
+        N, S, E, W, NE, NW, SE, SW
+    }
+
     Animation<TextureRegion> currentAnimation;
     private Animation<TextureRegion> idleAnimation, walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW, walkAnimationNE, walkAnimationNW, walkAnimationSW, walkAnimationSE;
     private Animation<TextureRegion> dieAnimation;
@@ -40,7 +46,7 @@ public class Player {
     private Enemy targetedEnemy = null;
     private int money = 0;
     private int health = 0;
-    private float attackRange = 100f;
+    private float attackRange = 250f;
     private int attackDamage = 5;
     private float timeSinceLastAttack = 0f;
     private float timeBetweenAttacks = 1f;
@@ -89,7 +95,7 @@ public class Player {
         money += amount;
     }
 
-    public int getHealth(){
+    public int getHealth() {
         return health;
     }
 
@@ -109,9 +115,7 @@ public class Player {
         currentPathIndex = 0;
         originalPath = path;
         int startPathIndex;
-        if (path.size() > 4) {
-            startPathIndex = 4;
-        } else if (path.size() > 3) {
+        if (path.size() > 3) {
             startPathIndex = 3;
         } else if (path.size() > 2) {
             startPathIndex = 2;
@@ -354,11 +358,5 @@ public class Player {
 
     private void die() {
         System.out.println("died");
-    }
-
-
-    private enum Direction {
-        N, S, E, W, NE, NW, SE, SW
-
     }
 }

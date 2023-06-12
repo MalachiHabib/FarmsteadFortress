@@ -161,7 +161,7 @@ public class PathCalculator {
     }
 
     /**
-     * Initializes the score matrices with positive infinity values.
+     * Initialises the score matrices with positive infinity values.
      *
      * @param map A 2D String array representing the map.
      * @return A 2D double array containing the initialized scores.

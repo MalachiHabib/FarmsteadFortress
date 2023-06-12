@@ -51,8 +51,11 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private ArrayList<Stage> uiStages;
     private boolean isPanning;
     private boolean isZooming;
-    private float panSpeed = 0.1f;
-    private float zoomSpeed = 0.1f;
+    private float panSpeed = 10f;
+    private float cameraOffsetX = 0;
+    private float cameraOffsetY = 0;
+    private float cameraMoveSpeed = 7f;
+    private float maxCameraOffset = 150f;
     private Tile playerTile;
     private ShopUI shop;
 
@@ -75,14 +78,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     public void handleCameraInput() {
         if (Gdx.input.isTouched(0) && Gdx.input.isTouched(1)) {
-            float deltaX = (Gdx.input.getDeltaX(0) + Gdx.input.getDeltaX(1)) * panSpeed;
-            float deltaY = (Gdx.input.getDeltaY(0) + Gdx.input.getDeltaY(1)) * panSpeed;
-
-            camera.position.x -= deltaX;
-            camera.position.y += deltaY;
-        }
-
-        if (Gdx.input.isTouched(0) && Gdx.input.isTouched(1)) {
             float initialDistance = Vector2.dst(
                     Gdx.input.getX(0), Gdx.input.getY(0),
                     Gdx.input.getX(1), Gdx.input.getY(1));
@@ -94,23 +89,21 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             float pinchScale = currentDistance / initialDistance;
 
             float targetZoom = camera.zoom / pinchScale;
-            camera.zoom = MathUtils.lerp(camera.zoom, targetZoom, zoomSpeed);
+            camera.zoom = MathUtils.lerp(camera.zoom, targetZoom, panSpeed);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            camera.position.y += panSpeed;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            camera.position.y -= panSpeed;
+            cameraOffsetY = Math.min(cameraOffsetY + cameraMoveSpeed, maxCameraOffset);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            camera.position.x -= panSpeed;
+            cameraOffsetX = Math.max(cameraOffsetX - cameraMoveSpeed, -maxCameraOffset);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            cameraOffsetY = Math.max(cameraOffsetY - cameraMoveSpeed, -maxCameraOffset);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.position.x += panSpeed;
+            cameraOffsetX = Math.min(cameraOffsetX + cameraMoveSpeed, maxCameraOffset);
         }
-
-        // Limit the camera zoom within a specific range
         camera.zoom = MathUtils.clamp(camera.zoom, 1, 3);
     }
 
@@ -131,7 +124,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //issue is that it is touching within the ui some reason. something with the shop
         if (isTouchWithinUI(screenX, screenY) || isSecondFingerTouched()) {
             return false;
         }
@@ -153,7 +145,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     }
 
     private void handlePlayerActions(int screenX, int screenY) {
-        System.out.println("touch");
         playerTile = tileMap.getTileAt(player.getPosition());
 
         if (playerTile != null) {
@@ -163,13 +154,12 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                 if (player.hasReachedTarget() || targetTile != null) {
                     targetTile = clickedTile;
                     //TODO: Try to fix the direction of player.
-                    int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x + 1, (int) playerTile.tileMapPos.y + 2};
+                    int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x, (int) playerTile.tileMapPos.y};
                     int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
                     pathCalculator.clearTerrainWeights();
-                    pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
+                    pathCalculator.setTerrainWeight("W", 1000);
                     pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
                     updateHoverEffect(screenX, screenY);
-
                     if (pathResult.isSuccess()) {
                         player.setPath(pathResult.getPath());
                         player.setWalking(true);
@@ -216,6 +206,10 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     }
 
     public void update() {
+        Vector3 playerPosition = new Vector3(player.getPosition().x + 145f + cameraOffsetX, player.getPosition().y + 50f + cameraOffsetY, 0); // adding 50 units to x-coordinate
+        camera.position.set(playerPosition);
+        camera.update();
+
         boolean hasReachedTarget = targetTile != null && player.hasReachedTarget() && pathResult.isSuccess();
         boolean hasPlantToPlant = player.getPlantToBePlanted() != null;
         boolean hasFern = targetTile != null && targetTile.getPlant() instanceof FernPlant;
@@ -278,7 +272,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             }
         }
     }
-
 
 
     @Override

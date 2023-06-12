@@ -50,9 +50,6 @@ public class Tile {
     private TileType tileType;
     private Plant plant;
 
-    public Vector2 getTileMapPos() {
-        return tileMapPos;
-    }
     public void setPlant(Plant plant) {
         this.plant = plant;
     }
@@ -148,7 +145,7 @@ public class Tile {
         float xLimit = Math.abs(relY - halfHeight) / halfHeight * halfWidth;
 
 
-        return relY >= halfHeight - 5f && relY < TILE_SIZE + 5f && relX >= halfWidth - xLimit - 5f && relX < halfWidth + xLimit + 5f;
+        return relY >= halfHeight - 2f && relY < TILE_SIZE + 2f && relX >= halfWidth - xLimit - 5f && relX < halfWidth + xLimit + 5f;
     }
 
     /**
