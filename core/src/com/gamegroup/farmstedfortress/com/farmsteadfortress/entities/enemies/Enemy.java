@@ -42,7 +42,6 @@ public abstract class Enemy {
     private boolean reachedMiddle;
     private Animation<TextureRegion> currentAnimation;
     private Animation<TextureRegion> idleAnimation, walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW;
-    private Animation<TextureRegion> dieAnimation;
     private boolean isAttacked;
     private ShaderProgram attackShader;
     private float effectTimer;
@@ -51,6 +50,9 @@ public abstract class Enemy {
     private float timeSinceLastAttack = 0;
     private float timeBetweenAttacks;
     private Projectile hitBy = null;
+    private Animation<TextureRegion> attackAnimationN, attackAnimationS, attackAnimationE, attackAnimationW;
+    private Animation<TextureRegion> idleAnimationN, idleAnimationE, idleAnimationS, idleAnimationW;
+    private boolean isAttacking;
 
     /**
      * Constructs an enemy entity.
@@ -74,6 +76,29 @@ public abstract class Enemy {
         walkAnimationS = new Animation<TextureRegion>(animationSpeed, walkAtlasS.getRegions(), Animation.PlayMode.LOOP);
         walkAnimationE = new Animation<TextureRegion>(animationSpeed, walkAtlasE.getRegions(), Animation.PlayMode.LOOP);
         walkAnimationW = new Animation<TextureRegion>(animationSpeed, walkAtlasW.getRegions(), Animation.PlayMode.LOOP);
+
+        TextureAtlas attackAtlasN = new TextureAtlas(Gdx.files.internal("entities/Warhog/Attack_N.atlas"));
+        TextureAtlas attackAtlasS = new TextureAtlas(Gdx.files.internal("entities/Warhog/Attack_S.atlas"));
+        TextureAtlas attackAtlasE = new TextureAtlas(Gdx.files.internal("entities/Warhog/Attack_E.atlas"));
+        TextureAtlas attackAtlasW = new TextureAtlas(Gdx.files.internal("entities/Warhog/Attack_W.atlas"));
+
+        attackAnimationN = new Animation<TextureRegion>(animationSpeed, attackAtlasN.getRegions(), Animation.PlayMode.LOOP);
+        attackAnimationS = new Animation<TextureRegion>(animationSpeed, attackAtlasS.getRegions(), Animation.PlayMode.LOOP);
+        attackAnimationE = new Animation<TextureRegion>(animationSpeed, attackAtlasE.getRegions(), Animation.PlayMode.LOOP);
+        attackAnimationW = new Animation<TextureRegion>(animationSpeed, attackAtlasW.getRegions(), Animation.PlayMode.LOOP);
+
+        TextureAtlas idleAtlasN = new TextureAtlas(Gdx.files.internal("entities/Warhog/Idle_N.atlas"));
+        TextureAtlas idleAtlasE = new TextureAtlas(Gdx.files.internal("entities/Warhog/Idle_E.atlas"));
+        TextureAtlas idleAtlasS = new TextureAtlas(Gdx.files.internal("entities/Warhog/Idle_S.atlas"));
+        TextureAtlas idleAtlasW = new TextureAtlas(Gdx.files.internal("entities/Warhog/Idle_W.atlas"));
+
+        idleAnimationN = new Animation<TextureRegion>(animationSpeed, idleAtlasN.getRegions(), Animation.PlayMode.LOOP);
+        idleAnimationE = new Animation<TextureRegion>(animationSpeed, idleAtlasE.getRegions(), Animation.PlayMode.LOOP);
+        idleAnimationS = new Animation<TextureRegion>(animationSpeed, idleAtlasS.getRegions(), Animation.PlayMode.LOOP);
+        idleAnimationW = new Animation<TextureRegion>(animationSpeed, idleAtlasW.getRegions(), Animation.PlayMode.LOOP);
+
+        this.isAttacking = false;
+
         this.attackDamage = attackDamage;
         this.timeBetweenAttacks = timeBetweenAttacks;
         this.currentAnimation = walkAnimationN;
@@ -198,14 +223,36 @@ public abstract class Enemy {
     }
 
     private Animation<TextureRegion> getCurrentAnimation() {
-        if (direction.y > 0) {
-            return walkAnimationN;
-        } else if (direction.y < 0) {
-            return walkAnimationS;
-        } else if (direction.x > 0) {
-            return walkAnimationE;
+        if (isAttacking) {
+            if (direction.y > 0) {
+                return attackAnimationN;
+            } else if (direction.y < 0) {
+                return attackAnimationS;
+            } else if (direction.x > 0) {
+                return attackAnimationE;
+            } else {
+                return attackAnimationW;
+            }
+        } else if (reachedMiddle && !isAttacking) {
+            if (direction.y > 0) {
+                return idleAnimationN;
+            } else if (direction.y < 0) {
+                return idleAnimationS;
+            } else if (direction.x > 0) {
+                return idleAnimationE;
+            } else {
+                return idleAnimationW;
+            }
         } else {
-            return walkAnimationW;
+            if (direction.y > 0) {
+                return walkAnimationN;
+            } else if (direction.y < 0) {
+                return walkAnimationS;
+            } else if (direction.x > 0) {
+                return walkAnimationE;
+            } else {
+                return walkAnimationW;
+            }
         }
     }
 
@@ -273,12 +320,22 @@ public abstract class Enemy {
                 isUnderEffect = false;
             }
         }
+
+        if (isAttacking) {
+            if (attackAnimationN.isAnimationFinished(stateTime) || attackAnimationS.isAnimationFinished(stateTime)
+                    || attackAnimationE.isAnimationFinished(stateTime) || attackAnimationW.isAnimationFinished(stateTime)) {
+                isAttacking = false;
+                stateTime = 0f;
+            }
+        }
     }
 
     public void attackCenter() {
         if (reachedMiddle && canAttack()) {
             player.attacked(attackDamage);
             timeSinceLastAttack = 0f;
+            isAttacking = true;
+            stateTime = 0f; // Reset stateTime when an attack starts
         }
     }
 
