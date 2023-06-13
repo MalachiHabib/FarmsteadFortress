@@ -74,18 +74,17 @@ public abstract class Plant {
     }
 
     public void draw(SpriteBatch batch) {
-        TextureRegion currentTexture = textures.get(currentStage);
-        if (isHighlighted) {
-            batch.setColor(Color.BLUE);
+        if(currentStage != null) {
+            TextureRegion currentTexture = textures.get(currentStage);
+            if (currentTexture != null) {
+                if (isHighlighted) {
+                    batch.setColor(Color.BLUE);
+                }
+                batch.draw(currentTexture, this.position.x, this.position.y + 10f + Tile.TILE_SIZE / 2f);
+                batch.setColor(Color.WHITE);
+            }
         }
-        batch.draw(currentTexture, this.position.x, this.position.y + 10f + Tile.TILE_SIZE / 2f);
-        batch.setColor(Color.WHITE);
     }
-
-
-    protected abstract void initialiseTextures();
-
-    protected abstract void attack(float delta, Enemy enemy);
 
     public enum GrowthStage {
         SEEDLING,
@@ -98,4 +97,8 @@ public abstract class Plant {
         TOMATO,
         SUNFLOWER, FERN
     }
+
+    protected abstract void initialiseTextures();
+
+    protected abstract void attack(float delta, Enemy enemy);
 }

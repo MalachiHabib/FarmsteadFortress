@@ -4,44 +4,65 @@ size: 2048, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-fern_3
+fern_three
   rotate: false
   xy: 196, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-fern_3_highlight
+fern_three_highlight
   rotate: false
-  xy: 584, 2
+  xy: 1166, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-fern_2
-  rotate: false
-  xy: 778, 2
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-fern_2_highlight
-  rotate: false
-  xy: 2, 2
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-fern_1
+fern_three_small
   rotate: false
   xy: 390, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-fern_1_highlight
+fern_two
+  rotate: false
+  xy: 1360, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+fern_two_highlight
+  rotate: false
+  xy: 2, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+fern_two_small
+  rotate: false
+  xy: 584, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+fern_one
   rotate: false
   xy: 972, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+fern_one_highlighted
+  rotate: false
+  xy: 1554, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+fern_one_small
+  rotate: false
+  xy: 778, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0

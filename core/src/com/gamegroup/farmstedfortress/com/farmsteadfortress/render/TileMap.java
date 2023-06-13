@@ -107,7 +107,7 @@ public class TileMap {
                 System.out.println("Pathfinding timed out, generating a new map...");
             }
         }
-        printMap();
+        //printMap();
         fillMapWithTiles();
         fillMapWithObjects();
     }
