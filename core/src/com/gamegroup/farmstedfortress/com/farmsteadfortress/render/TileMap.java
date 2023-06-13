@@ -38,7 +38,7 @@ public class TileMap {
     private List<PathResult> pathResults;
     private int mapSize;
     private String[][] map;
-    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassYellowTexture, grassBlueTexture, enemySpawnPointTexture;
+    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassYellowTexture, grassBlueTexture, enemySpawnPointTexture, crystalTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
 
@@ -49,7 +49,7 @@ public class TileMap {
      */
     public TileMap() {
         mapSize = 120;
-
+        crystalTexture = new Texture("objects/crystal/crystal.png");
         cropLandTexture = new Texture("tiles/crop_land.png");
         cropLandTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
@@ -69,7 +69,7 @@ public class TileMap {
 
         enemySpawnPointTexture = new Texture("tiles/middle.png");
         enemySpawnPointTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        middleTexture = new Texture("tiles/middle.png");
+        middleTexture = new Texture("tiles/middle_purple.png");
         middleTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         pathTextureTop = new Texture("tiles/path.png");
         pathTextureTop.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -149,7 +149,6 @@ public class TileMap {
         }
         return null;
     }
-
 
     /**
      * Returns a list of base tiles to be rendered.
@@ -467,14 +466,19 @@ public class TileMap {
      * Randomly places objects on crop land tiles.
      */
     private void fillMapWithObjects() {
+
+
         Random random = new Random();
         for (Tile baseTile : baseTiles) {
-            Plant plant = PlantFactory.createPlant(Plant.PlantType.FERN, baseTile, null);
+            Plant plant = PlantFactory.createPlant(Plant.PlantType.FERN, baseTile, null, null);
             if (baseTile.getTileType().equals(Tile.TileType.GRASS) || baseTile.getTileType().equals(Tile.TileType.GRASS_BLUE) || baseTile.getTileType().equals(Tile.TileType.GRASS_YELLOW)) {
                 int randomNumber = random.nextInt(10);
                 if (randomNumber < 1) {
                     baseTile.setPlant(plant);
                 }
+            } else if (baseTile.getTileType().equals(Tile.TileType.CENTER)) {
+                Vector2 objectPosition = new Vector2(baseTile.getPosition().x, baseTile.getPosition().y + Tile.TILE_SIZE / 2);
+
             }
         }
     }

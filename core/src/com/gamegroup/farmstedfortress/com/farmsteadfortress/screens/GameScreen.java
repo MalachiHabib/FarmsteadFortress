@@ -14,6 +14,7 @@ import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.input.InputHandler;
+import com.farmsteadfortress.projectiles.ProjectileManager;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 import com.farmsteadfortress.ui.HUD;
@@ -43,12 +44,15 @@ public class GameScreen extends ScreenAdapter {
     private HUD hud;
     private WaveOverUI waveOverUI;
     private BitmapFont bmfont;
+    private ProjectileManager projectileManager;
+
     public GameScreen(SpriteBatch batch) {
         this.batch = batch;
         tutBatch = new SpriteBatch();
         camera = new OrthographicCamera(1920, 1080);
         camera.zoom = 1.5f;
         map = new TileMap();
+        this.projectileManager = new ProjectileManager();
         calculateCameraPosition();
 
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
@@ -70,6 +74,7 @@ public class GameScreen extends ScreenAdapter {
         uiStages.add(shop.getStage());
         uiStages.add(hud.getStage());
         inputHandler.setUiStages(uiStages);
+        inputHandler.setProjectileManager(projectileManager);
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(inputHandler);
@@ -78,7 +83,7 @@ public class GameScreen extends ScreenAdapter {
 
         shapeRenderer.setAutoShapeType(true);
 
-        // Initialize the vignetting effect
+        // Initialise the vignetting effect
         vignettingEffect = new VignettingEffect(false);
         vignettingEffect.setIntensity(0.5f);
 
@@ -107,6 +112,7 @@ public class GameScreen extends ScreenAdapter {
         inputHandler.update();
         inputHandler.handleCameraInput();
 
+        projectileManager.update(delta);
         for (Enemy enemy : enemies) {
             enemy.update(delta, map);
         }
@@ -118,7 +124,7 @@ public class GameScreen extends ScreenAdapter {
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         batch.begin();
         map.render(batch);
-
+        projectileManager.render(batch);
         for (Enemy enemy : enemies) {
             enemy.render(batch);
         }

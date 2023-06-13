@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.projectiles.Projectile;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 
@@ -35,6 +36,7 @@ public abstract class Enemy {
     protected boolean outline;
     protected Rectangle boundingBox;
     protected int health;
+    protected Player player;
     protected int reward;
     private boolean isWalking;
     private boolean reachedMiddle;
@@ -43,13 +45,12 @@ public abstract class Enemy {
     private Animation<TextureRegion> dieAnimation;
     private boolean isAttacked;
     private ShaderProgram attackShader;
-    private Player player;
     private float effectTimer;
     private boolean isUnderEffect;
     private int attackDamage;
     private float timeSinceLastAttack = 0;
     private float timeBetweenAttacks;
-
+    private Projectile hitBy = null;
 
     /**
      * Constructs an enemy entity.
@@ -59,7 +60,7 @@ public abstract class Enemy {
      * @param speed          the movement speed of the enemy
      * @param health         the enemy's health
      */
-    public Enemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
+    public Enemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int reward, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
 
         TextureAtlas idleAtlas = new TextureAtlas(Gdx.files.internal("entities/player/playerAnimation/idle/PlayerIdle.atlas"));
         idleAnimation = new Animation<TextureRegion>(animationSpeed, idleAtlas.getRegions(), Animation.PlayMode.LOOP);
@@ -95,6 +96,8 @@ public abstract class Enemy {
         this.effectTimer = 0f;
         this.isUnderEffect = false;
         this.reachedMiddle = false;
+        this.reward = reward;
+        this.player = player;
 
         ShaderProgram.pedantic = false;
         String vertexShader = Gdx.files.internal("shaders/attackShader.vert").readString();
@@ -104,6 +107,25 @@ public abstract class Enemy {
         if (!attackShader.isCompiled()) {
             System.err.println("Error compiling attack shader: " + attackShader.getLog());
         }
+    }
+
+    public boolean isHit() {
+        return hitBy != null;
+    }
+
+    public void setHitBy(Projectile projectile) {
+        hitBy = projectile;
+    }
+
+    public Projectile getHitBy() {
+        return hitBy;
+    }
+
+    public boolean isHitBy(Projectile projectile) {
+        float distance = this.getPosition().dst(projectile.getPosition());
+        float totalRadius = boundingBox.width / 2 + projectile.getRadius() - 105f;
+
+        return distance <= totalRadius;
     }
 
     /**
@@ -132,12 +154,7 @@ public abstract class Enemy {
         outline = !outline;
     }
 
-    /**
-     * Describes the enemy's death.
-     */
-    public void die() {
-        System.out.println("died");
-    }
+    public abstract void die();
 
     /**
      * Retrieves the enemy's position.

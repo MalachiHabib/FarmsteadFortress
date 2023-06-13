@@ -4,17 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.projectiles.ProjectileManager;
 import com.farmsteadfortress.render.Tile;
 
 public class PlantFactory {
     private static TextureAtlas tomatoAtlas = new TextureAtlas(Gdx.files.internal("objects/tomato/TomatoAtlas.atlas"));
+    private static TextureAtlas tomatoProjectileAtlas = new TextureAtlas(Gdx.files.internal("objects/tomato/Tomato_projectile.atlas"));
+
     private static TextureAtlas fernAtlas = new TextureAtlas(Gdx.files.internal("objects/fern/FernAtlas.atlas"));
     private static TextureAtlas sunflowerAtlas = new TextureAtlas(Gdx.files.internal("objects/cauliflower/CauliflowerAtlas.atlas"));
     private static Player player;
-    public static Plant createPlant(Plant.PlantType plantType, Tile tile, Player player) {
+    public static Plant createPlant(Plant.PlantType plantType, Tile tile, Player player, ProjectileManager projectileManager) {
         switch (plantType) {
             case TOMATO:
-                return createTomatoPlant(tile);
+                return createTomatoPlant(tile, projectileManager);
             case FERN:
                 return createFernPlant(tile);
             case SUNFLOWER:
@@ -27,15 +30,15 @@ public class PlantFactory {
         }
     }
 
-    private static TomatoPlant createTomatoPlant(Tile tile) {
+    private static TomatoPlant createTomatoPlant(Tile tile, ProjectileManager projectileManager) {
         float growTime = 2.5f;
         int health = 100;
         int damage = 10;
         float attackSpeed = 1.0f;
-        float attackRange = 250f;
+        float attackRange = 20000f;
         float timeBetweenAttacks = 3f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
-        return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, tomatoAtlas);
+        return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, tomatoAtlas, tomatoProjectileAtlas, projectileManager);
     }
 
     private static FernPlant createFernPlant(Tile tile) {

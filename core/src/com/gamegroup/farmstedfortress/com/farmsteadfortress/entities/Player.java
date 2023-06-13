@@ -268,14 +268,6 @@ public class Player {
     public void attack(Enemy enemy) {
         enemy.attacked(attackDamage);
         timeSinceLastAttack = 0f;
-        setAttacking(true);
-    }
-
-    private void setAttacking(boolean isAttacking) {
-        this.isAttacking = isAttacking;
-        if (isAttacking) {
-            stateTime = 0;
-        }
     }
 
     public boolean canAttackEnemy(Enemy enemy) {

@@ -24,6 +24,7 @@ import com.farmsteadfortress.items.Item;
 import com.farmsteadfortress.items.seeds.Seed;
 import com.farmsteadfortress.path.PathCalculator;
 import com.farmsteadfortress.path.PathResult;
+import com.farmsteadfortress.projectiles.ProjectileManager;
 import com.farmsteadfortress.render.Tile;
 import com.farmsteadfortress.render.TileMap;
 import com.farmsteadfortress.ui.Hotbar;
@@ -58,6 +59,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private float maxCameraOffset = 150f;
     private Tile playerTile;
     private ShopUI shop;
+    private ProjectileManager projectileManager;
 
     public InputHandler(TileMap tileMap, OrthographicCamera camera, Player player, List<Enemy> enemies, InputMultiplexer inputMultiplexer, Hotbar hotbar, ShopUI shop) {
         hoverTexture = new Texture("tiles/highlight.png");
@@ -153,7 +155,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             if (clickedTile != null && clickedTile.isIntractable()) {
                 if (player.hasReachedTarget() || targetTile != null) {
                     targetTile = clickedTile;
-                    //TODO: Try to fix the direction of player.
                     int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x, (int) playerTile.tileMapPos.y};
                     int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
                     pathCalculator.clearTerrainWeights();
@@ -217,14 +218,11 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         if (hasReachedTarget) {
             if (hasFern) {
                 ((FernPlant) targetTile.getPlant()).harvest(player);
-            } else {
+            } else if (hasPlantToPlant) {
                 targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
-
-                if (hasPlantToPlant) {
-                    Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile, player);
-                    targetTile.setPlant(plant);
-                    player.setPlantToBePlanted(null);
-                }
+                Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile, player, projectileManager);
+                targetTile.setPlant(plant);
+                player.setPlantToBePlanted(null);
             }
         }
     }
@@ -331,5 +329,9 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     public void setUiStages(ArrayList<Stage> uiStages) {
         this.uiStages = uiStages;
+    }
+
+    public void setProjectileManager(ProjectileManager projectileManager) {
+        this.projectileManager = projectileManager;
     }
 }

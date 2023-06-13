@@ -48,6 +48,7 @@ public class Tile {
     public Vector2 tileMapPos;
     public Vector2 worldPos;
     private TileType tileType;
+    private TileObject tileObject;
     private Plant plant;
 
     public void setPlant(Plant plant) {
@@ -83,6 +84,9 @@ public class Tile {
         batch.draw(tileTexture, worldPos.x, worldPos.y);
         if (plant != null) {
             plant.draw(batch);
+        }
+        if (tileObject != null) {
+            tileObject.draw(batch);
         }
     }
 
@@ -178,5 +182,14 @@ public class Tile {
      */
     public Vector2 getPosition() {
         return worldPos;
+    }
+
+
+    public void setTileObject(TileObject tileObject) {
+        this.tileObject = tileObject;
+    }
+
+    public TileObject getTileObject() {
+        return this.tileObject;
     }
 }

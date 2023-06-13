@@ -19,7 +19,7 @@ public class BasicEnemy extends Enemy {
      * @param health         the enemy's health
      */
     public BasicEnemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
-        super(player, atlas, animationSpeed, speed, health, attackDamage,timeBetweenAttacks, enemies);
+        super(player, atlas, animationSpeed, speed, health, 3, attackDamage,timeBetweenAttacks, enemies);
     }
 
     /**
@@ -29,6 +29,7 @@ public class BasicEnemy extends Enemy {
     @Override
     public void die() {
         enemies.remove(this);
+        player.addMoney(reward);
     }
 
     /**
