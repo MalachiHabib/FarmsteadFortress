@@ -335,7 +335,7 @@ public abstract class Enemy {
             player.attacked(attackDamage);
             timeSinceLastAttack = 0f;
             isAttacking = true;
-            stateTime = 0f; // Reset stateTime when an attack starts
+            stateTime = 0f;
         }
     }
 

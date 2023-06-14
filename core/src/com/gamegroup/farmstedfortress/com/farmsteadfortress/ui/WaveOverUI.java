@@ -10,8 +10,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class WaveOverUI {
     private static final float DISPLAY_TIME = 3.0f;
-    private static final String FONT_PATH = "gui/Lilian.fnt";
-    private static final String FONT_IMAGE_PATH = "gui/Lilian.png";
     private static final String TEXT_MESSAGE = "Wave Over";
 
     private Stage stage;
@@ -46,8 +44,8 @@ public class WaveOverUI {
 
     private Label.LabelStyle createLabelStyle() {
         BitmapFont bmfont = new BitmapFont(
-                Gdx.files.internal(FONT_PATH),
-                Gdx.files.internal(FONT_IMAGE_PATH),
+                Gdx.files.internal("gui/Lilian.fnt"),
+                Gdx.files.internal("gui/Lilian.png"),
                 false
         );
 

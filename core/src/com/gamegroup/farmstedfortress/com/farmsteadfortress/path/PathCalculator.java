@@ -164,7 +164,7 @@ public class PathCalculator {
      * Initialises the score matrices with positive infinity values.
      *
      * @param map A 2D String array representing the map.
-     * @return A 2D double array containing the initialized scores.
+     * @return A 2D double array containing the initialised scores.
      */
     private double[][] initialiseScores(String[][] map) {
         double[][] scores = new double[map.length][map[0].length];

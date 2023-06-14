@@ -31,7 +31,11 @@ public class FarmsteadFortress extends Game {
         screen = new GameScreen(batch);
         menuScreen = new MenuScreen(this);
         setScreen(new MenuScreen(this));
+    }
 
+    public void restartGame() {
+        screen = new GameScreen(batch);
+        setScreen(screen);
     }
 
     @Override

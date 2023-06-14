@@ -1,5 +1,6 @@
 package com.farmsteadfortress.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
@@ -45,8 +46,10 @@ public class GameScreen extends ScreenAdapter {
     private WaveOverUI waveOverUI;
     private BitmapFont bmfont;
     private ProjectileManager projectileManager;
+    private GameOverScreen gameOverScreen;
 
     public GameScreen(SpriteBatch batch) {
+        this.gameOverScreen = new GameOverScreen();
         this.batch = batch;
         tutBatch = new SpriteBatch();
         camera = new OrthographicCamera(1920, 1080);
@@ -150,6 +153,11 @@ public class GameScreen extends ScreenAdapter {
             waveController.stopWave();
         }
 
+        if (waveController.gameOver() || player.isDead()) {
+            Gdx.input.setInputProcessor(null); // remove the focus from the current screen
+            ((Game)Gdx.app.getApplicationListener()).setScreen(gameOverScreen); // switch to the game over screen
+        }
+
         // Tutorial
 //        tutBatch.begin();
 //        bmfont.setColor(1, 1, 1, 1);
@@ -206,5 +214,10 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 }

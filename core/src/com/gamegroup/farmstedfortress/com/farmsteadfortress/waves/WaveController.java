@@ -89,6 +89,10 @@ public class WaveController {
         return true;
     }
 
+    public boolean gameOver() {
+        return currentWave.getWaveNumber() >= 50;
+    }
+
     public void stopWave() {
         if (waveStarted) {
             waveStarted = false;

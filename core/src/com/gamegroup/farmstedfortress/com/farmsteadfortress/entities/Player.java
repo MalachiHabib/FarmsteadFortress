@@ -83,7 +83,7 @@ public class Player {
         this.currentPathIndex = 0;
         this.map = map;
         this.money = 5;
-        this.health = 100;
+        this.health = 2;
         inventory = new Inventory();
     }
 
@@ -106,6 +106,7 @@ public class Player {
     public void setPlantToBePlanted(Plant.PlantType plantToBePlanted) {
         this.plantToBePlanted = plantToBePlanted;
     }
+
 
     public Inventory getInventory() {
         return inventory;
@@ -344,7 +345,7 @@ public class Player {
         }
     }
 
-    private boolean isDead() {
+    public boolean isDead() {
         return health <= 0;
     }
 
