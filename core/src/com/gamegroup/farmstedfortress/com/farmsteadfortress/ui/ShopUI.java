@@ -78,9 +78,10 @@ public class ShopUI {
     private void createShop() {
         Table buttonTable = new Table();
         buttonTable.right().bottom();
+        buttonTable.padLeft(35);
         List<Seed> seedTypes = Seed.getSeedTypes();
         for (int i = 0; i < seedTypes.size(); i++) {
-            final Seed seed = seedTypes.get(i);  // Make seed final
+            final Seed seed = seedTypes.get(i);
             ImageButton button = new ImageButton(new TextureRegionDrawable(seed.getTexture()));
             button.setName("shopActor");
             button.addListener(new ClickListener() {
@@ -94,10 +95,9 @@ public class ShopUI {
                 }
             });
             buttons.add(button);
-            buttonTable.add(button).size(100, 80).pad(10);
+            buttonTable.add(button).size(100, 100).pad(20);
             if ((i + 1) % 2 == 0) buttonTable.row();
         }
-        buttonTable.pad(Gdx.graphics.getHeight() * 0.27f);
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         ScrollPane scrollPane = new ScrollPane(buttonTable, scrollPaneStyle);
@@ -116,8 +116,6 @@ public class ShopUI {
         stage.addActor(shopBackground);
         stage.addActor(scrollPane);
     }
-
-
 
     public void render() {
         if (isOpen) {

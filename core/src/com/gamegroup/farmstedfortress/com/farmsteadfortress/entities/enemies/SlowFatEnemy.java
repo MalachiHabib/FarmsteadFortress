@@ -10,16 +10,16 @@ import java.util.List;
 /**
  * Represents a basic enemy entity in the game.
  */
-public class BasicEnemy extends Enemy {
+public class SlowFatEnemy extends Enemy {
     /**
-     * Constructs a basic enemy entity.
+     * Constructs a slow & fat enemy entity.
      *
      * @param atlas          the texture atlas containing the walking animation frames
      * @param animationSpeed the speed of the walking animation
      * @param speed          the movement speed of the enemy
      * @param health         the enemy's health
      */
-    public BasicEnemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
+    public SlowFatEnemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
         super(player, atlas, animationSpeed, speed, health, 3, attackDamage,timeBetweenAttacks, enemies);
 
         TextureAtlas idleAtlasN = new TextureAtlas(Gdx.files.internal("entities/Warhog/Idle_N.atlas"));

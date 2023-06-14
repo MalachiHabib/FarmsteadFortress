@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.entities.plants.types.CauliflowerFlower;
+import com.farmsteadfortress.entities.plants.types.FernPlant;
+import com.farmsteadfortress.entities.plants.types.TomatoPlant;
 import com.farmsteadfortress.projectiles.ProjectileManager;
 import com.farmsteadfortress.render.Tile;
 

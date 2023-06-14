@@ -1,10 +1,11 @@
-package com.farmsteadfortress.entities.plants;
+package com.farmsteadfortress.entities.plants.types;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.enemies.Enemy;
+import com.farmsteadfortress.entities.plants.Plant;
 import com.farmsteadfortress.projectiles.Projectile;
 import com.farmsteadfortress.projectiles.ProjectileManager;
 import com.farmsteadfortress.render.Tile;
