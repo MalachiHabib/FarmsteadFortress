@@ -2,6 +2,7 @@ package com.farmsteadfortress.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,68 +16,87 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.farmsteadfortress.FarmsteadFortress;
 
 public class MenuScreen implements Screen {
-    FarmsteadFortress game;
-    SpriteBatch menuBatch;
-
-    Texture bgTexture;
-    Image background;
-    Skin skin;
-    Stage stage;
-    BitmapFont bmfont;
+    private final int screenWidth = Gdx.graphics.getWidth();
+    private Music backgroundMusic;
+    private TextButton quitButton;
+    private TextButton startButton;
+    private FarmsteadFortress game;
+    private SpriteBatch menuBatch;
+    private Texture bgTexture;
+    private Image background;
+    private Skin skin;
+    private Stage stage;
+    private BitmapFont headingFont;
+    private BitmapFont buttonFont;
+    private TextButton optionsButton;
 
     public MenuScreen(FarmsteadFortress game) {
         this.game = game;
+        game.initialisePreferences();
     }
 
     public void create() {
-        menuBatch = new SpriteBatch();
-        bgTexture = new Texture(Gdx.files.internal("gui/msg-background.png"));
-        skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
-        stage = new Stage();
-        background = new Image(bgTexture);
-        //background.setScale(2f);
-        background.setSize(background.getWidth() * 4, background.getHeight() * 4);
-        //background.setOrigin(0, 0);
-        background.setPosition(Gdx.graphics.getWidth() / 2 - background.getWidth() / 2, Gdx.graphics.getHeight() / 2 - background.getHeight() /2 );
-        //background.setPosition(Gdx.graphics.getWidth() / 2 - bgTexture.getWidth() / 2, Gdx.graphics.getHeight() / 2 - bgTexture.getHeight() /2);
+        if (!FarmsteadFortress.backgroundMusic.isPlaying()) {
+            FarmsteadFortress.backgroundMusic.play();
+        }
+        FarmsteadFortress.backgroundMusic.setVolume(game.getMusicVolume());
+        initialise();
+        createButtons();
+        addActors();
+        Gdx.input.setInputProcessor(stage);
+    }
 
-        final TextButton startButton = new TextButton("Start", skin, "default");
-        startButton.setWidth(300f);
-        startButton.setHeight(200f);
-        final TextButton quitButton = new TextButton("Quit", skin, "default");
-        quitButton.setWidth(300f);
-        quitButton.setHeight(200f);
-
-        // maybe realign buttons more toward the center; seem to be very far apart
-        // need to increase the size of the text on the buttons
-
-        // need to resize background
-        // need to center background properly
-
-        int half = Gdx.graphics.getWidth() / 2;
-        int quarter = (half) / 2;
-        startButton.setPosition(quarter / 2 + quarter - 150f, Gdx.graphics.getHeight() / 4);
-        quitButton.setPosition( quarter / 2 + half - 150f, Gdx.graphics.getHeight() / 4);
+    private void addActors() {
         stage.addActor(background);
         stage.addActor(startButton);
+        stage.addActor(optionsButton);
         stage.addActor(quitButton);
-        Gdx.input.setInputProcessor(stage);
+    }
 
-        /*
-        BitmapFont sourced from
-        https://www.dafont.com/lilian-2.font?back=bitmap
-        follow link for more details
-         */
-        bmfont = new BitmapFont(
+    private void createButtons() {
+        BitmapFont buttonFont = new BitmapFont(
                 Gdx.files.internal("gui/Lilian.fnt"),
                 Gdx.files.internal("gui/Lilian.png"),
                 false
         );
-        bmfont.getData().setScale(3, 3);
+        buttonFont.getData().setScale(1.5f, 1.5f);
+
+        TextButton.TextButtonStyle defaultStyle = skin.get(TextButton.TextButtonStyle.class);
+
+        TextButton.TextButtonStyle newStyle = new TextButton.TextButtonStyle();
+        newStyle.font = buttonFont;
+        newStyle.up = defaultStyle.up;
+        newStyle.down = defaultStyle.down;
+        newStyle.checked = defaultStyle.checked;
+
+        startButton = new TextButton("Start", newStyle);
+        startButton.setWidth(300f);
+        startButton.setHeight(200f);
+
+        quitButton = new TextButton("Quit", newStyle);
+        quitButton.setWidth(300f);
+        quitButton.setHeight(200f);
+
+        optionsButton = new TextButton("Options", newStyle);
+        optionsButton.setWidth(300f);
+        optionsButton.setHeight(200f);
+
+        optionsButton.setPosition(screenWidth / 2f - optionsButton.getWidth() / 2f, Gdx.graphics.getHeight() / 4f);
+        startButton.setPosition(screenWidth / 3f - startButton.getWidth() / 2, Gdx.graphics.getHeight() / 4f);
+        quitButton.setPosition(2f * screenWidth / 3f - quitButton.getWidth() / 2, Gdx.graphics.getHeight() / 4f);
+
+        headingFont = new BitmapFont(
+                Gdx.files.internal("gui/Lilian.fnt"),
+                Gdx.files.internal("gui/Lilian.png"),
+                false
+        );
+
+        headingFont.getData().setScale(3, 3);
 
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.stopMusic();
                 game.setScreen(FarmsteadFortress.screen);
             }
         });
@@ -87,6 +107,25 @@ public class MenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
+
+        optionsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(FarmsteadFortress.optionsScreen);
+            }
+        });
+    }
+
+    private void initialise() {
+        menuBatch = new SpriteBatch();
+        bgTexture = new Texture(Gdx.files.internal("gui/msg-background.png"));
+        skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
+        optionsButton = new TextButton("Options", skin, "default");
+        stage = new Stage();
+        background = new Image(bgTexture);
+
+        background.setSize(background.getWidth() * 4, background.getHeight() * 4);
+        background.setPosition(Gdx.graphics.getWidth() / 2 - background.getWidth() / 2, Gdx.graphics.getHeight() / 2 - background.getHeight() / 2);
     }
 
     /**
@@ -102,13 +141,12 @@ public class MenuScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(55/255f, 125/255f, 176/255f, 1);
+        Gdx.gl.glClearColor(55 / 255f, 125 / 255f, 176 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         menuBatch.begin();
         stage.draw();
-        bmfont.setColor(1, 1, 1, 1);
-        bmfont.draw(menuBatch, "Farmstead Fortress", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 3 / 4, 0f, 1, false);
+        headingFont.setColor(1, 1, 1, 1);
+        headingFont.draw(menuBatch, "Farmstead Fortress", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 3 / 4, 0f, 1, false);
         menuBatch.end();
     }
 
@@ -126,7 +164,7 @@ public class MenuScreen implements Screen {
      */
     @Override
     public void pause() {
-
+        backgroundMusic.pause();
     }
 
     /**
@@ -134,7 +172,7 @@ public class MenuScreen implements Screen {
      */
     @Override
     public void resume() {
-
+        backgroundMusic.play();
     }
 
     /**
@@ -151,6 +189,7 @@ public class MenuScreen implements Screen {
      */
     @Override
     public void dispose() {
+        backgroundMusic.dispose();
         skin.dispose();
         stage.dispose();
         menuBatch.dispose();

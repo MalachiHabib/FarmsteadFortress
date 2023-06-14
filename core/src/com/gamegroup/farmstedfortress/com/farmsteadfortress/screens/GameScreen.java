@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.crashinvaders.vfx.effects.VignettingEffect;
+import com.farmsteadfortress.FarmsteadFortress;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.PlayerFactory;
 import com.farmsteadfortress.entities.enemies.Enemy;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameScreen extends ScreenAdapter {
+    private Music backgroundMusic;
     private SpriteBatch batch;
     private SpriteBatch tutBatch;
     private OrthographicCamera camera;
@@ -47,10 +50,12 @@ public class GameScreen extends ScreenAdapter {
     private BitmapFont bmfont;
     private ProjectileManager projectileManager;
     private GameOverScreen gameOverScreen;
+    private FarmsteadFortress game;
 
-    public GameScreen(SpriteBatch batch) {
+    public GameScreen(SpriteBatch batch, FarmsteadFortress game) {
         this.gameOverScreen = new GameOverScreen();
         this.batch = batch;
+        this.game = game;
         tutBatch = new SpriteBatch();
         camera = new OrthographicCamera(1920, 1080);
         camera.zoom = 1.5f;
@@ -191,12 +196,19 @@ public class GameScreen extends ScreenAdapter {
         camera.position.set(centerX + offsetX, centerY + offsetY, 0);
     }
 
+    private void playMusic() {
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/game_track.mp3"));
+        backgroundMusic.play();
+        backgroundMusic.setVolume(game.getMusicVolume());
+    }
+
     private void updateCamera() {
         camera.update();
     }
 
     @Override
     public void dispose() {
+        backgroundMusic.dispose();
         super.dispose();
         batch.dispose();
         shapeRenderer.dispose();
@@ -213,11 +225,13 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        playMusic();
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
     public void hide() {
+        backgroundMusic.pause();
         Gdx.input.setInputProcessor(null);
     }
 }

@@ -40,10 +40,8 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     private OrthographicCamera camera;
     private Texture hoverTexture;
     private Player player;
-
     private List<Enemy> enemies;
     private Enemy selectedEnemy;
-
     private PathCalculator pathCalculator;
     private PathResult pathResult;
     private Tile lastHoveredTile;
@@ -158,7 +156,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                     int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x, (int) playerTile.tileMapPos.y};
                     int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
                     pathCalculator.clearTerrainWeights();
-                    pathCalculator.setTerrainWeight("W", 1000);
+                    pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
                     pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
                     updateHoverEffect(screenX, screenY);
                     if (pathResult.isSuccess()) {
