@@ -11,18 +11,20 @@ public abstract class Item {
     private String name;
     private int price;
     private Texture texture;
+    private Texture hotbarTexture;
 
-    public Item(ItemType itemType, String name, int price, Texture texture) {
+    public Item(ItemType itemType, String name, int price, Texture texture, Texture hotbarTexture) {
         this.itemType = itemType;
         this.name = name;
         this.price = price;
         this.texture = texture;
+        this.hotbarTexture = hotbarTexture;
     }
 
     public ItemType getItemType() {
         return itemType;
     }
-
+    public Texture getHotbarTexture() {return hotbarTexture;}
     public void setItemType(ItemType itemType) {
         this.itemType = itemType;
     }

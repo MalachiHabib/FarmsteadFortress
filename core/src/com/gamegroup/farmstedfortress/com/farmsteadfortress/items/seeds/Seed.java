@@ -11,8 +11,8 @@ public abstract class Seed extends Item {
     private int growthTime;
     private Plant.PlantType plantType;
 
-    public Seed(ItemType itemType, String name, int price, Texture texture, int growthTime, Plant.PlantType plantType) {
-        super(itemType, name, price, texture);
+    public Seed(ItemType itemType, String name, int price, Texture seedTexture, Texture hotbarTexture, int growthTime, Plant.PlantType plantType) {
+        super(itemType, name, price, seedTexture, hotbarTexture);
         this.growthTime = growthTime;
         this.plantType = plantType;
     }

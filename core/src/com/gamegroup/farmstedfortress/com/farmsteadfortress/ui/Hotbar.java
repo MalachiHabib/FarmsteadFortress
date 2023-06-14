@@ -99,7 +99,7 @@ public class Hotbar {
         for (int i = lastInventorySize; i < inventorySize; i++) {
             ImageButton button = buttons.get(i);
             Item item = inventory.getItems().get(i);
-            button.getStyle().imageUp = new TextureRegionDrawable(item.getTexture());
+            button.getStyle().imageUp = new TextureRegionDrawable(item.getHotbarTexture());
         }
 
         if (inventorySize < lastInventorySize) {
@@ -122,11 +122,11 @@ public class Hotbar {
             stack.add(button);
             stack.add(highlightButton);
             buttons.add(button);
-            table.add(stack).size(75, 75).padRight(5).padTop(7.5f);
+            table.add(stack).size(75, 75).padRight(5).padTop(27.5f);
 
             if (i < inventory.getItems().size) {
                 Item item = inventory.getItems().get(i);
-                button.getStyle().imageUp = new TextureRegionDrawable(item.getTexture());
+                button.getStyle().imageUp = new TextureRegionDrawable(item.getHotbarTexture());
             }
 
             final int slotIndex = i;
@@ -141,7 +141,7 @@ public class Hotbar {
     }
 
     private void createCircleHotbar() {
-        circleTable.right().bottom().padTop(8);
+        circleTable.right().bottom().padTop(20f);
         for (int i = 0; i < 2; i++) {
             final ImageButton button;
             if (i == 0) {

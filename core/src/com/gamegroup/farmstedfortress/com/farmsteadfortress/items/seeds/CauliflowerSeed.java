@@ -6,6 +6,6 @@ import com.farmsteadfortress.entities.plants.Plant;
 
 public class CauliflowerSeed extends Seed {
     public CauliflowerSeed() {
-        super(ItemType.SEED, "Sunflower Seed", 5, new Texture(Gdx.files.internal("gui/hotbar-cauliflower.png")), 10, Plant.PlantType.SUNFLOWER);
+        super(ItemType.SEED, "Sunflower Seed", 5, new Texture(Gdx.files.internal("gui/cauliflower-shop.png")), new Texture(Gdx.files.internal("gui/hotbar-cauliflower.png")), 10, Plant.PlantType.SUNFLOWER);
     }
 }
