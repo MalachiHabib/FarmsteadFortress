@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.farmsteadfortress.FarmsteadFortress;
+import com.farmsteadfortress.utils.Helpers;
 
 public class MenuScreen implements Screen {
     private final int screenWidth = Gdx.graphics.getWidth();
@@ -70,20 +71,28 @@ public class MenuScreen implements Screen {
         newStyle.checked = defaultStyle.checked;
 
         startButton = new TextButton("Start", newStyle);
-        startButton.setWidth(300f);
-        startButton.setHeight(200f);
+        startButton.setWidth(200f);
+        startButton.setHeight(150f);
 
         quitButton = new TextButton("Quit", newStyle);
-        quitButton.setWidth(300f);
-        quitButton.setHeight(200f);
+        quitButton.setWidth(200f);
+        quitButton.setHeight(150f);
 
         optionsButton = new TextButton("Options", newStyle);
-        optionsButton.setWidth(300f);
-        optionsButton.setHeight(200f);
+        optionsButton.setWidth(200f);
+        optionsButton.setHeight(150f);
 
-        optionsButton.setPosition(screenWidth / 2f - optionsButton.getWidth() / 2f, Gdx.graphics.getHeight() / 4f);
-        startButton.setPosition(screenWidth / 3f - startButton.getWidth() / 2, Gdx.graphics.getHeight() / 4f);
-        quitButton.setPosition(2f * screenWidth / 3f - quitButton.getWidth() / 2, Gdx.graphics.getHeight() / 4f);
+        float scaleFactor = Helpers.getScaleFactor();
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+
+        optionsButton.setPosition(screenWidth / 2f - (optionsButton.getWidth() * scaleFactor) / 2f, screenHeight / 4f);
+        startButton.setPosition(screenWidth / 3f - (startButton.getWidth() * scaleFactor) / 2, screenHeight / 4f);
+        quitButton.setPosition(2f * screenWidth / 3f - (quitButton.getWidth() * scaleFactor) / 2, screenHeight / 4f);
+
+        optionsButton.setSize(optionsButton.getWidth() * scaleFactor, optionsButton.getHeight() * scaleFactor);
+        startButton.setSize(startButton.getWidth() * scaleFactor, startButton.getHeight() * scaleFactor);
+        quitButton.setSize(quitButton.getWidth() * scaleFactor, quitButton.getHeight() * scaleFactor);
 
         headingFont = new BitmapFont(
                 Gdx.files.internal("gui/Lilian.fnt"),

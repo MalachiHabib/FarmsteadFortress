@@ -14,7 +14,7 @@ public class WaveController {
     private float spawnInterval;
     private float timeSinceLastSpawn;
     private Wave currentWave;
-    private boolean waveStarted = false;
+    public static boolean waveStarted;
 
     public WaveController(List<Enemy> enemies, Player player) {
         this.enemies = enemies;

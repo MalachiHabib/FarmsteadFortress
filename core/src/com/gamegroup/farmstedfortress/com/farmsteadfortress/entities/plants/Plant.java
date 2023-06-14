@@ -78,7 +78,7 @@ public abstract class Plant {
             TextureRegion currentTexture = textures.get(currentStage);
             if (currentTexture != null) {
                 if (isHighlighted) {
-                    batch.setColor(Color.BLUE);
+                    batch.setColor(Color.GRAY);
                 }
                 batch.draw(currentTexture, this.position.x, this.position.y + 10f + Tile.TILE_SIZE / 2f);
                 batch.setColor(Color.WHITE);

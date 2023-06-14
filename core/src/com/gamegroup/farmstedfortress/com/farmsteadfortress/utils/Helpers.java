@@ -84,4 +84,15 @@ public class Helpers {
         }
         return false;
     }
+
+    public static float getScaleFactor() {
+        float screenWidth = Gdx.graphics.getWidth();
+        if (screenWidth < 801) {
+            return 0.5f;
+        } else if (screenWidth < 1601) {
+            return 0.75f;
+        } else {
+            return 1f;
+        }
+    }
 }

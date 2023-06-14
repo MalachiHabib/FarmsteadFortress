@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.render.Tile;
+import com.farmsteadfortress.waves.WaveController;
 
 import java.util.List;
 
@@ -48,8 +49,10 @@ public class CauliflowerFlower extends Plant {
         timeSinceLastPayout += delta;
         if (currentStage == GrowthStage.ADULT) {
             if (timeSinceLastPayout >= timeBetweenPayouts) {
-                player.addMoney(payoutAmount);
-                timeSinceLastPayout = 0;
+                if (WaveController.waveStarted) {
+                    player.addMoney(payoutAmount);
+                    timeSinceLastPayout = 0;
+                }
             }
         }
     }

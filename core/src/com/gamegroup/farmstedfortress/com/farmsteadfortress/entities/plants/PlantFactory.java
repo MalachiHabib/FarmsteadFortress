@@ -10,10 +10,10 @@ import com.farmsteadfortress.render.Tile;
 public class PlantFactory {
     private static TextureAtlas tomatoAtlas = new TextureAtlas(Gdx.files.internal("objects/tomato/TomatoAtlas.atlas"));
     private static TextureAtlas tomatoProjectileAtlas = new TextureAtlas(Gdx.files.internal("objects/tomato/Tomato_projectile.atlas"));
-
     private static TextureAtlas fernAtlas = new TextureAtlas(Gdx.files.internal("objects/fern/FernAtlas.atlas"));
     private static TextureAtlas sunflowerAtlas = new TextureAtlas(Gdx.files.internal("objects/cauliflower/CauliflowerAtlas.atlas"));
     private static Player player;
+
     public static Plant createPlant(Plant.PlantType plantType, Tile tile, Player player, ProjectileManager projectileManager) {
         switch (plantType) {
             case TOMATO:
@@ -24,7 +24,7 @@ public class PlantFactory {
                 if (player == null) {
                     throw new IllegalArgumentException("Player instance is required to create a SunflowerPlant");
                 }
-                return createSunflowerPlant(tile, player);
+                return createCauliflowerPlant(tile, player);
             default:
                 return null;
         }
@@ -35,7 +35,7 @@ public class PlantFactory {
         int health = 100;
         int damage = 10;
         float attackSpeed = 1.0f;
-        float attackRange = 20000f;
+        float attackRange = 300f;
         float timeBetweenAttacks = 3f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
         return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, tomatoAtlas, tomatoProjectileAtlas, projectileManager);
@@ -49,11 +49,11 @@ public class PlantFactory {
         return new FernPlant(growTime, position, health, reward, tile, fernAtlas);
     }
 
-    private static CauliflowerFlower createSunflowerPlant(Tile tile, Player player) {
+    private static CauliflowerFlower createCauliflowerPlant(Tile tile, Player player) {
         float growTime = 5.0f;
         int health = 50;
         float timeBetweenPayouts = 3f;
-        int payoutAmount = 10;
+        int payoutAmount = 2;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
         return new CauliflowerFlower(growTime, position, health, timeBetweenPayouts, payoutAmount, tile, sunflowerAtlas, player);
     }
