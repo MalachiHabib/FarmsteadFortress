@@ -95,7 +95,8 @@ public abstract class Plant {
 
     public enum PlantType {
         TOMATO,
-        SUNFLOWER, FERN
+        CAULIFLOWER,
+        FERN
     }
 
     protected abstract void initialiseTextures();

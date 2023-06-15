@@ -38,7 +38,7 @@ public class TileMap {
     private List<PathResult> pathResults;
     private int mapSize;
     private String[][] map;
-    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassYellowTexture, grassBlueTexture, enemySpawnPointTexture, crystalTexture;
+    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassRockTexture, grassYellowTexture, grassBlueTexture, enemySpawnPointTexture, crystalTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
 
@@ -52,6 +52,8 @@ public class TileMap {
         cropLandTexture = new Texture("tiles/crop_land.png");
         cropLandTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
+        grassRockTexture = new Texture("tiles/grass_rock.png");
+        grassRockTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassTexture = new Texture("tiles/grass.png");
         grassTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassYellowTexture = new Texture("tiles/grass_yellowish.png");
@@ -427,19 +429,20 @@ public class TileMap {
                         Texture groundSelectedTexture;
                         Tile.TileType tileType = null;
                         int randomNum = new Random().nextInt(100) + 1;
-                        if (randomNum <= 80) {
+                        if (randomNum <= 42) {
                             groundSelectedTexture = grassTexture;
-                            tileType = Tile.TileType.GRASS;
-                        } else if (randomNum <= 90) {
-                            groundSelectedTexture = grassYellowTexture;
-                            tileType = Tile.TileType.GRASS_YELLOW;
-                        } else if (randomNum <= 95) {
-                            groundSelectedTexture = grassBlueTexture;
-                            tileType = Tile.TileType.GRASS_BLUE;
-                        } else {
-                            groundSelectedTexture = grassTexture;
+                            tileType = Tile.TileType.CLASSIC_GRASS;
+                        } else if (randomNum <= 45) {
+                            groundSelectedTexture = grassRockTexture;
                             tileType = Tile.TileType.ROCK;
+                        } else if (randomNum <= 80) {
+                            groundSelectedTexture = grassYellowTexture;
+                            tileType = Tile.TileType.MEADOW_GRASS;
+                        } else {
+                            groundSelectedTexture = grassBlueTexture;
+                            tileType = Tile.TileType.EVERGREEN_GRASS;
                         }
+
                         baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
                         break;
                     case WATER:
@@ -467,12 +470,10 @@ public class TileMap {
      * Randomly places objects on crop land tiles.
      */
     private void fillMapWithObjects() {
-
-
         Random random = new Random();
         for (Tile baseTile : baseTiles) {
             Plant plant = PlantFactory.createPlant(Plant.PlantType.FERN, baseTile, null, null);
-            if (baseTile.getTileType().equals(Tile.TileType.GRASS) || baseTile.getTileType().equals(Tile.TileType.GRASS_BLUE) || baseTile.getTileType().equals(Tile.TileType.GRASS_YELLOW)) {
+            if (baseTile.getTileType().equals(Tile.TileType.CLASSIC_GRASS) || baseTile.getTileType().equals(Tile.TileType.EVERGREEN_GRASS) || baseTile.getTileType().equals(Tile.TileType.MEADOW_GRASS)) {
                 int randomNumber = random.nextInt(10);
                 if (randomNumber < 1) {
                     baseTile.setPlant(plant);

@@ -14,7 +14,7 @@ public class PlantFactory {
     private static TextureAtlas tomatoAtlas = new TextureAtlas(Gdx.files.internal("objects/tomato/TomatoAtlas.atlas"));
     private static TextureAtlas tomatoProjectileAtlas = new TextureAtlas(Gdx.files.internal("objects/tomato/Tomato_projectile.atlas"));
     private static TextureAtlas fernAtlas = new TextureAtlas(Gdx.files.internal("objects/fern/FernAtlas.atlas"));
-    private static TextureAtlas sunflowerAtlas = new TextureAtlas(Gdx.files.internal("objects/cauliflower/CauliflowerAtlas.atlas"));
+    private static TextureAtlas cauliflowerAtlas = new TextureAtlas(Gdx.files.internal("objects/cauliflower/CauliflowerAtlas.atlas"));
     private static Player player;
 
     public static Plant createPlant(Plant.PlantType plantType, Tile tile, Player player, ProjectileManager projectileManager) {
@@ -23,10 +23,7 @@ public class PlantFactory {
                 return createTomatoPlant(tile, projectileManager);
             case FERN:
                 return createFernPlant(tile);
-            case SUNFLOWER:
-                if (player == null) {
-                    throw new IllegalArgumentException("Player instance is required to create a SunflowerPlant");
-                }
+            case CAULIFLOWER:
                 return createCauliflowerPlant(tile, player);
             default:
                 return null;
@@ -58,6 +55,6 @@ public class PlantFactory {
         float timeBetweenPayouts = 3f;
         int payoutAmount = 2;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
-        return new CauliflowerFlower(growTime, position, health, timeBetweenPayouts, payoutAmount, tile, sunflowerAtlas, player);
+        return new CauliflowerFlower(growTime, position, health, timeBetweenPayouts, payoutAmount, tile, cauliflowerAtlas, player);
     }
 }

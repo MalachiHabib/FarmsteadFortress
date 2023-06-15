@@ -1,6 +1,5 @@
 package com.farmsteadfortress.entities.plants.types;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -8,8 +7,6 @@ import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.enemies.Enemy;
 import com.farmsteadfortress.entities.plants.Plant;
 import com.farmsteadfortress.render.Tile;
-
-import java.util.List;
 
 public class FernPlant extends Plant {
     private TextureAtlas atlas;
@@ -23,13 +20,13 @@ public class FernPlant extends Plant {
         this.reward = reward;
 
         switch(tile.getTileType()) {
-            case GRASS:
+            case CLASSIC_GRASS:
                 fernType = "fern_one";
                 break;
-            case GRASS_YELLOW:
+            case MEADOW_GRASS:
                 fernType = "fern_two";
                 break;
-            case GRASS_BLUE:
+            case EVERGREEN_GRASS:
                 fernType = "fern_three";
                 break;
             default:
@@ -38,7 +35,6 @@ public class FernPlant extends Plant {
 
         initialiseTextures();
         highlightedTexture = atlas.findRegion(fernType + "_highlight");
-
         currentStage = GrowthStage.SEEDLING;
     }
 

@@ -19,7 +19,7 @@ public class Tile {
      */
     public enum TileType {
         CROP_LAND,
-        GRASS,
+        CLASSIC_GRASS,
         MUSHROOM,
         ROCK,
         ROCK_TWO,
@@ -28,19 +28,20 @@ public class Tile {
         BRIDGE,
         PATH,
         CENTER,
-        GRASS_YELLOW,
-        GRASS_BLUE, SPAWN_POINT
+        MEADOW_GRASS,
+        EVERGREEN_GRASS,
+        SPAWN_POINT
     }
 
     private static final TileType[] INTRACTABLE_TILES = {
             TileType.CROP_LAND,
-            TileType.GRASS,
+            TileType.CLASSIC_GRASS,
             TileType.MUSHROOM,
             TileType.ROCK,
             TileType.ROCK_TWO,
             TileType.OBJECT_TILE,
-            TileType.GRASS_BLUE,
-            TileType.GRASS_YELLOW
+            TileType.EVERGREEN_GRASS,
+            TileType.MEADOW_GRASS
     };
 
     private Texture tileTexture;
