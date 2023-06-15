@@ -46,8 +46,8 @@ public class Player {
     private Enemy targetedEnemy = null;
     private int money = 0;
     private int health = 0;
-    private float attackRange = 250f;
-    private int attackDamage = 5;
+    private float attackRange = 200f;
+    private int attackDamage = 2;
     private float timeSinceLastAttack = 0f;
     private float timeBetweenAttacks = 1f;
     private Direction currentDirection = Direction.S;
@@ -83,7 +83,7 @@ public class Player {
         this.currentPathIndex = 0;
         this.map = map;
         this.money = 5;
-        this.health = 2;
+        this.health = 100;
         inventory = new Inventory();
     }
 

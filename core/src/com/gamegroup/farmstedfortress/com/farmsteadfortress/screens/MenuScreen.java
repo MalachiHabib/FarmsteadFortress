@@ -60,7 +60,7 @@ public class MenuScreen implements Screen {
                 Gdx.files.internal("gui/Lilian.png"),
                 false
         );
-        buttonFont.getData().setScale(1.5f, 1.5f);
+        buttonFont.getData().setScale(1.25f, 1.25f);
 
         TextButton.TextButtonStyle defaultStyle = skin.get(TextButton.TextButtonStyle.class);
 

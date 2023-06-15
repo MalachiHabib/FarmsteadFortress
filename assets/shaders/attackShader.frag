@@ -8,6 +8,6 @@ uniform sampler2D u_texture;
 
 void main() {
     vec4 texColor = texture2D(u_texture, v_texCoord);
-    vec4 attackColor = vec4(0.0, 1.0, 0.0, 1.0); // Green color for attack
+    vec4 attackColor = vec4(1.0, 0.0, 0.0, 1.0); // Red color for attack
     gl_FragColor = texColor * attackColor * v_color;
 }

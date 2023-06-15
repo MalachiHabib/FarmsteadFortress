@@ -71,14 +71,14 @@ public class ShopUI {
         Label shopLabel = new Label("SHOP", labelStyle);
         shopLabel.setFontScale(2f);
         shopLabel.pack();
-        shopLabel.setPosition(Gdx.graphics.getWidth() * 0.86f, Gdx.graphics.getHeight() * 0.84f);
+        shopLabel.setPosition(Gdx.graphics.getWidth() * 0.866f, Gdx.graphics.getHeight() * 0.84f);
         stage.addActor(shopLabel);
     }
 
     private void createShop() {
         Table buttonTable = new Table();
         buttonTable.right().bottom();
-        buttonTable.padLeft(35);
+        buttonTable.padLeft(24);
         List<Seed> seedTypes = Seed.getSeedTypes();
         for (int i = 0; i < seedTypes.size(); i++) {
             final Seed seed = seedTypes.get(i);
@@ -95,7 +95,7 @@ public class ShopUI {
                 }
             });
             buttons.add(button);
-            buttonTable.add(button).size(100, 100).pad(20);
+            buttonTable.add(button).size(110, 125);
             if ((i + 1) % 2 == 0) buttonTable.row();
         }
 

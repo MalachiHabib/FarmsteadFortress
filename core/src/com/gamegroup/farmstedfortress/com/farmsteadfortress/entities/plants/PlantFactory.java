@@ -36,9 +36,9 @@ public class PlantFactory {
     private static TomatoPlant createTomatoPlant(Tile tile, ProjectileManager projectileManager) {
         float growTime = 2.5f;
         int health = 100;
-        int damage = 10;
+        int damage = 3;
         float attackSpeed = 1.0f;
-        float attackRange = 300f;
+        float attackRange = 600f;
         float timeBetweenAttacks = 3f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
         return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, tomatoAtlas, tomatoProjectileAtlas, projectileManager);

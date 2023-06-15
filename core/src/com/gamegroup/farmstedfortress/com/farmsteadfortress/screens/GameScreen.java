@@ -121,6 +121,7 @@ public class GameScreen extends ScreenAdapter {
         inputHandler.handleCameraInput();
 
         projectileManager.update(delta);
+
         for (Enemy enemy : enemies) {
             enemy.update(delta, map);
         }
@@ -130,15 +131,17 @@ public class GameScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.enableBlending();
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        batch.begin();
         map.render(batch);
-        projectileManager.render(batch);
         for (Enemy enemy : enemies) {
             enemy.render(batch);
         }
 
+        batch.begin();
+        projectileManager.render(batch);
         player.render(batch);
         batch.end();
+
+
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

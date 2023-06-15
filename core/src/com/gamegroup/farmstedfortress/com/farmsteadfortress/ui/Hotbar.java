@@ -122,7 +122,7 @@ public class Hotbar {
             stack.add(button);
             stack.add(highlightButton);
             buttons.add(button);
-            table.add(stack).size(75, 75).padRight(5).padTop(27.5f);
+            table.add(stack).size(75, 75).padRight(5).padTop(17f);
 
             if (i < inventory.getItems().size) {
                 Item item = inventory.getItems().get(i);
@@ -141,7 +141,7 @@ public class Hotbar {
     }
 
     private void createCircleHotbar() {
-        circleTable.right().bottom().padTop(20f);
+        circleTable.right().bottom().padTop(11f);
         for (int i = 0; i < 2; i++) {
             final ImageButton button;
             if (i == 0) {

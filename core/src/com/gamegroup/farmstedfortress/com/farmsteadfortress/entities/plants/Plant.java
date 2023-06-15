@@ -90,7 +90,7 @@ public abstract class Plant {
         SEEDLING,
         SPROUT,
         SMALL_PLANT,
-        ADULT;
+        ADULT
     }
 
     public enum PlantType {

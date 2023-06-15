@@ -23,8 +23,7 @@ import java.util.Random;
  * Represents a generic enemy entity in the game.
  */
 public abstract class Enemy {
-    private static final float EFFECT_DURATION = 1.5f;
-    private static final Color EFFECT_COLOR = Color.WHITE;
+    private static final Color EFFECT_COLOR = Color.RED;
     protected List<Enemy> enemies;
     protected Animation<TextureRegion> walkingAnimation;
     protected float stateTime;
@@ -36,16 +35,15 @@ public abstract class Enemy {
     protected boolean outline;
     protected Rectangle boundingBox;
     protected int health;
+    protected int fullHealth;
     protected Player player;
     protected int reward;
     private boolean isWalking;
     private boolean reachedMiddle;
     private Animation<TextureRegion> currentAnimation;
-    private Animation<TextureRegion>  walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW, attackAnimationN, attackAnimationS, attackAnimationE, attackAnimationW, idleAnimationN, idleAnimationE, idleAnimationS, idleAnimationW;
+    private Animation<TextureRegion> walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW, attackAnimationN, attackAnimationS, attackAnimationE, attackAnimationW, idleAnimationN, idleAnimationE, idleAnimationS, idleAnimationW;
     private boolean isAttacked;
     private ShaderProgram attackShader;
-    private float effectTimer;
-    private boolean isUnderEffect;
     private int attackDamage;
     private float timeSinceLastAttack = 0;
     private float timeBetweenAttacks;
@@ -53,6 +51,7 @@ public abstract class Enemy {
     private TextureAtlas walkAtlasN, walkAtlasS, walkAtlasE, walkAtlasW, attackAtlasN, attackAtlasS, attackAtlasE, attackAtlasW, idleAtlasN, idleAtlasS, idleAtlasE, idleAtlasW;
     private boolean isAttacking;
     private float animationSpeed;
+    private boolean isSelected = false;
 
     /**
      * Constructs an enemy entity.
@@ -83,11 +82,10 @@ public abstract class Enemy {
         this.enemies = enemies;
         this.isAttacked = false;
         this.attackShader = null;
-        this.effectTimer = 0f;
-        this.isUnderEffect = false;
         this.reachedMiddle = false;
         this.reward = reward;
         this.player = player;
+        fullHealth = this.health;
 
         ShaderProgram.pedantic = false;
         String vertexShader = Gdx.files.internal("shaders/attackShader.vert").readString();
@@ -135,7 +133,6 @@ public abstract class Enemy {
         idleAnimationE = new Animation<TextureRegion>(animationSpeed, idleAtlasE.getRegions(), Animation.PlayMode.LOOP);
         idleAnimationS = new Animation<TextureRegion>(animationSpeed, idleAtlasS.getRegions(), Animation.PlayMode.LOOP);
         idleAnimationW = new Animation<TextureRegion>(animationSpeed, idleAtlasW.getRegions(), Animation.PlayMode.LOOP);
-
     }
 
     public boolean isHit() {
@@ -166,21 +163,14 @@ public abstract class Enemy {
         health -= damage;
         if (isDead()) {
             die();
-        } else {
-            startEffect();
         }
-    }
-
-    private void startEffect() {
-        effectTimer = EFFECT_DURATION;
-        isUnderEffect = true;
     }
 
     /**
      * Toggles the enemy's outline status when clicked.
      */
     public void onClick() {
-        outline = !outline;
+        isSelected = !isSelected;
     }
 
     public abstract void die();
@@ -267,13 +257,14 @@ public abstract class Enemy {
      * @return true if the enemy contains the point, false otherwise
      */
     public boolean containsPoint(Vector2 point) {
-        float padding = 5f;
+        float padding = 50f;
         Rectangle paddedBoundingBox = new Rectangle(
                 boundingBox.x - padding / 2,
                 boundingBox.y - padding / 2,
                 boundingBox.width + padding,
                 boundingBox.height + padding
         );
+        System.out.println(paddedBoundingBox.contains(point));
         return paddedBoundingBox.contains(point);
     }
 
@@ -316,13 +307,6 @@ public abstract class Enemy {
             }
         } else {
             isWalking = false;
-        }
-
-        if (isUnderEffect) {
-            effectTimer -= deltaTime;
-            if (effectTimer <= 0f) {
-                isUnderEffect = false;
-            }
         }
 
         if (isAttacking) {
@@ -379,17 +363,20 @@ public abstract class Enemy {
         float posX = position.x;
         float posY = position.y + yOffset;
 
-        if (isUnderEffect) {
+        if (isSelected) {
             batch.setShader(attackShader);
             attackShader.setUniformf("u_color", EFFECT_COLOR.r, EFFECT_COLOR.g, EFFECT_COLOR.b, 1f);
         }
 
+        batch.begin();
         batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 2, currentFrame.getRegionHeight() / 2, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1, 1, 0);
-
-        if (isUnderEffect) {
+        batch.end();
+        if (isSelected) {
             batch.setShader(null);
         }
     }
+
+
 
     public boolean isDead() {
         return health <= 0;
