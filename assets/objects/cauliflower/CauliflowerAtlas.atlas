@@ -4,7 +4,7 @@ size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-cauliflower_full_grown
+cauliflower_large_plant
   rotate: false
   xy: 390, 2
   size: 192, 192
@@ -26,6 +26,13 @@ cauliflower_small_plant
   offset: 0, 0
   index: -1
 cauliflower_sprout
+  rotate: false
+  xy: 778, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+cauliflower_upgrade_plant
   rotate: false
   xy: 584, 2
   size: 192, 192

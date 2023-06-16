@@ -106,7 +106,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.stopMusic();
-                game.setScreen(FarmsteadFortress.screen);
+                game.setScreen(FarmsteadFortress.gameScreen);
             }
         });
 

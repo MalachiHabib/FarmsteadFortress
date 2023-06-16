@@ -44,7 +44,7 @@ public class OptionsScreen implements Screen {
                 Gdx.files.internal("gui/Lilian.png"),
                 false
         );
-        font.getData().setScale(1.5f, 1.5f);
+        font.getData().setScale(1.2f, 1.2f);
 
         TextButton.TextButtonStyle defaultStyle = skin.get(TextButton.TextButtonStyle.class);
 
@@ -107,9 +107,11 @@ public class OptionsScreen implements Screen {
         Gdx.gl.glClearColor(55 / 255f, 125 / 255f, 176 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         optionsBatch.begin();
-        font.draw(optionsBatch, "Options", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 3 / 4, 0f, 1, false);
-        font.draw(optionsBatch, "Music Volume", volumeMusicSlider.getX() - (1f * Gdx.graphics.getWidth() / 6.5f), volumeMusicSlider.getY() + 35f);
-        font.draw(optionsBatch, "Sound Volume", volumeSoundSlider.getX() - (1f * Gdx.graphics.getWidth() / 6.5f), volumeSoundSlider.getY() + 35f);
+        font.getData().setScale(2, 2);
+        font.draw(optionsBatch, "Options", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() * 3f / 4f, 0f, 1, false);
+        font.getData().setScale(1.2f, 1.2f);
+        font.draw(optionsBatch, "Music Volume", volumeMusicSlider.getX() - (1f * Gdx.graphics.getWidth() / 6.5f), volumeMusicSlider.getY() + 25f);
+        font.draw(optionsBatch, "Sound Volume", volumeSoundSlider.getX() - (1f * Gdx.graphics.getWidth() / 6.5f), volumeSoundSlider.getY() + 25f);
         stage.draw();
         optionsBatch.end();
     }

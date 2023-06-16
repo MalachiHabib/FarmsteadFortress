@@ -20,7 +20,7 @@ public class BasicEnemy extends Enemy {
      * @param health         the enemy's health
      */
     public BasicEnemy(Player player, TextureAtlas atlas, float animationSpeed, float speed, int health, int attackDamage, float timeBetweenAttacks, List<Enemy> enemies) {
-        super(player, atlas, animationSpeed, speed, health, 3, attackDamage,timeBetweenAttacks, enemies);
+        super(player, atlas, animationSpeed, speed, health, 3, attackDamage, timeBetweenAttacks, enemies);
 
         TextureAtlas idleAtlasN = new TextureAtlas(Gdx.files.internal("entities/Warhog/Idle_N.atlas"));
         TextureAtlas idleAtlasE = new TextureAtlas(Gdx.files.internal("entities/Warhog/Idle_E.atlas"));
@@ -46,8 +46,10 @@ public class BasicEnemy extends Enemy {
      */
     @Override
     public void die() {
-        enemies.remove(this);
-        player.addMoney(reward);
+        if (enemies.contains(this)) {
+            enemies.remove(this);
+            player.addMoney(reward);
+        }
     }
 
     /**

@@ -82,7 +82,7 @@ public class Player {
         this.currentPath = null;
         this.currentPathIndex = 0;
         this.map = map;
-        this.money = 5;
+        this.money = 500;
         this.health = 100;
         inventory = new Inventory();
     }
@@ -107,12 +107,22 @@ public class Player {
         this.plantToBePlanted = plantToBePlanted;
     }
 
-
     public Inventory getInventory() {
         return inventory;
     }
 
     public void setPath(List<int[]> path) {
+        int waterTileCount = 0;
+        for (int[] tile : path) {
+            if (map.getMap()[tile[0]][tile[1]].equals("W")) {
+                waterTileCount++;
+            }
+            if (waterTileCount >= 3) {
+                isWalking = false;
+                return;
+            }
+        }
+
         currentPathIndex = 0;
         originalPath = path;
         int startPathIndex;
@@ -128,6 +138,7 @@ public class Player {
 
         currentPath = path.subList(startPathIndex, path.size());
     }
+
 
     public void setDirection(Direction direction) {
         currentDirection = direction;
@@ -267,12 +278,13 @@ public class Player {
     }
 
     public void attack(Enemy enemy) {
+        System.out.println("attacked");
         enemy.attacked(attackDamage);
         timeSinceLastAttack = 0f;
     }
 
     public boolean canAttackEnemy(Enemy enemy) {
-        return this.getPosition().dst(enemy.getPosition()) <= attackRange && canAttack();
+        return this.getPosition().dst(enemy.getPosition()) <= attackRange * 1.5f && canAttack();
     }
 
     public int getAttackDamage() {

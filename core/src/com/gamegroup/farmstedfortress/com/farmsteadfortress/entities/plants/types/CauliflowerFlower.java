@@ -19,7 +19,7 @@ public class CauliflowerFlower extends Plant {
 
     public CauliflowerFlower(float growTime, Vector2 position, int health, float timeBetweenPayouts,
                              int payoutAmount, Tile tile, TextureAtlas atlas, Player player) {
-        super(growTime, position, health, 0, 0, 0, tile);
+        super(growTime, position, health, 0, 0, 0, tile, "Cauliflower");
         this.atlas = atlas;
         this.timeBetweenPayouts = timeBetweenPayouts;
         this.payoutAmount = payoutAmount;
@@ -33,6 +33,7 @@ public class CauliflowerFlower extends Plant {
         textures.put(GrowthStage.SPROUT, atlas.findRegion("cauliflower_sprout"));
         textures.put(GrowthStage.SMALL_PLANT, atlas.findRegion("cauliflower_small_plant"));
         textures.put(GrowthStage.ADULT, atlas.findRegion("cauliflower_full_grown"));
+        textures.put(GrowthStage.UPGRADE, atlas.findRegion("cauliflower_upgrade_plant"));
     }
 
     @Override
@@ -44,6 +45,13 @@ public class CauliflowerFlower extends Plant {
     public void update(float delta, List<Enemy> enemies) {
         super.update(delta, enemies);
         generateIncome(delta);
+    }
+
+    @Override
+    public void upgrade() {
+        timeBetweenPayouts /= 2;
+        payoutAmount += 5;
+        currentStage = GrowthStage.UPGRADE;
     }
 
     private void generateIncome(float delta) {

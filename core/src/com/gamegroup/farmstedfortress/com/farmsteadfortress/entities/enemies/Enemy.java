@@ -139,6 +139,10 @@ public abstract class Enemy {
         return hitBy != null;
     }
 
+    public void resetHit() {
+        this.hitBy = null;
+    }
+
     public Projectile getHitBy() {
         return hitBy;
     }
@@ -149,7 +153,7 @@ public abstract class Enemy {
 
     public boolean isHitBy(Projectile projectile) {
         float distance = this.getPosition().dst(projectile.getPosition());
-        float totalRadius = boundingBox.width / 2 + projectile.getRadius() - 105f;
+        float totalRadius = boundingBox.width / 2 + projectile.getRadius();
 
         return distance <= totalRadius;
     }
@@ -264,7 +268,6 @@ public abstract class Enemy {
                 boundingBox.width + padding,
                 boundingBox.height + padding
         );
-        System.out.println(paddedBoundingBox.contains(point));
         return paddedBoundingBox.contains(point);
     }
 
@@ -375,7 +378,6 @@ public abstract class Enemy {
             batch.setShader(null);
         }
     }
-
 
 
     public boolean isDead() {

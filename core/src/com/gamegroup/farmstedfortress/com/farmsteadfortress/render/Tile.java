@@ -30,7 +30,7 @@ public class Tile {
         CENTER,
         MEADOW_GRASS,
         EVERGREEN_GRASS,
-        SPAWN_POINT
+        FLOWER, SPAWN_POINT
     }
 
     private static final TileType[] INTRACTABLE_TILES = {
@@ -38,6 +38,7 @@ public class Tile {
             TileType.CLASSIC_GRASS,
             TileType.MUSHROOM,
             TileType.ROCK,
+            TileType.FLOWER,
             TileType.ROCK_TWO,
             TileType.OBJECT_TILE,
             TileType.EVERGREEN_GRASS,

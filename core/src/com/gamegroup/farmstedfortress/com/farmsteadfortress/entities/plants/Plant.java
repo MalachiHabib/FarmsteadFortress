@@ -12,6 +12,20 @@ import com.farmsteadfortress.render.Tile;
 import java.util.List;
 
 public abstract class Plant {
+    public enum GrowthStage {
+        SEEDLING,
+        SPROUT,
+        SMALL_PLANT,
+        UPGRADE,
+        ADULT
+    }
+
+    public enum PlantType {
+        TOMATO,
+        CAULIFLOWER,
+        PUMPKIN, FERN
+    }
+
     protected Texture texture;
     protected float growTime;
     protected Vector2 position;
@@ -24,8 +38,9 @@ public abstract class Plant {
     protected GrowthStage currentStage;
     protected float growthTimer;
     protected boolean isHighlighted = false;
+    protected String name;
 
-    public Plant(float growTime, Vector2 position, int health, int damage, float attackSpeed, float attackRange, Tile tile) {
+    public Plant(float growTime, Vector2 position, int health, int damage, float attackSpeed, float attackRange, Tile tile, String plantName) {
         this.growTime = growTime;
         this.position = position;
         this.health = health;
@@ -36,6 +51,7 @@ public abstract class Plant {
         this.textures = new ObjectMap<>();
         this.currentStage = GrowthStage.SEEDLING;
         this.growthTimer = 0;
+        this.name = plantName;
     }
 
     public void update(float delta, List<Enemy> enemies) {
@@ -45,7 +61,7 @@ public abstract class Plant {
             growthTimer = 0;
         }
 
-        if (currentStage == GrowthStage.ADULT) {
+        if (currentStage == GrowthStage.ADULT || currentStage == GrowthStage.UPGRADE) {
             for (Enemy enemy : enemies) {
                 if (position.dst(enemy.getPosition()) <= attackRange) {
                     attack(delta, enemy);
@@ -74,30 +90,23 @@ public abstract class Plant {
     }
 
     public void draw(SpriteBatch batch) {
-        if(currentStage != null) {
+        if (currentStage != null) {
             TextureRegion currentTexture = textures.get(currentStage);
             if (currentTexture != null) {
                 if (isHighlighted) {
                     batch.setColor(Color.GRAY);
                 }
-                batch.draw(currentTexture, this.position.x, this.position.y + 10f + Tile.TILE_SIZE / 2f);
+                batch.draw(currentTexture, this.position.x, this.position.y + Tile.TILE_SIZE / 2f);
                 batch.setColor(Color.WHITE);
             }
         }
     }
 
-    public enum GrowthStage {
-        SEEDLING,
-        SPROUT,
-        SMALL_PLANT,
-        ADULT
+    public String getName() {
+        return name;
     }
 
-    public enum PlantType {
-        TOMATO,
-        CAULIFLOWER,
-        FERN
-    }
+    public abstract void upgrade();
 
     protected abstract void initialiseTextures();
 

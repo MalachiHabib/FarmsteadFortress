@@ -18,7 +18,7 @@ public abstract class Seed extends Item {
     }
 
     public static List<Seed> getSeedTypes() {
-        return Arrays.asList(new TomatoSeed(), new CauliflowerSeed());
+        return Arrays.asList(new TomatoSeed(), new CauliflowerSeed(), new PumpkinSeed());
     }
     public Plant.PlantType getPlantType() {
         return plantType;

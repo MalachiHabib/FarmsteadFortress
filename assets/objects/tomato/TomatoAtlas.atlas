@@ -4,28 +4,35 @@ size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-tomato_full_grown
-  rotate: false
-  xy: 584, 2
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-tomato_seedling
+sprout
   rotate: false
   xy: 390, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-tomato_small_plant
+tomato_full
   rotate: false
   xy: 2, 2
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-tomato_sprout
+tomato_mid
+  rotate: false
+  xy: 778, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+tomato_small
+  rotate: false
+  xy: 584, 2
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+tomato_upgraded
   rotate: false
   xy: 196, 2
   size: 192, 192

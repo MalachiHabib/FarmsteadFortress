@@ -3,6 +3,7 @@ package com.farmsteadfortress;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,7 +22,7 @@ public class FarmsteadFortress extends Game {
     private MotionBlurEffect motionBlurEffect;
     private Preferences preferences;
     public static Music backgroundMusic;
-    public static GameScreen screen;
+    public static GameScreen gameScreen;
     public static MenuScreen menuScreen;
     public static OptionsScreen optionsScreen;
 
@@ -37,7 +38,7 @@ public class FarmsteadFortress extends Game {
 
         batch = new SpriteBatch();
         optionsScreen = new OptionsScreen(this);
-        screen = new GameScreen(batch, this);
+        gameScreen = new GameScreen(batch, this);
         menuScreen = new MenuScreen(this);
         setScreen(new MenuScreen(this));
     }
@@ -58,6 +59,9 @@ public class FarmsteadFortress extends Game {
         }
     }
 
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
 
     public float getSoundVolume() {
         return preferences.getFloat("SoundVolume", 1.0f);
@@ -81,8 +85,8 @@ public class FarmsteadFortress extends Game {
     }
 
     public void restartGame() {
-        screen = new GameScreen(batch, this);
-        setScreen(screen);
+        gameScreen = new GameScreen(batch, this);
+        setScreen(gameScreen);
     }
 
     @Override

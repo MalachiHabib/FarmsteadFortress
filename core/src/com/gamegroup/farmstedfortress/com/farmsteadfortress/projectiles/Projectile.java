@@ -40,7 +40,7 @@ public class Projectile {
         batch.draw(
                 textureToUse,
                 position.x - originX,
-                position.y - originY,
+                position.y - originY + 15f,
                 originX,
                 originY,
                 textureWidth,
@@ -67,6 +67,7 @@ public class Projectile {
     }
 
     public void onHit() {
+        System.out.println(!target.isHit());
         if (!target.isHit()) {
             target.setHitBy(this);
             target.attacked(damage);

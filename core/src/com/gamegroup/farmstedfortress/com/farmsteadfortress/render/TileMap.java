@@ -38,7 +38,7 @@ public class TileMap {
     private List<PathResult> pathResults;
     private int mapSize;
     private String[][] map;
-    private Texture waterTexture, waterBorder, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassRockTexture, grassYellowTexture, grassBlueTexture, enemySpawnPointTexture, crystalTexture;
+    private Texture waterTexture, waterRockTexture, waterBorder, waterInBetween, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassRockTexture, grassYellowTexture, grassFlowerTexture, grassBlueTexture, enemySpawnPointTexture, crystalTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
 
@@ -52,6 +52,8 @@ public class TileMap {
         cropLandTexture = new Texture("tiles/crop_land.png");
         cropLandTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
+        grassFlowerTexture = new Texture("tiles/grass_flower.png");
+        grassFlowerTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassRockTexture = new Texture("tiles/grass_rock.png");
         grassRockTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         grassTexture = new Texture("tiles/grass.png");
@@ -61,6 +63,10 @@ public class TileMap {
         grassBlueTexture = new Texture("tiles/grass_blueish.png");
         grassBlueTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
+        waterRockTexture = new Texture("tiles/water_rock.png");
+        waterRockTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        waterInBetween = new Texture("tiles/water_inbetween.png");
+        waterInBetween.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         waterTexture = new Texture("tiles/water.png");
         waterTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         waterFar = new Texture("tiles/water_far.png");
@@ -366,6 +372,7 @@ public class TileMap {
     private void fillMapWithTiles() {
         for (int row = mapSize - 1; row >= 0; row--) {
             for (int col = mapSize - 1; col >= 0; col--) {
+                int randomNum = random.nextInt(100) + 1;
                 float x = (row - col) * Tile.TILE_SIZE / 2.0001f;
                 float y = (col + row) * Tile.TILE_SIZE / 4f;
 
@@ -378,36 +385,6 @@ public class TileMap {
                     if (isValid(neighborRow, neighborCol) && map[neighborRow][neighborCol].equals(WATER)) {
                         adjacentWater = true;
                         break;
-                    }
-                }
-
-                // Check for adjacent non-water blocks
-                boolean adjacentNonWater = false;
-                for (int[] neighbour : neighbors) {
-                    int neighborRow = neighbour[0];
-                    int neighborCol = neighbour[1];
-                    if (isValid(neighborRow, neighborCol) && !map[neighborRow][neighborCol].equals(WATER)) {
-                        adjacentNonWater = true;
-                        break;
-                    }
-                }
-
-                // Check for water blocks 4 blocks away from non-water blocks
-                boolean nearNonWater = false;
-                for (int distance = 1; distance <= 4; distance++) {
-                    int[][] farNeighbors = {
-                            {row - distance, col}, {row + distance, col},
-                            {row, col - distance}, {row, col + distance},
-                            {row - distance, col - distance}, {row + distance, col + distance},
-                            {row - distance, col + distance}, {row + distance, col - distance}
-                    };
-                    for (int[] farNeighbor : farNeighbors) {
-                        int farNeighborRow = farNeighbor[0];
-                        int farNeighborCol = farNeighbor[1];
-                        if (isValid(farNeighborRow, farNeighborCol) && !map[farNeighborRow][farNeighborCol].equals(WATER)) {
-                            nearNonWater = true;
-                            break;
-                        }
                     }
                 }
 
@@ -428,10 +405,12 @@ public class TileMap {
                     case WEIGHTED_GROUND:
                         Texture groundSelectedTexture;
                         Tile.TileType tileType = null;
-                        int randomNum = new Random().nextInt(100) + 1;
-                        if (randomNum <= 42) {
+                        if (randomNum <= 40) {
                             groundSelectedTexture = grassTexture;
                             tileType = Tile.TileType.CLASSIC_GRASS;
+                        } else if (randomNum <= 43) {
+                            groundSelectedTexture = grassFlowerTexture;
+                            tileType = Tile.TileType.FLOWER;
                         } else if (randomNum <= 45) {
                             groundSelectedTexture = grassRockTexture;
                             tileType = Tile.TileType.ROCK;
@@ -446,17 +425,47 @@ public class TileMap {
                         baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
                         break;
                     case WATER:
-                        Texture selectedTexture;
-                        if (adjacentNonWater) {
+                        Texture selectedTexture = waterFar;
+
+                        // Here you can add as many distances as you want, with corresponding checks
+                        int[] distancesFromLand = {1, 3, 5, 7};
+                        boolean leftNeighborIsLand = false;
+                        boolean rightNeighborIsLand = false;
+                        int currentDistance = 0;
+                        for (int distance : distancesFromLand) {
+                            if (distance == 1) {
+                                leftNeighborIsLand = isValid(row, col - 1) && !map[row][col - 1].equals(WATER);
+                                rightNeighborIsLand = isValid(row, col + 1) && !map[row][col + 1].equals(WATER);
+                            }
+
+                            int[][] farNeighbors = {
+                                    {row - distance, col}, {row + distance, col},
+                                    {row, col - distance}, {row, col + distance},
+                                    {row - distance, col - distance}, {row + distance, col + distance},
+                                    {row - distance, col + distance}, {row + distance, col - distance}
+                            };
+                            for (int[] farNeighbor : farNeighbors) {
+                                int farNeighborRow = farNeighbor[0];
+                                int farNeighborCol = farNeighbor[1];
+                                if (isValid(farNeighborRow, farNeighborCol) && !map[farNeighborRow][farNeighborCol].equals(WATER)) {
+                                    currentDistance = distance;
+                                    break;
+                                }
+                            }
+                            if (currentDistance != 0) break;
+                        }
+
+                        if (currentDistance == 1) {
                             selectedTexture = waterBorder;
-                        } else if (nearNonWater) {
+                        } else if (currentDistance == 3) {
                             selectedTexture = waterTexture;
-                        } else {
+                        } else if (currentDistance == 5) {
+                            selectedTexture = waterInBetween;
+                        } else if (currentDistance == 7) {
                             selectedTexture = waterFar;
                         }
                         baseTiles.add(new Tile(selectedTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.WATER));
                         break;
-
                     case SPAWN_POINT:
                         baseTiles.add(new Tile(enemySpawnPointTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.SPAWN_POINT));
                         break;

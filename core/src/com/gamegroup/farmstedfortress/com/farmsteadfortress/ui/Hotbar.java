@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.farmsteadfortress.inventory.Inventory;
 import com.farmsteadfortress.items.Item;
+import com.farmsteadfortress.utils.Helpers;
 import com.farmsteadfortress.waves.WaveController;
 
 public class Hotbar {
@@ -67,34 +68,33 @@ public class Hotbar {
         Image bannerImage = new Image(bannerTexture);
         float bannerWidth = bannerImage.getWidth();
         float bannerHeight = Gdx.graphics.getHeight() / 8.5f;
-        bannerImage.setPosition(Gdx.graphics.getWidth() - bannerWidth, 0); // Position in bottom-right corner
+        bannerImage.setPosition(Gdx.graphics.getWidth() - bannerWidth, 0);
 
-        // Create a Container for the buttons and add bannerImage to it as background
+
         Container<Table> container = new Container<>();
         container.setBackground(bannerImage.getDrawable());
         container.setSize(bannerWidth, bannerHeight);
         container.setPosition(Gdx.graphics.getWidth() - bannerWidth, 0);
 
-        // Create parent table that will contain both original and circle tables
+
         Table parentTable = new Table();
         parentTable.setFillParent(true);
 
-        // Add tables to the parent table
         table.setFillParent(false);
         circleTable.setFillParent(false);
-        parentTable.add(table).expandX().left(); // original table on the left
-        parentTable.add(circleTable).expandX().right(); // circle table on the right
-
-        // Set parent table as the actor of the container
+        parentTable.add(table).expandX().left();
+        parentTable.add(circleTable).expandX().right();
         container.setActor(parentTable);
 
-        // Add container to the stage
         stage.addActor(container);
     }
 
 
     public void updateHotbar() {
         int inventorySize = inventory.getItems().size;
+        if (inventorySize >= buttons.size + 1) {
+            return;
+        }
 
         for (int i = lastInventorySize; i < inventorySize; i++) {
             ImageButton button = buttons.get(i);

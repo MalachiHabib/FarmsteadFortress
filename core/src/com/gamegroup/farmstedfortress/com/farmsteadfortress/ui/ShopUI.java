@@ -16,9 +16,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.farmsteadfortress.FarmsteadFortress;
 import com.farmsteadfortress.entities.Player;
+import com.farmsteadfortress.entities.plants.Plant;
 import com.farmsteadfortress.inventory.Inventory;
 import com.farmsteadfortress.items.seeds.Seed;
+import com.farmsteadfortress.screens.UpgradeMenu;
+import com.farmsteadfortress.utils.Helpers;
 
 import java.util.List;
 
@@ -31,8 +35,9 @@ public class ShopUI {
     Player player;
     private Image backgroundImage;
     private boolean isOpen;
+    private FarmsteadFortress game;
 
-    public ShopUI(Hotbar hotbar, Player player) {
+    public ShopUI(Hotbar hotbar, Player player, FarmsteadFortress game) {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
         Table table = new Table();
@@ -42,6 +47,7 @@ public class ShopUI {
         this.player = player;
         this.hotbar = hotbar;
         this.isOpen = false;
+        this.game = game;
         createShop();
         createShopLabel();
     }
@@ -59,11 +65,7 @@ public class ShopUI {
     }
 
     private void createShopLabel() {
-        BitmapFont bmfont = new BitmapFont(
-                Gdx.files.internal("gui/Lilian.fnt"),
-                Gdx.files.internal("gui/Lilian.png"),
-                false
-        );
+        BitmapFont bmfont = new BitmapFont(Gdx.files.internal("gui/Lilian.fnt"), Gdx.files.internal("gui/Lilian.png"), false);
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = bmfont;
@@ -91,6 +93,9 @@ public class ShopUI {
                         player.addMoney(-5);
                         inventory.addItem(seed);
                         inventory.printInventory();
+                    } else {
+                        String message = "You cannot afford this. You have " + player.getMoney() + " dollars.";
+                        Helpers.showDialog(stage, "Insufficient Funds", message);
                     }
                 }
             });
@@ -131,5 +136,9 @@ public class ShopUI {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void openPlantMenu(Plant plant) {
+        game.setScreen(new UpgradeMenu(game, plant, player));
     }
 }

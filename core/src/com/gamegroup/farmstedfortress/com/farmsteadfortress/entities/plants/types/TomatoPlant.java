@@ -11,7 +11,7 @@ import com.farmsteadfortress.projectiles.ProjectileManager;
 import com.farmsteadfortress.render.Tile;
 
 public class TomatoPlant extends Plant {
-    private TextureAtlas atlas, projectileAtlas;
+    private TextureAtlas atlas;
     private float timeBetweenAttacks;
     private float timeSinceLastAttack = 0;
     private int attackDamage;
@@ -20,22 +20,31 @@ public class TomatoPlant extends Plant {
 
     public TomatoPlant(float growTime, Vector2 position, int health, int attackDamage, float attackSpeed,
                        float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas, TextureAtlas projectileAtlas, ProjectileManager projectileManager) {
-        super(growTime, position, health, attackDamage, attackSpeed, attackRange, tile);
+        super(growTime, position, health, attackDamage, attackSpeed, attackRange, tile, "Tomato");
         this.atlas = atlas;
         this.timeBetweenAttacks = timeBetweenAttacks;
         this.attackDamage = attackDamage;
         this.projectileManager = projectileManager;
-        this.projectileTexture = projectileAtlas.findRegion("Tomato_projectile");
-        this.projectileHitTexture = projectileAtlas.findRegion("Tomato_splatter");
+        this.projectileTexture = projectileAtlas.findRegion("projectile");
+        this.projectileHitTexture = projectileAtlas.findRegion("splatter");
         initialiseTextures();
     }
 
     @Override
+    public void upgrade() {
+        attackDamage += 5;
+        timeBetweenAttacks -= 3;
+        attackRange *= 2;
+        currentStage = GrowthStage.UPGRADE;
+    }
+
+    @Override
     protected void initialiseTextures() {
-        textures.put(GrowthStage.SEEDLING, atlas.findRegion("tomato_seedling"));
-        textures.put(GrowthStage.SPROUT, atlas.findRegion("tomato_sprout"));
-        textures.put(GrowthStage.SMALL_PLANT, atlas.findRegion("tomato_small_plant"));
-        textures.put(GrowthStage.ADULT, atlas.findRegion("tomato_full_grown"));
+        textures.put(GrowthStage.SEEDLING, atlas.findRegion("sprout"));
+        textures.put(GrowthStage.SPROUT, atlas.findRegion("tomato_small"));
+        textures.put(GrowthStage.SMALL_PLANT, atlas.findRegion("tomato_mid"));
+        textures.put(GrowthStage.ADULT, atlas.findRegion("tomato_full"));
+        textures.put(GrowthStage.UPGRADE, atlas.findRegion("tomato_upgraded"));
     }
 
     @Override

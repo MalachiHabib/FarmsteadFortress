@@ -128,6 +128,14 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             return false;
         }
 
+        if (button == Input.Buttons.LEFT) {
+            Tile clickedTile = getTileAtPosition(tileMap, camera, screenX, screenY);
+            if (clickedTile != null && clickedTile.getPlant() != null && !(clickedTile.getPlant() instanceof FernPlant)) {
+                shop.openPlantMenu(clickedTile.getPlant());
+                return true;
+            }
+        }
+
         if (!isPanning && !isZooming) {
             handlePlayerActions(screenX, screenY);
             handleEnemyActions(screenX, screenY);
@@ -156,7 +164,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                     int[] startTilePos = new int[]{(int) playerTile.tileMapPos.x, (int) playerTile.tileMapPos.y};
                     int[] endTilePos = new int[]{(int) targetTile.tileMapPos.x, (int) targetTile.tileMapPos.y};
                     pathCalculator.clearTerrainWeights();
-                    pathCalculator.setTerrainWeight("W", Double.POSITIVE_INFINITY);
+                    pathCalculator.setTerrainWeight("W", 10000.0);
                     pathResult = pathCalculator.findPath(tileMap.getMap(), startTilePos, endTilePos);
                     updateHoverEffect(screenX, screenY);
                     if (pathResult.isSuccess()) {
@@ -205,7 +213,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
     }
 
     public void update() {
-        Vector3 playerPosition = new Vector3(player.getPosition().x + 145f + cameraOffsetX, player.getPosition().y + 50f + cameraOffsetY, 0); // adding 50 units to x-coordinate
+        Vector3 playerPosition = new Vector3(player.getPosition().x + 145f + cameraOffsetX, player.getPosition().y + 50f + cameraOffsetY, 0);
         camera.position.set(playerPosition);
         camera.update();
 
@@ -215,7 +223,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
         if (hasReachedTarget) {
             if (hasFern) {
-                ((FernPlant) targetTile.getPlant()).harvest(player);
+                ((FernPlant) targetTile.getPlant()).harvest(player, targetTile);
             } else if (hasPlantToPlant) {
                 targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
                 Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile, player, projectileManager);

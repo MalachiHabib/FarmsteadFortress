@@ -23,18 +23,13 @@ public class ProjectileManager {
         while (iterator.hasNext()) {
             Projectile projectile = iterator.next();
             projectile.update(delta);
-
             if (projectile.getTarget().isHitBy(projectile)) {
                 projectile.onHit();
                 timeSinceLastHit += delta;
-                if (timeSinceLastHit > 1f) {
-                    iterator.remove();
-                    timeSinceLastHit = 0;
-                }
             }
 
-            if ((projectile.shouldRemove() || projectile.getTarget().isDead() || projectile.getTarget().isHit())
-                    && projectile != projectile.getTarget().getHitBy()) {
+            if (projectile.shouldRemove()) {
+                projectile.getTarget().resetHit();
                 iterator.remove();
             }
         }

@@ -50,10 +50,12 @@ public class GameScreen extends ScreenAdapter {
     private BitmapFont bmfont;
     private ProjectileManager projectileManager;
     private GameOverScreen gameOverScreen;
+    private GameWonScreen gameWonScreen;
     private FarmsteadFortress game;
 
     public GameScreen(SpriteBatch batch, FarmsteadFortress game) {
         this.gameOverScreen = new GameOverScreen();
+        this.gameWonScreen = new GameWonScreen(game);
         this.batch = batch;
         this.game = game;
         tutBatch = new SpriteBatch();
@@ -69,7 +71,7 @@ public class GameScreen extends ScreenAdapter {
 
         uiStages = new ArrayList<>();
         hotbar = new Hotbar(player.getInventory(), shop);
-        shop = new ShopUI(hotbar, player);
+        shop = new ShopUI(hotbar, player, game);
         hud = new HUD();
         hotbar = new Hotbar(player.getInventory(), shop);
         waveOverUI = new WaveOverUI();
@@ -162,8 +164,13 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (waveController.gameOver() || player.isDead()) {
-            Gdx.input.setInputProcessor(null); // remove the focus from the current screen
-            ((Game)Gdx.app.getApplicationListener()).setScreen(gameOverScreen); // switch to the game over screen
+            Gdx.input.setInputProcessor(null);
+            ((Game)Gdx.app.getApplicationListener()).setScreen(gameOverScreen);
+        }
+
+        if (waveController.getCurrentWave().getWaveNumber() > 20 && waveController.isWaveOver()) {
+            Gdx.input.setInputProcessor(null);
+            ((Game)Gdx.app.getApplicationListener()).setScreen(gameWonScreen);
         }
 
         // Tutorial
@@ -177,7 +184,6 @@ public class GameScreen extends ScreenAdapter {
 //        bmfont.draw(tutBatch, tutorialText, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0f, 1, false );
 //        tutBatch.end();
     }
-
 
     private void updatePlants(float delta, List<Enemy> enemies) {
         for (Tile tile : map.getBaseTiles()) {

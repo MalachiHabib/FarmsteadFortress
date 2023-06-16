@@ -15,7 +15,7 @@ public class FernPlant extends Plant {
     private String fernType;
 
     public FernPlant(float growTime, Vector2 position, int health, int reward, Tile tile, TextureAtlas atlas) {
-        super((float) (growTime + Math.random() * 5), position, health, 0, 0, 0, tile);
+        super((float) (growTime + Math.random() * 5), position, health, 0, 0, 0, tile, "Fern");
         this.atlas = atlas;
         this.reward = reward;
 
@@ -39,6 +39,11 @@ public class FernPlant extends Plant {
     }
 
     @Override
+    public void upgrade() {
+
+    }
+
+    @Override
     protected void initialiseTextures() {
         TextureRegion fernTexture = atlas.findRegion(fernType);
         textures.put(GrowthStage.SEEDLING, atlas.findRegion(fernType + "_small"));
@@ -52,12 +57,11 @@ public class FernPlant extends Plant {
         // Fern does not attack :)
     }
 
-    public int harvest(Player player) {
+    public int harvest(Player player, Tile targetTile) {
         if (currentStage == GrowthStage.ADULT) {
-            System.out.println(player.getMoney());
             player.addMoney(1);
-            currentStage = GrowthStage.SEEDLING;
             growthTimer = 0;
+            targetTile.setPlant(null);
             return reward;
         }
         return 0;
