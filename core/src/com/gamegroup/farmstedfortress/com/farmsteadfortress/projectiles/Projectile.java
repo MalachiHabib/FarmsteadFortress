@@ -67,7 +67,6 @@ public class Projectile {
     }
 
     public void onHit() {
-        System.out.println(!target.isHit());
         if (!target.isHit()) {
             target.setHitBy(this);
             target.attacked(damage);

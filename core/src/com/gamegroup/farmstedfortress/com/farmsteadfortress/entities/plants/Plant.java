@@ -23,7 +23,9 @@ public abstract class Plant {
     public enum PlantType {
         TOMATO,
         CAULIFLOWER,
-        PUMPKIN, FERN
+        PUMPKIN,
+        CORN,
+        FERN
     }
 
     protected Texture texture;

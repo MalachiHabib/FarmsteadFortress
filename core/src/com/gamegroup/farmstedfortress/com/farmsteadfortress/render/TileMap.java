@@ -427,7 +427,6 @@ public class TileMap {
                     case WATER:
                         Texture selectedTexture = waterFar;
 
-                        // Here you can add as many distances as you want, with corresponding checks
                         int[] distancesFromLand = {1, 3, 5, 7};
                         boolean leftNeighborIsLand = false;
                         boolean rightNeighborIsLand = false;

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.Player;
 import com.farmsteadfortress.entities.plants.types.CauliflowerFlower;
+import com.farmsteadfortress.entities.plants.types.CornPlant;
 import com.farmsteadfortress.entities.plants.types.FernPlant;
 import com.farmsteadfortress.entities.plants.types.PumpkinPlant;
 import com.farmsteadfortress.entities.plants.types.TomatoPlant;
@@ -18,6 +19,8 @@ public class PlantFactory {
     private static TextureAtlas cauliflowerAtlas = new TextureAtlas(Gdx.files.internal("objects/cauliflower/CauliflowerAtlas.atlas"));
     private static TextureAtlas pumpkinAtlas = new TextureAtlas(Gdx.files.internal("objects/pumpkin/PumpkinAtlas.atlas"));
     private static TextureAtlas pumpkinProjectileAtlas = new TextureAtlas(Gdx.files.internal("objects/pumpkin/PumpkinProjectileAtlas.atlas"));
+    private static TextureAtlas cornAtlas = new TextureAtlas(Gdx.files.internal("objects/corn/CornAtlas.atlas"));
+    private static TextureAtlas cornProjectileAtlas = new TextureAtlas(Gdx.files.internal("objects/corn/CornProjectile.atlas"));
     private static Player player;
 
     public static Plant createPlant(Plant.PlantType plantType, Tile tile, Player player, ProjectileManager projectileManager) {
@@ -30,6 +33,8 @@ public class PlantFactory {
                 return createCauliflowerPlant(tile, player);
             case PUMPKIN:
                 return createPumpkinPlant(tile, projectileManager);
+            case CORN:
+                return createCornPlant(tile, projectileManager);
             default:
                 return null;
         }
@@ -72,5 +77,16 @@ public class PlantFactory {
         float timeBetweenAttacks = 1f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
         return new PumpkinPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, pumpkinAtlas, pumpkinProjectileAtlas, projectileManager);
+    }
+
+    private static CornPlant createCornPlant(Tile tile, ProjectileManager projectileManager) {
+        float growTime = 1.5f;
+        int health = 120;
+        int damage = 5;
+        float attackSpeed = 0.7f;
+        float attackRange = 650f;
+        float timeBetweenAttacks = 2f;
+        Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
+        return new CornPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, cornAtlas, cornProjectileAtlas, projectileManager);
     }
 }

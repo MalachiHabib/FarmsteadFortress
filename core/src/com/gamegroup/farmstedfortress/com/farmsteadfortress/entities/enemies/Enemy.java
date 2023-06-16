@@ -153,7 +153,7 @@ public abstract class Enemy {
 
     public boolean isHitBy(Projectile projectile) {
         float distance = this.getPosition().dst(projectile.getPosition());
-        float totalRadius = boundingBox.width / 2 + projectile.getRadius();
+        float totalRadius = boundingBox.width / 4 + projectile.getRadius();
 
         return distance <= totalRadius;
     }

@@ -42,8 +42,6 @@ public class WaveController {
             waveStarted = true;
             timeSinceLastSpawn = 0;
             currentWave = generateNextWave();
-        } else {
-            System.out.println("Cannot start new wave until current wave is over");
         }
     }
 
@@ -64,7 +62,6 @@ public class WaveController {
             }
             if (isWaveOver()) {
                 waveStarted = false;
-                System.out.println("End of round " + currentWave.getWaveNumber());
                 currentWave = generateNextWave();
             }
         }

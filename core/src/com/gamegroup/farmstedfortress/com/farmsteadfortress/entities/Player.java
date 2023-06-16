@@ -278,7 +278,6 @@ public class Player {
     }
 
     public void attack(Enemy enemy) {
-        System.out.println("attacked");
         enemy.attacked(attackDamage);
         timeSinceLastAttack = 0f;
     }
@@ -353,15 +352,11 @@ public class Player {
     public void attacked(int damage) {
         health -= damage;
         if (isDead()) {
-            die();
+            //die();
         }
     }
 
     public boolean isDead() {
         return health <= 0;
-    }
-
-    private void die() {
-        System.out.println("died");
     }
 }

@@ -92,7 +92,6 @@ public class ShopUI {
                     if (isOpen && player.getMoney() >= seed.getPrice()) {
                         player.addMoney(-5);
                         inventory.addItem(seed);
-                        inventory.printInventory();
                     } else {
                         String message = "You cannot afford this. You have " + player.getMoney() + " dollars.";
                         Helpers.showDialog(stage, "Insufficient Funds", message);

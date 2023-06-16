@@ -22,13 +22,6 @@ public class Inventory {
         return items;
     }
 
-    public void printInventory() {
-        System.out.println("Inventory contents:");
-        for (Item item : items) {
-            System.out.println(item.getName());
-        }
-    }
-
     public boolean contains(Item selectedItem) {
         return items.contains(selectedItem, true);
     }
