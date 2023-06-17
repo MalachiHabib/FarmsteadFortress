@@ -23,7 +23,8 @@ import java.util.Random;
  * Represents a generic enemy entity in the game.
  */
 public abstract class Enemy {
-    private static final Color EFFECT_COLOR = Color.RED;
+    protected static final Color EFFECT_COLOR = Color.RED;
+    protected float scale;
     protected List<Enemy> enemies;
     protected Animation<TextureRegion> walkingAnimation;
     protected float stateTime;
@@ -43,7 +44,7 @@ public abstract class Enemy {
     private Animation<TextureRegion> currentAnimation;
     private Animation<TextureRegion> walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW, attackAnimationN, attackAnimationS, attackAnimationE, attackAnimationW, idleAnimationN, idleAnimationE, idleAnimationS, idleAnimationW;
     private boolean isAttacked;
-    private ShaderProgram attackShader;
+    protected ShaderProgram attackShader;
     private int attackDamage;
     private float timeSinceLastAttack = 0;
     private float timeBetweenAttacks;
@@ -81,16 +82,15 @@ public abstract class Enemy {
         this.health = health;
         this.enemies = enemies;
         this.isAttacked = false;
-        this.attackShader = null;
         this.reachedMiddle = false;
         this.reward = reward;
         this.player = player;
         fullHealth = this.health;
-
+        this.scale = 1;
         ShaderProgram.pedantic = false;
         String vertexShader = Gdx.files.internal("shaders/attackShader.vert").readString();
         String fragmentShader = Gdx.files.internal("shaders/attackShader.frag").readString();
-        attackShader = new ShaderProgram(vertexShader, fragmentShader);
+        this.attackShader = new ShaderProgram(vertexShader, fragmentShader);
 
         if (!attackShader.isCompiled()) {
             System.err.println("Error compiling attack shader: " + attackShader.getLog());
@@ -139,6 +139,10 @@ public abstract class Enemy {
         return hitBy != null;
     }
 
+    public void increaseHealth() {
+        health *= 1.5f;
+    }
+
     public void resetHit() {
         this.hitBy = null;
     }
@@ -153,10 +157,10 @@ public abstract class Enemy {
 
     public boolean isHitBy(Projectile projectile) {
         float distance = this.getPosition().dst(projectile.getPosition());
-        float totalRadius = boundingBox.width / 4 + projectile.getRadius();
-
-        return distance <= totalRadius;
+        float maxDistanceThreshold = boundingBox.width / 4;
+        return distance <= maxDistanceThreshold;
     }
+
 
     /**
      * Abstract method for the enemy being attacked, to be implemented by subclasses.
@@ -220,7 +224,7 @@ public abstract class Enemy {
         }
     }
 
-    private Animation<TextureRegion> getCurrentAnimation() {
+    Animation<TextureRegion> getCurrentAnimation() {
         if (isAttacking) {
             if (direction.y > 0) {
                 return attackAnimationN;
@@ -372,13 +376,12 @@ public abstract class Enemy {
         }
 
         batch.begin();
-        batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 2, currentFrame.getRegionHeight() / 2, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1, 1, 0);
+        batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 2, currentFrame.getRegionHeight() / 2, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), scale, scale, 0);
         batch.end();
         if (isSelected) {
             batch.setShader(null);
         }
     }
-
 
     public boolean isDead() {
         return health <= 0;

@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ProjectileManager {
     private List<Projectile> projectiles;
-    private float timeSinceLastHit = 0;
 
     public ProjectileManager() {
         projectiles = new ArrayList<>();
@@ -25,10 +24,9 @@ public class ProjectileManager {
             projectile.update(delta);
             if (projectile.getTarget().isHitBy(projectile)) {
                 projectile.onHit();
-                timeSinceLastHit += delta;
             }
 
-            if (projectile.shouldRemove()) {
+            if (projectile.shouldRemove() || projectile.getTarget().isDead()) {
                 projectile.getTarget().resetHit();
                 iterator.remove();
             }

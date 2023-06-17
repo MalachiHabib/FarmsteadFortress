@@ -32,7 +32,7 @@ public class CauliflowerFlower extends Plant {
         textures.put(GrowthStage.SEEDLING, atlas.findRegion("cauliflower_seedling"));
         textures.put(GrowthStage.SPROUT, atlas.findRegion("cauliflower_sprout"));
         textures.put(GrowthStage.SMALL_PLANT, atlas.findRegion("cauliflower_small_plant"));
-        textures.put(GrowthStage.ADULT, atlas.findRegion("cauliflower_full_grown"));
+        textures.put(GrowthStage.ADULT, atlas.findRegion("cauliflower_large_plant"));
         textures.put(GrowthStage.UPGRADE, atlas.findRegion("cauliflower_upgrade_plant"));
     }
 
@@ -43,6 +43,7 @@ public class CauliflowerFlower extends Plant {
 
     @Override
     public void update(float delta, List<Enemy> enemies) {
+        System.out.println(currentStage);
         super.update(delta, enemies);
         generateIncome(delta);
     }

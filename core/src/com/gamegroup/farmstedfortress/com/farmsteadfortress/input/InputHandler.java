@@ -174,8 +174,8 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
                         if (selectedItem instanceof Seed && player.getInventory().contains(selectedItem)) {
                             player.getInventory().removeItem(selectedItem);
-                            hotbar.updateHotbar();
                             player.setPlantToBePlanted(((Seed) selectedItem).getPlantType());
+                            hotbar.deselectAllSlots();
                         }
                     }
                 }
@@ -229,6 +229,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
                 Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile, player, projectileManager);
                 targetTile.setPlant(plant);
                 player.setPlantToBePlanted(null);
+                hotbar.updateHotbar();
             }
         }
     }

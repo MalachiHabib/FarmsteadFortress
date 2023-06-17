@@ -44,8 +44,8 @@ public class Player {
     private Inventory inventory;
     private Plant.PlantType plantToBePlanted;
     private Enemy targetedEnemy = null;
-    private int money = 0;
-    private int health = 0;
+    private int money;
+    private int health;
     private float attackRange = 200f;
     private int attackDamage = 2;
     private float timeSinceLastAttack = 0f;
@@ -82,7 +82,7 @@ public class Player {
         this.currentPath = null;
         this.currentPathIndex = 0;
         this.map = map;
-        this.money = 500;
+        this.money = 15;
         this.health = 100;
         inventory = new Inventory();
     }

@@ -54,7 +54,7 @@ public class Projectile {
     public void update(float delta) {
         if (!hitTarget) {
             direction.set(target.getPosition().x - position.x, target.getPosition().y - position.y).nor();
-            position.x += direction.x * speed * delta;
+            position.x += (direction.x * speed + 30f) * delta;
             position.y += direction.y * speed * delta;
             rotation += 360 * delta;
         } else {

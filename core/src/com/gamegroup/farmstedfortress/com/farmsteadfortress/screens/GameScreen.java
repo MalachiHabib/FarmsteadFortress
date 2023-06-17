@@ -68,7 +68,6 @@ public class GameScreen extends ScreenAdapter {
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
         this.enemies = new ArrayList<>();
         waveController = new WaveController(enemies, player);
-
         uiStages = new ArrayList<>();
         hotbar = new Hotbar(player.getInventory(), shop);
         shop = new ShopUI(hotbar, player, game);
@@ -109,10 +108,10 @@ public class GameScreen extends ScreenAdapter {
         );
     }
 
+
     @Override
     public void render(float delta) {
         waveController.update(delta);
-
         if (shop.isOpen()) {
             inputMultiplexer.addProcessor(shop.getStage());
         }
@@ -123,13 +122,14 @@ public class GameScreen extends ScreenAdapter {
         inputHandler.handleCameraInput();
 
         projectileManager.update(delta);
-
         for (Enemy enemy : enemies) {
             enemy.update(delta, map);
         }
-
         player.update(delta);
         updatePlants(delta, enemies);
+
+        camera.update();
+
         batch.setProjectionMatrix(camera.combined);
         batch.enableBlending();
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -144,7 +144,6 @@ public class GameScreen extends ScreenAdapter {
         batch.end();
 
 
-
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.end();
@@ -157,7 +156,7 @@ public class GameScreen extends ScreenAdapter {
         hud.updateLivesCount(player);
         hud.updatePlayerBalance(player);
         hud.updateWaveCount(waveController.getCurrentWave());
-
+        waveController.renderBossHealth();
         if (waveController.isWaveOver() && waveController.getCurrentWave().getWaveNumber() != 0) {
             waveOverUI.render(delta);
             waveController.stopWave();
@@ -165,12 +164,12 @@ public class GameScreen extends ScreenAdapter {
 
         if (waveController.gameOver() || player.isDead()) {
             Gdx.input.setInputProcessor(null);
-            ((Game)Gdx.app.getApplicationListener()).setScreen(gameOverScreen);
+            ((Game) Gdx.app.getApplicationListener()).setScreen(gameOverScreen);
         }
 
         if (waveController.getCurrentWave().getWaveNumber() > 20 && waveController.isWaveOver()) {
             Gdx.input.setInputProcessor(null);
-            ((Game)Gdx.app.getApplicationListener()).setScreen(gameWonScreen);
+            ((Game) Gdx.app.getApplicationListener()).setScreen(gameWonScreen);
         }
 
         // Tutorial

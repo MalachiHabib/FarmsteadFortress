@@ -51,15 +51,4 @@ public class BasicEnemy extends Enemy {
             player.addMoney(reward);
         }
     }
-
-    /**
-     * Renders the basic enemy on the screen.
-     * Overridden from the Enemy superclass.
-     *
-     * @param batch the sprite batch used for rendering
-     */
-    @Override
-    public void render(SpriteBatch batch) {
-        super.render(batch);
-    }
 }

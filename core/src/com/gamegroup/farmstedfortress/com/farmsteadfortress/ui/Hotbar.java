@@ -39,7 +39,6 @@ public class Hotbar {
     private int lastInventorySize = 0;
     private WaveController waveController;
 
-
     public Hotbar(Inventory inventory, ShopUI shop) {
         this.stage = new Stage(new ScreenViewport());
         this.table = new Table();
@@ -56,6 +55,20 @@ public class Hotbar {
         this.waveController = waveController;
     }
 
+    public void deselectAllSlots() {
+        if (highlightedButton != null) {
+            highlightedButton.getParent().getChildren().get(1).setVisible(false);
+            highlightedButton = null;
+        }
+
+        if (highlightedCircleButton != null) {
+            highlightedCircleButton.getParent().getChildren().get(1).setVisible(false);
+            highlightedCircleButton = null;
+        }
+
+        selectedSlotItem = null;
+    }
+
     private void initTextures() {
         // Load textures
         bannerTexture = new Texture(Gdx.files.internal("gui/hotbar-bg.png"));
@@ -70,12 +83,10 @@ public class Hotbar {
         float bannerHeight = Gdx.graphics.getHeight() / 8.5f;
         bannerImage.setPosition(Gdx.graphics.getWidth() - bannerWidth, 0);
 
-
         Container<Table> container = new Container<>();
         container.setBackground(bannerImage.getDrawable());
         container.setSize(bannerWidth, bannerHeight);
         container.setPosition(Gdx.graphics.getWidth() - bannerWidth, 0);
-
 
         Table parentTable = new Table();
         parentTable.setFillParent(true);
@@ -182,9 +193,6 @@ public class Hotbar {
             }
         }
     }
-
-
-
 
     private void toggleShop() {
         if (this.isShopOpen) {

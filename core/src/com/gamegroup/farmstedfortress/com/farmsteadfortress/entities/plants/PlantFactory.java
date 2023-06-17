@@ -74,7 +74,7 @@ public class PlantFactory {
         int damage = 10;
         float attackSpeed = 6f;
         float attackRange = 750f;
-        float timeBetweenAttacks = 1f;
+        float timeBetweenAttacks = 3f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
         return new PumpkinPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, pumpkinAtlas, pumpkinProjectileAtlas, projectileManager);
     }

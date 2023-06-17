@@ -52,19 +52,14 @@ public class PumpkinPlant extends Plant {
         if (timeSinceLastAttack >= timeBetweenAttacks && !enemy.isDead()) {
             Vector2 direction = new Vector2(enemy.getPosition().x - position.x, enemy.getPosition().y - position.y);
             Vector2[] projectilePositions = {
-                    new Vector2(this.position.x + Tile.TILE_SIZE / 2f, this.position.y + 10f + Tile.TILE_SIZE),
-                    new Vector2(this.position.x + Tile.TILE_SIZE / 2f + 5, this.position.y + 10f + Tile.TILE_SIZE + 5),
-                    new Vector2(this.position.x + Tile.TILE_SIZE / 2f + 10, this.position.y + 10f + Tile.TILE_SIZE + 10)
+                    new Vector2(this.position.x + Tile.TILE_SIZE / 2f, this.position.y +  2 * Tile.TILE_SIZE / 3),
+                    new Vector2(this.position.x + Tile.TILE_SIZE / 2f + 5, this.position.y + 2 * Tile.TILE_SIZE / 3 + 5),
+                    new Vector2(this.position.x + Tile.TILE_SIZE / 2f + 10, this.position.y + 2 * Tile.TILE_SIZE / 3 + 10)
             };
             for (Vector2 projectilePosition : projectilePositions) {
                 projectileManager.addProjectile(new Projectile(projectilePosition, direction, projectileTexture, projectileHitTexture, attackDamage, 200f, enemy));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                timeSinceLastAttack = 0;
             }
-            timeSinceLastAttack = 0;
         }
     }
 }

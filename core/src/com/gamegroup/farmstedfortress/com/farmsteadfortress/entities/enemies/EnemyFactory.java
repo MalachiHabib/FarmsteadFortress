@@ -19,7 +19,7 @@ public class EnemyFactory {
     private static Player player;
 
     public enum EnemyType {
-        BASIC_ENEMY, BOSS_ENEMY, CROW
+        BASIC_ENEMY, BOSS_ENEMY
     }
 
     /**
@@ -32,6 +32,8 @@ public class EnemyFactory {
         switch (type) {
             case BASIC_ENEMY:
                 return createBasicEnemy();
+            case BOSS_ENEMY:
+                return createBossEnemy();
             default:
                 return null;
         }
@@ -40,16 +42,27 @@ public class EnemyFactory {
     public void setEnemies(List<Enemy> enemies) {
         this.enemies = enemies;
     }
-    public void setPlayer(Player player) {this.player = player;}
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     /**
      * Creates a BasicEnemy instance.
-     *a
+     * a
+     *
      * @return The created BasicEnemy instance.
      */
     private static BasicEnemy createBasicEnemy() {
         TextureAtlas atlas = new TextureAtlas(BASIC_ENEMY_TEXTURE_ATLAS_PATH);
         setTextureFilters(atlas);
         return new BasicEnemy(player, atlas, DEFAULT_ANIMATION_SPEED, DEFAULT_ENEMY_SPEED, 5, 2, 2.5f, enemies);
+    }
+
+    private static BossEnemy createBossEnemy() {
+        TextureAtlas atlas = new TextureAtlas(BASIC_ENEMY_TEXTURE_ATLAS_PATH);
+        setTextureFilters(atlas);
+        return new BossEnemy(player, atlas, DEFAULT_ANIMATION_SPEED * 3, 10f, 100, 10, 15f, enemies);
     }
 
     /**

@@ -150,7 +150,6 @@ public class Tile {
 
         float xLimit = Math.abs(relY - halfHeight) / halfHeight * halfWidth;
 
-
         return relY >= halfHeight - 2f && relY < TILE_SIZE + 2f && relX >= halfWidth - xLimit - 5f && relX < halfWidth + xLimit + 5f;
     }
 
@@ -185,7 +184,6 @@ public class Tile {
     public Vector2 getPosition() {
         return worldPos;
     }
-
 
     public void setTileObject(TileObject tileObject) {
         this.tileObject = tileObject;
