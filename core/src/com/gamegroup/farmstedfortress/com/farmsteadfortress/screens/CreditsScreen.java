@@ -59,7 +59,7 @@ public class CreditsScreen implements Screen {
         TextButton backButton = new TextButton("Back", newStyle);
         backButton.setWidth(200f);
         backButton.setHeight(100f);
-        backButton.setPosition(Gdx.graphics.getWidth() / 2 - backButton.getWidth() / 2, Gdx.graphics.getHeight() / 4);
+        backButton.setPosition(Gdx.graphics.getWidth() / 2 - backButton.getWidth() / 2, Gdx.graphics.getHeight() / 7);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -84,10 +84,16 @@ public class CreditsScreen implements Screen {
         font.getData().setScale(2, 2);
         font.draw(creditsBatch, "Credits", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() * 3f / 4f, 0f, 1, false);
         font.getData().setScale(1.2f, 1.2f);
-        font.draw(creditsBatch, "Font sourced from \n https://www.dafont.com/lilian-2.font?back=bitmap", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2, 0f, 1, false);
+        font.draw(creditsBatch, "Font sourced from \n https://www.dafont.com/lilian-2.font?back=bitmap", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() * 3 / 5, 0f, 1, false);
+        font.getData().setScale(1f, 1f);
+        font.draw(creditsBatch, "Graphics sourced from \n https://craftpix.net/ and \n https://itch.io/game-assets/tag-isometric/tag-pixel-art", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() * 2 / 5 + 50, 0f, 1, false);  // Position adjusted
+        font.draw(creditsBatch, "Sound design sourced from \n https://www.zapsplat.com/", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() * 1 / 5 + 100, 0f, 1, false);  // Position adjusted
+
         stage.draw();
         creditsBatch.end();
     }
+
+
 
     @Override
     public void resize(int width, int height) {

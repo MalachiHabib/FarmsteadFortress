@@ -80,7 +80,7 @@ public class ShopUI {
     private void createShop() {
         Table buttonTable = new Table();
         buttonTable.right().bottom();
-        buttonTable.padLeft(24);
+        buttonTable.padLeft(65);
         List<Seed> seedTypes = Seed.getSeedTypes();
         for (int i = 0; i < seedTypes.size(); i++) {
             final Seed seed = seedTypes.get(i);

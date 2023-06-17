@@ -96,7 +96,7 @@ public class Helpers {
         } else if (screenWidth < 1601) {
             return 0.75f;
         } else {
-            return 1f;
+            return 1.25f;
         }
     }
 
