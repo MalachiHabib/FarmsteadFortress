@@ -62,6 +62,24 @@ public abstract class Plant {
         this.name = plantName;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public abstract void upgrade();
+
+    protected abstract void initialiseTextures();
+
+    protected abstract void attack(float delta, Enemy enemy);
+
+    public void dispose() {
+        upgradeSound.dispose();
+    }
+
+    public void setHighLight(boolean isHighlighted) {
+        this.isHighlighted = isHighlighted;
+    }
+
     public void update(float delta, List<Enemy> enemies) {
         growthTimer += delta;
         if (growthTimer > growTime) {
@@ -105,10 +123,6 @@ public abstract class Plant {
         }
     }
 
-    public void setHighLight(boolean isHighlighted) {
-        this.isHighlighted = isHighlighted;
-    }
-
     public void draw(SpriteBatch batch) {
         if (currentStage != null) {
             TextureRegion currentTexture = textures.get(currentStage);
@@ -120,19 +134,5 @@ public abstract class Plant {
                 batch.setColor(Color.WHITE);
             }
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public abstract void upgrade();
-
-    protected abstract void initialiseTextures();
-
-    protected abstract void attack(float delta, Enemy enemy);
-
-    public void dispose() {
-        upgradeSound.dispose();
     }
 }

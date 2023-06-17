@@ -138,6 +138,24 @@ public abstract class Enemy {
         idleAnimationW = new Animation<TextureRegion>(animationSpeed, idleAtlasW.getRegions(), Animation.PlayMode.LOOP);
     }
 
+    public void onClick() {
+        isSelected = !isSelected;
+    }
+
+    public abstract void die();
+
+    public boolean canAttack() {
+        return timeSinceLastAttack >= timeBetweenAttacks;
+    }
+
+    public boolean isDead() {
+        return health <= 0;
+    }
+
+    public void dispose() {
+        splatSound.dispose();
+    }
+
     public boolean isHit() {
         return hitBy != null;
     }
@@ -149,10 +167,6 @@ public abstract class Enemy {
     public void resetHit() {
         this.hitBy = null;
         this.hitSoundPlayed = false;
-    }
-
-    public Projectile getHitBy() {
-        return hitBy;
     }
 
     public void setHitBy(Projectile projectile) {
@@ -183,15 +197,6 @@ public abstract class Enemy {
             die();
         }
     }
-
-    /**
-     * Toggles the enemy's outline status when clicked.
-     */
-    public void onClick() {
-        isSelected = !isSelected;
-    }
-
-    public abstract void die();
 
     /**
      * Retrieves the enemy's position.
@@ -344,10 +349,6 @@ public abstract class Enemy {
         }
     }
 
-    public boolean canAttack() {
-        return timeSinceLastAttack >= timeBetweenAttacks;
-    }
-
     /**
      * Sets the path for the enemy to follow.
      *
@@ -392,13 +393,4 @@ public abstract class Enemy {
             batch.setShader(null);
         }
     }
-
-    public boolean isDead() {
-        return health <= 0;
-    }
-
-    public void dispose() {
-        splatSound.dispose();
-    }
-
 }

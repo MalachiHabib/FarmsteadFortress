@@ -77,6 +77,21 @@ public class Tile {
         this.tileType = tileType;
     }
 
+    public void setHoverTexture(Texture newTexture) {
+        this.tileTexture = newTexture;
+    }
+
+    public Texture getOriginalTileTexture() {
+        return originalTile;
+    }
+
+    public TileType getTileType() {
+        return tileType;
+    }
+
+    public Vector2 getPosition() {
+        return worldPos;
+    }
     /**
      * Renders the tile and plant using the provided SpriteBatch.
      *
@@ -109,33 +124,6 @@ public class Tile {
     }
 
     /**
-     * Sets the hover texture of the tile.
-     *
-     * @param newTexture The new hover texture to set.
-     */
-    public void setHoverTexture(Texture newTexture) {
-        this.tileTexture = newTexture;
-    }
-
-    /**
-     * Retrieves the original tile texture.
-     *
-     * @return The original tile texture.
-     */
-    public Texture getOriginalTileTexture() {
-        return originalTile;
-    }
-
-    /**
-     * Retrieves the type of the tile.
-     *
-     * @return The type of the tile.
-     */
-    public TileType getTileType() {
-        return tileType;
-    }
-
-    /**
      * Checks if the tile contains a given world position.
      *
      * @param worldPosition The world position to check.
@@ -165,31 +153,5 @@ public class Tile {
             }
         }
         return false;
-    }
-
-    /**
-     * Sets the type of the tile.
-     *
-     * @param tileType The new type of the tile.
-     */
-    public void setTileType(TileType tileType) {
-        this.tileType = tileType;
-    }
-
-    /**
-     * Retrieves the position of the tile in world coordinates.
-     *
-     * @return The position of the tile.
-     */
-    public Vector2 getPosition() {
-        return worldPos;
-    }
-
-    public void setTileObject(TileObject tileObject) {
-        this.tileObject = tileObject;
-    }
-
-    public TileObject getTileObject() {
-        return this.tileObject;
     }
 }

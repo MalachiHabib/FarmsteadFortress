@@ -22,6 +22,14 @@ public class EnemyFactory {
         BASIC_ENEMY, BOSS_ENEMY
     }
 
+    public void setEnemies(List<Enemy> enemies) {
+        this.enemies = enemies;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     /**
      * Creates a new Enemy instance with default settings based on the type.
      *
@@ -37,14 +45,6 @@ public class EnemyFactory {
             default:
                 return null;
         }
-    }
-
-    public void setEnemies(List<Enemy> enemies) {
-        this.enemies = enemies;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     /**

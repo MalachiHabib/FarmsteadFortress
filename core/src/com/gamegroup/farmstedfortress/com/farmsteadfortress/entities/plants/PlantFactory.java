@@ -25,7 +25,6 @@ public class PlantFactory {
     private static Sound upgradeSound = Gdx.audio.newSound(Gdx.files.internal("sounds/upgrade.mp3"));
     private static Sound maxUpgrade = Gdx.audio.newSound(Gdx.files.internal("sounds/max_upgrade.mp3"));
     private static Sound shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
-    private static Player player;
 
     public static Plant createPlant(Plant.PlantType plantType, Tile tile, Player player, ProjectileManager projectileManager) {
         switch (plantType) {

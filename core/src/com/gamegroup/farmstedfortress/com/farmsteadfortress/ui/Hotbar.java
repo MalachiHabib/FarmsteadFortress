@@ -100,6 +100,17 @@ public class Hotbar {
         stage.addActor(container);
     }
 
+    public Item getSelectedSlotItem() {
+        return selectedSlotItem;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void render() {
+        stage.draw();
+    }
 
     public void updateHotbar() {
         int inventorySize = inventory.getItems().size;
@@ -246,18 +257,6 @@ public class Hotbar {
             this.selectedSlotItem = this.inventory.getItems().get(slotIndex);
         }
         this.stage.draw();
-    }
-
-    public Item getSelectedSlotItem() {
-        return selectedSlotItem;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public void render() {
-        stage.draw();
     }
 
     public void dispose() {

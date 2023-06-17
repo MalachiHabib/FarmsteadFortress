@@ -17,6 +17,9 @@ public class PathCalculator {
     private static final long MAX_EXECUTION_TIME_MS = 500;
     private Map<String, Double> terrainWeights;
 
+    public void clearTerrainWeights() {
+        terrainWeights.clear();
+    }
 
     public PathCalculator() {
         terrainWeights = new HashMap<>();
@@ -38,10 +41,6 @@ public class PathCalculator {
     private double getWeight(String[][] map, int x, int y) {
         String terrain = map[x][y];
         return getTerrainWeight(terrain);
-    }
-
-    public void clearTerrainWeights() {
-        terrainWeights.clear();
     }
 
     /**
@@ -259,22 +258,6 @@ public class PathCalculator {
         path.add(current);
         Collections.reverse(path);
         return path;
-    }
-
-    /**
-     * Checks if the open set contains a given node.
-     *
-     * @param openSet A PriorityQueue containing nodes to be processed.
-     * @param node    An int array representing the node to be checked.
-     * @return true if the open set contains the node, false otherwise.
-     */
-    private boolean openSetContains(PriorityQueue<int[]> openSet, int[] node) {
-        for (int[] n : openSet) {
-            if (n[0] == node[0] && n[1] == node[1]) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

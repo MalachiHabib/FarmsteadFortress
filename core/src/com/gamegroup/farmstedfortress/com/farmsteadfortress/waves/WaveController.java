@@ -39,6 +39,14 @@ public class WaveController {
         enemyFactory.setPlayer(player);
     }
 
+    public Wave getCurrentWave() {
+        return currentWave;
+    }
+
+    public boolean gameOver() {
+        return currentWave.getWaveNumber() >= 50;
+    }
+
     public BossEnemy getBossEnemy() {
         for (Enemy enemy : enemies) {
             if (enemy instanceof BossEnemy) {
@@ -46,10 +54,6 @@ public class WaveController {
             }
         }
         return null;
-    }
-
-    public boolean isBossSpawned() {
-        return bossSpawned;
     }
 
     public void renderBossHealth() {
@@ -109,10 +113,6 @@ public class WaveController {
         }
     }
 
-    public Wave getCurrentWave() {
-        return currentWave;
-    }
-
     public void update(float deltaTime) {
         if (waveStarted) {
             timeSinceLastSpawn += deltaTime;
@@ -145,7 +145,6 @@ public class WaveController {
         }
     }
 
-
     public boolean isWaveOver() {
         if (waveStarted) {
             if (currentWave.getEnemyCount() != 0) {
@@ -160,17 +159,9 @@ public class WaveController {
         return true;
     }
 
-    public boolean gameOver() {
-        return currentWave.getWaveNumber() >= 50;
-    }
-
     public void stopWave() {
         if (waveStarted) {
             waveStarted = false;
         }
-    }
-
-    public void setBossSpawned(boolean bossSpawned) {
-        this.bossSpawned = bossSpawned;
     }
 }

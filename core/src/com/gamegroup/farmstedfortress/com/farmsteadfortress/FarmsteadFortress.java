@@ -35,7 +35,6 @@ public class FarmsteadFortress extends Game {
     public static CreditsScreen creditsScreen;
 
 
-
     @Override
     public void create() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/background_track.mp3"));
@@ -44,7 +43,7 @@ public class FarmsteadFortress extends Game {
         vfxManager.addEffect(motionBlurEffect);
         fxaaEffect = new FxaaEffect();
         bloomEffect = new BloomEffect();
-        bloomEffect.setBloomIntensity(.25f);
+        bloomEffect.setBloomIntensity(.35f);
         vfxManager.addEffect(bloomEffect);
         vfxManager.addEffect(fxaaEffect);
         vignettingEffect = new VignettingEffect(false);
@@ -66,6 +65,14 @@ public class FarmsteadFortress extends Game {
         return preferences.getFloat("MusicVolume", 1.0f);
     }
 
+    public float getSoundVolume() {
+        return preferences.getFloat("SoundVolume", 1.0f);
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
     public void setMusicVolume(float volume) {
         preferences.putFloat("MusicVolume", volume);
         preferences.flush();
@@ -74,23 +81,9 @@ public class FarmsteadFortress extends Game {
         }
     }
 
-    public GameScreen getGameScreen() {
-        return gameScreen;
-    }
-
-    public float getSoundVolume() {
-        return preferences.getFloat("SoundVolume", 1.0f);
-    }
-
     public void setSoundVolume(float volume) {
         preferences.putFloat("SoundVolume", volume);
         preferences.flush();
-    }
-
-    public void playMusic() {
-        if (backgroundMusic != null) {
-            backgroundMusic.play();
-        }
     }
 
     public void stopMusic() {

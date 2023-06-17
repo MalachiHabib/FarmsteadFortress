@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameScreen extends ScreenAdapter {
-    private Music backgroundMusic;
     private SpriteBatch batch;
     private SpriteBatch tutBatch;
     private OrthographicCamera camera;
@@ -47,7 +46,6 @@ public class GameScreen extends ScreenAdapter {
     private InputMultiplexer inputMultiplexer;
     private Hotbar hotbar;
     private ShopUI shop;
-
     private Skin skin;
     private Stage stage;
     private Dialog tutorial;
@@ -130,37 +128,6 @@ public class GameScreen extends ScreenAdapter {
         );
     }
 
-    public static class TutDialog extends Dialog{
-
-        public TutDialog(String title, Skin skin) {
-            super(title, skin);
-        }
-
-        public TutDialog(String title, Skin skin, String windowStyleName) {
-            super(title, skin, windowStyleName);
-        }
-
-        public TutDialog(String title, WindowStyle windowStyle) {
-            super(title, windowStyle);
-        }
-
-        {
-            text("Welcome to Farmstead Fortess. \n" +
-                    "In this game you must protect the core of your island (indicated by the grey tile) from enemies by planting crops\n" +
-                    "These crops can be bought within the shop in the bottom right hand corner.\n" +
-                    "Bought crops will appear in your hotbar and can be placed by selecting it from the hot bar and clicking where to place it on the field.\n" +
-                    " You will only have a little bit of time before the enemies arrive so get ready and good luck!");
-            //button("Exit");
-        }
-
-        @Override
-        protected void result(Object object){
-            this.hide();
-        }
-
-    }
-
-
     @Override
     public void render(float delta) {
         waveController.update(delta);
@@ -224,7 +191,6 @@ public class GameScreen extends ScreenAdapter {
             ((Game) Gdx.app.getApplicationListener()).setScreen(gameWonScreen);
         }
 
-        // Tutorial
 //        tutBatch.begin();
 //        bmfont.setColor(1, 1, 1, 1);
 //        String tutorialText = "Welcome to Farmstead Fortess. \n" +
@@ -245,8 +211,6 @@ public class GameScreen extends ScreenAdapter {
     private void showTutorial(){
 
     }
-
-
 
     private void calculateCameraPosition() {
         float centerX = 0;
@@ -279,7 +243,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        backgroundMusic.dispose();
         super.dispose();
         batch.dispose();
         shapeRenderer.dispose();
@@ -307,7 +270,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void hide() {
-        backgroundMusic.pause();
         Gdx.input.setInputProcessor(null);
     }
 }

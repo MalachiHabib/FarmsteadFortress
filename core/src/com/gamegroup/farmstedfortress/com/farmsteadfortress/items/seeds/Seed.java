@@ -23,12 +23,4 @@ public abstract class Seed extends Item {
     public Plant.PlantType getPlantType() {
         return plantType;
     }
-
-    public int getGrowthTime() {
-        return growthTime;
-    }
-
-    public void setGrowthTime(int growthTime) {
-        this.growthTime = growthTime;
-    }
 }

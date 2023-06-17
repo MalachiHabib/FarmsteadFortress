@@ -30,7 +30,6 @@ public class Player {
 
     Animation<TextureRegion> currentAnimation;
     private Animation<TextureRegion> idleAnimation, walkAnimationN, walkAnimationS, walkAnimationE, walkAnimationW, walkAnimationNE, walkAnimationNW, walkAnimationSW, walkAnimationSE;
-    private Animation<TextureRegion> dieAnimation;
     private boolean flipCurrentFrame;
     private boolean isAttacking = false;
     private boolean isWalking;
@@ -82,7 +81,7 @@ public class Player {
         this.currentPath = null;
         this.currentPathIndex = 0;
         this.map = map;
-        this.money = 1511;
+        this.money = 15;
         this.health = 100;
         inventory = new Inventory();
     }
@@ -103,14 +102,47 @@ public class Player {
         return plantToBePlanted;
     }
 
-    public void setPlantToBePlanted(Plant.PlantType plantToBePlanted) {
-        this.plantToBePlanted = plantToBePlanted;
+    public void setDirection(Direction direction) {
+        currentDirection = direction;
+    }
+
+    public boolean isWalking() {
+        return isWalking;
+    }
+
+    public void setWalking(boolean walking) {
+        isWalking = walking;
+    }
+
+    private void updateStateTime() {
+        stateTime += Gdx.graphics.getDeltaTime();
+    }
+
+    public boolean canAttack() {
+        return timeSinceLastAttack >= timeBetweenAttacks;
+    }
+
+    public void stopFollowing() {
+        targetedEnemy = null;
+    }
+
+    public boolean isDead() {
+        return health <= 0;
     }
 
     public Inventory getInventory() {
         return inventory;
     }
 
+    public void setPlantToBePlanted(Plant.PlantType plantToBePlanted) {
+        this.plantToBePlanted = plantToBePlanted;
+    }
+
+    /**
+     * Sets the path for the current object and determines if the object should walk based on the tiles of the path.
+     *
+     * @param path The list of tiles (as arrays of integers) that define the path.
+     */
     public void setPath(List<int[]> path) {
         int waterTileCount = 0;
         for (int[] tile : path) {
@@ -139,19 +171,9 @@ public class Player {
         currentPath = path.subList(startPathIndex, path.size());
     }
 
-
-    public void setDirection(Direction direction) {
-        currentDirection = direction;
-    }
-
-    public boolean isWalking() {
-        return isWalking;
-    }
-
-    public void setWalking(boolean walking) {
-        isWalking = walking;
-    }
-
+    /**
+     * Updates the current direction of the object based on its current position and the end point of its path.
+     */
     public void updateDirection() {
         if (originalPath != null && currentPathIndex < originalPath.size()) {
             int[] currentTile = originalPath.get(currentPathIndex);
@@ -186,6 +208,11 @@ public class Player {
         }
     }
 
+    /**
+     * Updates the object's position, direction and enemy target based on the elapsed time (delta).
+     *
+     * @param delta The elapsed time since the last frame in seconds.
+     */
     public void update(float delta) {
         stateTime += delta;
         if (isWalking() && currentPath != null && !currentPath.isEmpty()) {
@@ -208,6 +235,11 @@ public class Player {
         }
     }
 
+    /**
+     * Renders the object's current frame to the provided SpriteBatch.
+     *
+     * @param batch The SpriteBatch that the object's current frame will be drawn to.
+     */
     public void render(SpriteBatch batch) {
         Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
@@ -217,6 +249,11 @@ public class Player {
         batch.draw(currentFrame, posX, posY, currentFrame.getRegionWidth() / 2, currentFrame.getRegionHeight() / 2, currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), flipCurrentFrame ? -1 : 1, 1, 0);
     }
 
+    /**
+     * Determines if the object has reached its target destination.
+     *
+     * @return true if the object has reached its target, false otherwise.
+     */
     public boolean hasReachedTarget() {
         if (currentPath != null && currentPathIndex < currentPath.size()) {
             int[] lastPoint = currentPath.get(currentPath.size() - 1);
@@ -226,6 +263,11 @@ public class Player {
         return true;
     }
 
+    /**
+     * Gets the position of the object.
+     *
+     * @return The current position of the object as a Vector2.
+     */
     public Vector2 getPosition() {
         Animation<TextureRegion> currentAnimation = getCurrentAnimation();
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
@@ -269,27 +311,33 @@ public class Player {
         currentPathIndex = 0;
     }
 
-    private void updateStateTime() {
-        stateTime += Gdx.graphics.getDeltaTime();
-    }
-
-    public boolean canAttack() {
-        return timeSinceLastAttack >= timeBetweenAttacks;
-    }
-
+    /**
+     * Attacks the provided enemy object.
+     *
+     * @param enemy The enemy object that will be attacked.
+     */
     public void attack(Enemy enemy) {
         enemy.attacked(attackDamage);
         timeSinceLastAttack = 0f;
     }
 
+    /**
+     * Determines if the object can attack a provided enemy object.
+     *
+     * @param enemy The enemy object that the object is trying to attack.
+     * @return true if the object can attack the enemy, false otherwise.
+     */
     public boolean canAttackEnemy(Enemy enemy) {
         return this.getPosition().dst(enemy.getPosition()) <= attackRange * 1.5f && canAttack();
     }
 
-    public int getAttackDamage() {
-        return attackDamage;
-    }
-
+    /**
+     * Targets an enemy object and finds a path to it using the provided tile map and path calculator.
+     *
+     * @param enemy The enemy object to target.
+     * @param tileMap The tile map used to find a path to the enemy.
+     * @param pathCalculator The path calculator used to find a path to the enemy.
+     */
     public void targetEnemy(Enemy enemy, TileMap tileMap, PathCalculator pathCalculator) {
         targetedEnemy = enemy;
         Tile playerTile = tileMap.getTileAt(getPosition());
@@ -311,10 +359,6 @@ public class Player {
                 setWalking(true);
             }
         }
-    }
-
-    public void stopFollowing() {
-        targetedEnemy = null;
     }
 
     private Animation<TextureRegion> getCurrentAnimation() {
@@ -349,14 +393,16 @@ public class Player {
         return currentAnimation;
     }
 
+    /**
+     * Decreases the object's health by a specified amount of damage.
+     * If the object's health drops to zero or less, triggers death.
+     *
+     * @param damage The amount of damage to deal to the object.
+     */
     public void attacked(int damage) {
         health -= damage;
         if (isDead()) {
             //die();
         }
-    }
-
-    public boolean isDead() {
-        return health <= 0;
     }
 }

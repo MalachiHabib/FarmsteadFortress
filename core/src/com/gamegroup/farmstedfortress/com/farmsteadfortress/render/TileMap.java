@@ -119,6 +119,18 @@ public class TileMap {
         fillMapWithObjects();
     }
 
+    public List<Tile> getBaseTiles() {
+        return baseTiles;
+    }
+
+    public List<List<int[]>> getEnemyPaths() {
+        return successfulPaths;
+    }
+
+    public String[][] getMap() {
+        return map;
+    }
+
     /**
      * Sets the tile map with path points indicated by the "P" string in the map.
      *
@@ -155,33 +167,6 @@ public class TileMap {
             }
         }
         return null;
-    }
-
-    /**
-     * Returns a list of base tiles to be rendered.
-     *
-     * @return List of Tile objects representing the base tiles.
-     */
-    public List<Tile> getBaseTiles() {
-        return baseTiles;
-    }
-
-    /**
-     * Returns a list of object tiles to be rendered.
-     *
-     * @return List of Tile objects representing the object tiles.
-     */
-    public List<Tile> getObjectTiles() {
-        return objectTiles;
-    }
-
-    /**
-     * Returns a list of object tiles to be rendered.
-     *
-     * @return A list of Tile objects representing the object tiles.
-     */
-    public List<List<int[]>> getEnemyPaths() {
-        return successfulPaths;
     }
 
     /**
@@ -247,7 +232,6 @@ public class TileMap {
             }
         }
     }
-
 
     /**
      * Smooths the map by changing tiles with fewer than four ground tiles adjacent
@@ -515,13 +499,6 @@ public class TileMap {
             System.out.println();
         }
         System.out.println();
-    }
-
-    /**
-     * @return the map.
-     */
-    public String[][] getMap() {
-        return map;
     }
 
     /**

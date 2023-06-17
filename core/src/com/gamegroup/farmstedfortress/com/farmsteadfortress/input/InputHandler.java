@@ -78,6 +78,10 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
         }
     }
 
+    private boolean isSecondFingerTouched() {
+        return Gdx.input.isTouched(1);
+    }
+
     public void handleCameraInput() {
         if (Gdx.input.isTouched(0) && Gdx.input.isTouched(1)) {
             float initialDistance = Vector2.dst(
@@ -148,10 +152,6 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
 
     private boolean isTouchWithinUI(int screenX, int screenY) {
         return Helpers.uiContains(uiStages, screenX, screenY, shop);
-    }
-
-    private boolean isSecondFingerTouched() {
-        return Gdx.input.isTouched(1);
     }
 
     private void handlePlayerActions(int screenX, int screenY) {

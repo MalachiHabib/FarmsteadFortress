@@ -29,6 +29,18 @@ public class Projectile {
         this.splatterTexture = splatterTexture;
     }
 
+    public boolean shouldRemove() {
+        return hitTarget && timeSinceHit >= TIME_TO_LIVE_AFTER_HIT;
+    }
+
+    public Enemy getTarget() {
+        return target;
+    }
+
+    public Vector2 getPosition() {
+        return this.position;
+    }
+
     public void render(SpriteBatch batch) {
         TextureRegion textureToUse = hitTarget ? splatterTexture : texture;
 
@@ -62,27 +74,11 @@ public class Projectile {
         }
     }
 
-    public boolean shouldRemove() {
-        return hitTarget && timeSinceHit >= TIME_TO_LIVE_AFTER_HIT;
-    }
-
     public void onHit() {
         if (!target.isHit()) {
             target.setHitBy(this);
             target.attacked(damage);
             hitTarget = true;
         }
-    }
-
-    public Enemy getTarget() {
-        return target;
-    }
-
-    public Vector2 getPosition() {
-        return this.position;
-    }
-
-    public float getRadius() {
-        return this.texture.getRegionWidth() / 2f;
     }
 }

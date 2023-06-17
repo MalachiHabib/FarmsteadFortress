@@ -14,7 +14,6 @@ import java.util.List;
  * Represents a basic enemy entity in the game.
  */
 
-
 public class BossEnemy extends Enemy {
     private float maxHealth;
     /**
