@@ -10,7 +10,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.crashinvaders.vfx.effects.VignettingEffect;
 import com.farmsteadfortress.FarmsteadFortress;
 import com.farmsteadfortress.entities.Player;
@@ -32,7 +39,6 @@ import java.util.List;
 public class GameScreen extends ScreenAdapter {
     private Music backgroundMusic;
     private SpriteBatch batch;
-    private SpriteBatch tutBatch;
     private OrthographicCamera camera;
     private TileMap map;
     private List<Enemy> enemies;
@@ -42,6 +48,10 @@ public class GameScreen extends ScreenAdapter {
     private InputMultiplexer inputMultiplexer;
     private Hotbar hotbar;
     private ShopUI shop;
+
+    private Skin skin;
+    private Stage stage;
+    private Dialog tutorial;
     private ArrayList<Stage> uiStages;
     private WaveController waveController;
     private HUD hud;
@@ -57,12 +67,28 @@ public class GameScreen extends ScreenAdapter {
         this.gameWonScreen = new GameWonScreen(game);
         this.batch = batch;
         this.game = game;
-        tutBatch = new SpriteBatch();
         camera = new OrthographicCamera(1920, 1080);
         camera.zoom = 1.5f;
         map = new TileMap();
         this.projectileManager = new ProjectileManager();
         calculateCameraPosition();
+
+        skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
+
+
+        stage = new Stage();
+        final TutDialog tutDialog = new TutDialog("Tutorial", skin);
+        TextButton exit = new TextButton("Exit", skin);
+        exit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                tutDialog.hide();
+            }
+        });
+        tutDialog.getButtonTable().add(exit);
+        tutDialog.show(stage);
+
+
 
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
         this.enemies = new ArrayList<>();
@@ -101,9 +127,41 @@ public class GameScreen extends ScreenAdapter {
         );
     }
 
+    public static class TutDialog extends Dialog{
+
+        public TutDialog(String title, Skin skin) {
+            super(title, skin);
+        }
+
+        public TutDialog(String title, Skin skin, String windowStyleName) {
+            super(title, skin, windowStyleName);
+        }
+
+        public TutDialog(String title, WindowStyle windowStyle) {
+            super(title, windowStyle);
+        }
+
+        {
+            text("Welcome to Farmstead Fortess. \n" +
+                    "In this game you must protect the core of your island (indicated by the grey tile) from enemies by planting crops\n" +
+                    "These crops can be bought within the shop in the bottom right hand corner.\n" +
+                    "Bought crops will appear in your hotbar and can be placed by selecting it from the hot bar and clicking where to place it on the field.\n" +
+                    " You will only have a little bit of time before the enemies arrive so get ready and good luck!");
+            //button("Exit");
+        }
+
+        @Override
+        protected void result(Object object){
+            this.hide();
+        }
+
+    }
+
 
     @Override
     public void render(float delta) {
+
+
         waveController.update(delta);
         if (shop.isOpen()) {
             inputMultiplexer.addProcessor(shop.getStage());
@@ -166,15 +224,8 @@ public class GameScreen extends ScreenAdapter {
         }
 
         // Tutorial
-//        tutBatch.begin();
-//        bmfont.setColor(1, 1, 1, 1);
-//        String tutorialText = "Welcome to Farmstead Fortess. \n" +
-//                "In this game you must protect the core of your island (indicated by the grey tile) from enemies by planting crops\n" +
-//                "These crops can be bought within the shop in the bottom right hand corner.\n" +
-//                "Bought crops will appear in your hotbar and can be placed by selecting it from the hot bar and clicking where to place it on the field.\n" +
-//                " You will only have a little bit of time before the enemies arrive so get ready and good luck!";
-//        bmfont.draw(tutBatch, tutorialText, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0f, 1, false );
-//        tutBatch.end();
+        //stage.act(delta);
+        //stage.draw();
     }
 
     private void updatePlants(float delta, List<Enemy> enemies) {
@@ -182,6 +233,12 @@ public class GameScreen extends ScreenAdapter {
             tile.update(delta, enemies);
         }
     }
+
+    private void showTutorial(){
+
+    }
+
+
 
     private void calculateCameraPosition() {
         float centerX = 0;
@@ -228,6 +285,7 @@ public class GameScreen extends ScreenAdapter {
     public void show() {
         playMusic();
         Gdx.input.setInputProcessor(inputMultiplexer);
+
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.crashinvaders.vfx.effects.LensFlareEffect;
 import com.crashinvaders.vfx.effects.MotionBlurEffect;
 import com.crashinvaders.vfx.effects.VignettingEffect;
 import com.crashinvaders.vfx.effects.util.MixEffect;
+import com.farmsteadfortress.screens.CreditsScreen;
 import com.farmsteadfortress.screens.GameScreen;
 import com.farmsteadfortress.screens.MenuScreen;
 import com.farmsteadfortress.screens.OptionsScreen;
@@ -31,6 +32,7 @@ public class FarmsteadFortress extends Game {
     public static GameScreen gameScreen;
     public static MenuScreen menuScreen;
     public static OptionsScreen optionsScreen;
+    public static CreditsScreen creditsScreen;
 
 
 
@@ -50,6 +52,7 @@ public class FarmsteadFortress extends Game {
         vfxManager.addEffect(vignettingEffect);
         batch = new SpriteBatch();
         optionsScreen = new OptionsScreen(this);
+        creditsScreen = new CreditsScreen(this);
         gameScreen = new GameScreen(batch, this);
         menuScreen = new MenuScreen(this);
         setScreen(menuScreen);
