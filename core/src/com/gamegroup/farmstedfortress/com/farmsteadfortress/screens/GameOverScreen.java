@@ -32,33 +32,19 @@ public class GameOverScreen implements Screen {
         bgTexture = new Texture(Gdx.files.internal("gui/msg-background.png"));
         skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
         stage = new Stage();
-        background = new Image(bgTexture);
-        background.setSize(background.getWidth() * 4, background.getHeight() * 4);
-        background.setPosition(Gdx.graphics.getWidth() / 2f - background.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - background.getHeight() /2 );
+        createTryAgainButton();
+    }
 
+
+    public void createTryAgainButton() {
         final TextButton tryAgainButton = new TextButton("Try Again", skin, "default");
         tryAgainButton.setWidth(300f);
         tryAgainButton.setHeight(200f);
-        final TextButton quitButton = new TextButton("Quit", skin, "default");
-        quitButton.setWidth(300f);
-        quitButton.setHeight(200f);
-
         int half = Gdx.graphics.getWidth() / 2;
-        int quarter = (half) / 2;
+        int quarter = half / 2;
         tryAgainButton.setPosition(quarter / 2f + quarter - 150f, Gdx.graphics.getHeight() / 4f);
-        quitButton.setPosition( quarter / 2f + half - 150f, Gdx.graphics.getHeight() / 4f);
-        stage.addActor(background);
-        stage.addActor(tryAgainButton);
-        stage.addActor(quitButton);
-        Gdx.input.setInputProcessor(stage);
 
-        bmfont = new BitmapFont(
-                Gdx.files.internal("gui/Lilian.fnt"),
-                Gdx.files.internal("gui/Lilian.png"),
-                false
-        );
-        bmfont.getData().setScale(3, 3);
-
+        // Set action on button click
         tryAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -66,13 +52,10 @@ public class GameOverScreen implements Screen {
             }
         });
 
-        quitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
+        // Add the button to the stage
+        stage.addActor(tryAgainButton);
     }
+
 
     @Override
     public void show() {
@@ -85,11 +68,13 @@ public class GameOverScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gameOverBatch.begin();
-        stage.draw();
         bmfont.setColor(1, 1, 1, 1);
         bmfont.draw(gameOverBatch, "Game Over", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() * 3f / 4f, 0f, 1, false);
         gameOverBatch.end();
+
+        stage.draw(); // draw the stage which includes the "Try Again" button
     }
+
 
     @Override
     public void resize(int width, int height) {

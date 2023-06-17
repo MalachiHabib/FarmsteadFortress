@@ -45,11 +45,11 @@ public class FernPlant extends Plant {
 
     @Override
     protected void initialiseTextures() {
-        TextureRegion fernTexture = atlas.findRegion(fernType);
-        textures.put(GrowthStage.SEEDLING, atlas.findRegion(fernType + "_small"));
-        textures.put(GrowthStage.SPROUT, atlas.findRegion(fernType + "_small"));
-        textures.put(GrowthStage.SMALL_PLANT, fernTexture);
-        textures.put(GrowthStage.ADULT, fernTexture);
+        TextureRegion fernTexture = null;
+        textures.put(GrowthStage.SEEDLING, null);
+        textures.put(GrowthStage.SPROUT, null);
+        textures.put(GrowthStage.SMALL_PLANT, null);
+        textures.put(GrowthStage.ADULT, null);
     }
 
     @Override

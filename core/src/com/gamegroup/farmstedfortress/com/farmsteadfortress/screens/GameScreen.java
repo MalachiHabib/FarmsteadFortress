@@ -106,11 +106,13 @@ public class GameScreen extends ScreenAdapter {
                 Gdx.files.internal("gui/Lilian.png"),
                 false
         );
+        gameOverScreen.create();
     }
 
 
     @Override
     public void render(float delta) {
+
         waveController.update(delta);
         if (shop.isOpen()) {
             inputMultiplexer.addProcessor(shop.getStage());
@@ -139,8 +141,9 @@ public class GameScreen extends ScreenAdapter {
         }
 
         batch.begin();
+
         projectileManager.render(batch);
-        player.render(batch);
+        // player.render(batch);
         batch.end();
 
 
@@ -149,10 +152,10 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.end();
 
         // Render the UI elements
-        hotbar.render();
-        shop.render();
-        hotbar.render();
-        hud.render();
+        // hotbar.render();
+        // shop.render();
+        // hotbar.render();
+        // hud.render();
         hud.updateLivesCount(player);
         hud.updatePlayerBalance(player);
         hud.updateWaveCount(waveController.getCurrentWave());

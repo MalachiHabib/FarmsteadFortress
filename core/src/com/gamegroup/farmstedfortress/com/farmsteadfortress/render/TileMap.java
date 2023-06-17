@@ -38,7 +38,7 @@ public class TileMap {
     private List<PathResult> pathResults;
     private int mapSize;
     private String[][] map;
-    private Texture waterTexture, waterRockTexture, waterBorder, waterInBetween, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassRockTexture, grassYellowTexture, grassFlowerTexture, grassBlueTexture, enemySpawnPointTexture, crystalTexture;
+    private Texture red, blue, purple, yellow, green, waterTexture, waterRockTexture, waterBorder, waterInBetween, waterFar, middleTexture, bridgeTexture, pathTextureTop, cropLandTexture, grassTexture, grassRockTexture, grassYellowTexture, grassFlowerTexture, grassBlueTexture, enemySpawnPointTexture, crystalTexture;
     private LinkedList<Tile> baseTiles;
     private LinkedList<Tile> objectTiles;
 
@@ -48,6 +48,13 @@ public class TileMap {
      */
     public TileMap() {
         mapSize = 120;
+
+        red = new Texture("tiles/showcase/red.png");
+        blue = new Texture("tiles/showcase/blue.png");
+        yellow = new Texture("tiles/showcase/yellow.png");
+        green = new Texture("tiles/showcase/green.png");
+        purple = new Texture("tiles/showcase/purple.png");
+
         crystalTexture = new Texture("objects/crystal/crystal.png");
         cropLandTexture = new Texture("tiles/crop_land.png");
         cropLandTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -114,7 +121,6 @@ public class TileMap {
                 System.out.println("Pathfinding timed out, generating a new map...");
             }
         }
-        //printMap();
         fillMapWithTiles();
         fillMapWithObjects();
     }
@@ -390,83 +396,21 @@ public class TileMap {
 
                 switch (map[row][col]) {
                     case PATH:
-                        if (adjacentWater) {
-                            baseTiles.add(new Tile(bridgeTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.BRIDGE));
-                        } else {
-                            baseTiles.add(new Tile(pathTextureTop, new Vector2(row, col), new Vector2(x, y), Tile.TileType.PATH));
-                        }
+                        baseTiles.add(new Tile(yellow, new Vector2(row, col), new Vector2(x, y), Tile.TileType.CENTER));
                         break;
-
                     case CENTER:
-                        baseTiles.add(new Tile(middleTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.CENTER));
+                        baseTiles.add(new Tile(green, new Vector2(row, col), new Vector2(x, y), Tile.TileType.CENTER));
                         break;
                     case EXTRA_WEIGHTED_GROUND:
                     case GROUND:
                     case WEIGHTED_GROUND:
-                        Texture groundSelectedTexture;
-                        Tile.TileType tileType = null;
-                        if (randomNum <= 40) {
-                            groundSelectedTexture = grassTexture;
-                            tileType = Tile.TileType.CLASSIC_GRASS;
-                        } else if (randomNum <= 43) {
-                            groundSelectedTexture = grassFlowerTexture;
-                            tileType = Tile.TileType.FLOWER;
-                        } else if (randomNum <= 45) {
-                            groundSelectedTexture = grassRockTexture;
-                            tileType = Tile.TileType.ROCK;
-                        } else if (randomNum <= 80) {
-                            groundSelectedTexture = grassYellowTexture;
-                            tileType = Tile.TileType.MEADOW_GRASS;
-                        } else {
-                            groundSelectedTexture = grassBlueTexture;
-                            tileType = Tile.TileType.EVERGREEN_GRASS;
-                        }
-
-                        baseTiles.add(new Tile(groundSelectedTexture, new Vector2(row, col), new Vector2(x, y), tileType));
+                        baseTiles.add(new Tile(red, new Vector2(row, col), new Vector2(x, y), Tile.TileType.CLASSIC_GRASS));
                         break;
                     case WATER:
-                        Texture selectedTexture = waterFar;
-
-                        int[] distancesFromLand = {1, 3, 5, 7};
-                        boolean leftNeighborIsLand = false;
-                        boolean rightNeighborIsLand = false;
-                        int currentDistance = 0;
-                        for (int distance : distancesFromLand) {
-                            if (distance == 1) {
-                                leftNeighborIsLand = isValid(row, col - 1) && !map[row][col - 1].equals(WATER);
-                                rightNeighborIsLand = isValid(row, col + 1) && !map[row][col + 1].equals(WATER);
-                            }
-
-                            int[][] farNeighbors = {
-                                    {row - distance, col}, {row + distance, col},
-                                    {row, col - distance}, {row, col + distance},
-                                    {row - distance, col - distance}, {row + distance, col + distance},
-                                    {row - distance, col + distance}, {row + distance, col - distance}
-                            };
-                            for (int[] farNeighbor : farNeighbors) {
-                                int farNeighborRow = farNeighbor[0];
-                                int farNeighborCol = farNeighbor[1];
-                                if (isValid(farNeighborRow, farNeighborCol) && !map[farNeighborRow][farNeighborCol].equals(WATER)) {
-                                    currentDistance = distance;
-                                    break;
-                                }
-                            }
-                            if (currentDistance != 0) break;
-                        }
-
-                        if (currentDistance == 1) {
-                            selectedTexture = waterBorder;
-                        } else if (currentDistance == 3) {
-                            selectedTexture = waterTexture;
-                        } else if (currentDistance == 5) {
-                            selectedTexture = waterInBetween;
-                        } else if (currentDistance == 7) {
-                            selectedTexture = waterFar;
-                        }
-                        baseTiles.add(new Tile(selectedTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.WATER));
+                        baseTiles.add(new Tile(blue, new Vector2(row, col), new Vector2(x, y), Tile.TileType.SPAWN_POINT));
                         break;
                     case SPAWN_POINT:
-                        baseTiles.add(new Tile(enemySpawnPointTexture, new Vector2(row, col), new Vector2(x, y), Tile.TileType.SPAWN_POINT));
+                        baseTiles.add(new Tile(purple, new Vector2(row, col), new Vector2(x, y), Tile.TileType.SPAWN_POINT));
                         break;
                 }
             }
