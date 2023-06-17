@@ -21,6 +21,7 @@ public class MenuScreen implements Screen {
     private Music backgroundMusic;
     private TextButton quitButton;
     private TextButton startButton;
+    private TextButton creditsButton;
     private FarmsteadFortress game;
     private SpriteBatch menuBatch;
     private Texture bgTexture;
@@ -52,6 +53,8 @@ public class MenuScreen implements Screen {
         stage.addActor(startButton);
         stage.addActor(optionsButton);
         stage.addActor(quitButton);
+        stage.addActor(creditsButton);
+
     }
 
     private void createButtons() {
@@ -82,17 +85,27 @@ public class MenuScreen implements Screen {
         optionsButton.setWidth(200f);
         optionsButton.setHeight(150f);
 
+        creditsButton = new TextButton("Credits", newStyle);
+        creditsButton.setWidth(200f);
+        creditsButton.setHeight(150f);
+
         float scaleFactor = Helpers.getScaleFactor();
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
 
-        optionsButton.setPosition(screenWidth / 2f - (optionsButton.getWidth() * scaleFactor) / 2f, screenHeight / 4f);
-        startButton.setPosition(screenWidth / 3f - (startButton.getWidth() * scaleFactor) / 2, screenHeight / 4f);
-        quitButton.setPosition(2f * screenWidth / 3f - (quitButton.getWidth() * scaleFactor) / 2, screenHeight / 4f);
+        // Original positions
+        //optionsButton.setPosition(screenWidth / 2f - (optionsButton.getWidth() * scaleFactor) / 2f, screenHeight / 4f);
+        //startButton.setPosition(screenWidth / 3f - (startButton.getWidth() * scaleFactor) / 2, screenHeight / 4f);
+        //quitButton.setPosition(2f * screenWidth / 3f - (quitButton.getWidth() * scaleFactor) / 2, screenHeight / 4f);
+        optionsButton.setPosition((screenWidth / 10f * 6f) - (optionsButton.getWidth() * scaleFactor) / 2f, screenHeight / 4f);
+        startButton.setPosition((screenWidth / 10f * 4f) - (startButton.getWidth() * scaleFactor) / 2, screenHeight / 2f - 25);
+        quitButton.setPosition( (screenWidth / 10f * 6f) - (quitButton.getWidth() * scaleFactor) / 2, screenHeight / 2f - 25);
+        creditsButton.setPosition((screenWidth / 10f * 4f) - (optionsButton.getWidth() * scaleFactor) / 2f, screenHeight / 4f);
 
         optionsButton.setSize(optionsButton.getWidth() * scaleFactor, optionsButton.getHeight() * scaleFactor);
         startButton.setSize(startButton.getWidth() * scaleFactor, startButton.getHeight() * scaleFactor);
         quitButton.setSize(quitButton.getWidth() * scaleFactor, quitButton.getHeight() * scaleFactor);
+        creditsButton.setSize(creditsButton.getWidth() * scaleFactor, creditsButton.getHeight() * scaleFactor);
 
         headingFont = new BitmapFont(
                 Gdx.files.internal("gui/Lilian.fnt"),
@@ -121,6 +134,13 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(FarmsteadFortress.optionsScreen);
+            }
+        });
+
+        creditsButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(FarmsteadFortress.creditsScreen);
             }
         });
     }
@@ -154,6 +174,7 @@ public class MenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         menuBatch.begin();
         stage.draw();
+
         headingFont.setColor(1, 1, 1, 1);
         headingFont.draw(menuBatch, "Farmstead Fortress", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 3 / 4, 0f, 1, false);
         menuBatch.end();

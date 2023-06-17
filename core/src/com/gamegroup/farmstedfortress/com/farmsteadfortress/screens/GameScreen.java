@@ -42,6 +42,10 @@ public class GameScreen extends ScreenAdapter {
     private InputMultiplexer inputMultiplexer;
     private Hotbar hotbar;
     private ShopUI shop;
+
+    private Skin skin;
+    private Stage stage;
+    private Dialog tutorial;
     private ArrayList<Stage> uiStages;
     private WaveController waveController;
     private HUD hud;
@@ -66,6 +70,23 @@ public class GameScreen extends ScreenAdapter {
         map = new TileMap();
         this.projectileManager = new ProjectileManager();
         calculateCameraPosition();
+
+        skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
+
+
+        stage = new Stage();
+        final TutDialog tutDialog = new TutDialog("Tutorial", skin);
+        TextButton exit = new TextButton("Exit", skin);
+        exit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                tutDialog.hide();
+            }
+        });
+        tutDialog.getButtonTable().add(exit);
+        tutDialog.show(stage);
+
+
 
         player = PlayerFactory.createPlayer(map.getCenterTilePos(), map);
         this.enemies = new ArrayList<>();
@@ -104,10 +125,39 @@ public class GameScreen extends ScreenAdapter {
         );
     }
 
+    public static class TutDialog extends Dialog{
+
+        public TutDialog(String title, Skin skin) {
+            super(title, skin);
+        }
+
+        public TutDialog(String title, Skin skin, String windowStyleName) {
+            super(title, skin, windowStyleName);
+        }
+
+        public TutDialog(String title, WindowStyle windowStyle) {
+            super(title, windowStyle);
+        }
+
+        {
+            text("Welcome to Farmstead Fortess. \n" +
+                    "In this game you must protect the core of your island (indicated by the grey tile) from enemies by planting crops\n" +
+                    "These crops can be bought within the shop in the bottom right hand corner.\n" +
+                    "Bought crops will appear in your hotbar and can be placed by selecting it from the hot bar and clicking where to place it on the field.\n" +
+                    " You will only have a little bit of time before the enemies arrive so get ready and good luck!");
+            //button("Exit");
+        }
+
+        @Override
+        protected void result(Object object){
+            this.hide();
+        }
+
+    }
+
 
     @Override
     public void render(float delta) {
-        playMusic();
         waveController.update(delta);
         if (shop.isOpen()) {
             inputMultiplexer.addProcessor(shop.getStage());
@@ -139,6 +189,7 @@ public class GameScreen extends ScreenAdapter {
         projectileManager.render(batch);
         player.render(batch);
         batch.end();
+
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -185,6 +236,12 @@ public class GameScreen extends ScreenAdapter {
             tile.update(delta, enemies);
         }
     }
+
+    private void showTutorial(){
+
+    }
+
+
 
     private void calculateCameraPosition() {
         float centerX = 0;
@@ -245,7 +302,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void hide() {
-        currentMusic.pause();
+        backgroundMusic.pause();
         Gdx.input.setInputProcessor(null);
     }
 }
