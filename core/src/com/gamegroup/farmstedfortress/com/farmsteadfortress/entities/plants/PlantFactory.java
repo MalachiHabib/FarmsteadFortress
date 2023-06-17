@@ -1,6 +1,7 @@
 package com.farmsteadfortress.entities.plants;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.Player;
@@ -21,6 +22,9 @@ public class PlantFactory {
     private static TextureAtlas pumpkinProjectileAtlas = new TextureAtlas(Gdx.files.internal("objects/pumpkin/PumpkinProjectileAtlas.atlas"));
     private static TextureAtlas cornAtlas = new TextureAtlas(Gdx.files.internal("objects/corn/CornAtlas.atlas"));
     private static TextureAtlas cornProjectileAtlas = new TextureAtlas(Gdx.files.internal("objects/corn/CornProjectile.atlas"));
+    private static Sound upgradeSound = Gdx.audio.newSound(Gdx.files.internal("sounds/upgrade.mp3"));
+    private static Sound maxUpgrade = Gdx.audio.newSound(Gdx.files.internal("sounds/max_upgrade.mp3"));
+    private static Sound shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
     private static Player player;
 
     public static Plant createPlant(Plant.PlantType plantType, Tile tile, Player player, ProjectileManager projectileManager) {
@@ -48,7 +52,7 @@ public class PlantFactory {
         float attackRange = 600f;
         float timeBetweenAttacks = 3f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
-        return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, tomatoAtlas, tomatoProjectileAtlas, projectileManager);
+        return new TomatoPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, tomatoAtlas, tomatoProjectileAtlas, projectileManager, upgradeSound, shootSound, maxUpgrade);
     }
 
     private static FernPlant createFernPlant(Tile tile) {
@@ -65,7 +69,7 @@ public class PlantFactory {
         float timeBetweenPayouts = 3f;
         int payoutAmount = 2;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
-        return new CauliflowerFlower(growTime, position, health, timeBetweenPayouts, payoutAmount, tile, cauliflowerAtlas, player);
+        return new CauliflowerFlower(growTime, position, health, timeBetweenPayouts, payoutAmount, tile, cauliflowerAtlas, player, upgradeSound, shootSound, maxUpgrade);
     }
 
     private static PumpkinPlant createPumpkinPlant(Tile tile, ProjectileManager projectileManager) {
@@ -76,7 +80,7 @@ public class PlantFactory {
         float attackRange = 750f;
         float timeBetweenAttacks = 3f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
-        return new PumpkinPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, pumpkinAtlas, pumpkinProjectileAtlas, projectileManager);
+        return new PumpkinPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, pumpkinAtlas, pumpkinProjectileAtlas, projectileManager, upgradeSound, shootSound, maxUpgrade);
     }
 
     private static CornPlant createCornPlant(Tile tile, ProjectileManager projectileManager) {
@@ -87,6 +91,6 @@ public class PlantFactory {
         float attackRange = 650f;
         float timeBetweenAttacks = 2f;
         Vector2 position = new Vector2(tile.worldPos.x, tile.worldPos.y);
-        return new CornPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, cornAtlas, cornProjectileAtlas, projectileManager);
+        return new CornPlant(growTime, position, health, damage, attackSpeed, attackRange, timeBetweenAttacks, tile, cornAtlas, cornProjectileAtlas, projectileManager, upgradeSound, shootSound, maxUpgrade);
     }
 }

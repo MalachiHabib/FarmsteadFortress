@@ -1,5 +1,6 @@
 package com.farmsteadfortress.entities.plants.types;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,7 +20,7 @@ public class TomatoPlant extends Plant {
     private TextureRegion projectileTexture, projectileHitTexture;
 
     public TomatoPlant(float growTime, Vector2 position, int health, int attackDamage, float attackSpeed,
-                       float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas, TextureAtlas projectileAtlas, ProjectileManager projectileManager) {
+                       float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas, TextureAtlas projectileAtlas, ProjectileManager projectileManager, Sound upgradeSound, Sound shootSound, Sound maxUpgrade) {
         super(growTime, position, health, attackDamage, attackSpeed, attackRange, tile, "Tomato");
         this.atlas = atlas;
         this.timeBetweenAttacks = timeBetweenAttacks;
@@ -27,6 +28,9 @@ public class TomatoPlant extends Plant {
         this.projectileManager = projectileManager;
         this.projectileTexture = projectileAtlas.findRegion("projectile");
         this.projectileHitTexture = projectileAtlas.findRegion("splatter");
+        this.upgradeSound = upgradeSound;
+        this.shootSound = shootSound;
+        this.maxUpgrade = maxUpgrade;
         initialiseTextures();
     }
 
@@ -52,6 +56,7 @@ public class TomatoPlant extends Plant {
         if (timeSinceLastAttack >= timeBetweenAttacks && !enemy.isDead()) {
             Vector2 direction = new Vector2(enemy.getPosition().x - position.x, enemy.getPosition().y - position.y);
             Vector2 projectilePosition = new Vector2(this.position.x + Tile.TILE_SIZE / 2f, this.position.y + 10f + Tile.TILE_SIZE);
+            shootSound.play();
             projectileManager.addProjectile(new Projectile(projectilePosition, direction, projectileTexture, projectileHitTexture, attackDamage, 200f, enemy));
             timeSinceLastAttack = 0;
         }

@@ -1,5 +1,6 @@
 package com.farmsteadfortress.entities.plants.types;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -18,7 +19,7 @@ public class PumpkinPlant extends Plant {
     private TextureRegion projectileTexture, projectileHitTexture;
 
     public PumpkinPlant(float growTime, Vector2 position, int health, int attackDamage, float attackSpeed,
-                        float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas, TextureAtlas projectileAtlas, ProjectileManager projectileManager) {
+                        float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas, TextureAtlas projectileAtlas, ProjectileManager projectileManager, Sound upgradeSound, Sound shootSound, Sound maxUpgrade) {
         super(growTime, position, health, attackDamage, attackSpeed, attackRange, tile, "Pumpkin");
         this.atlas = atlas;
         this.timeBetweenAttacks = timeBetweenAttacks;
@@ -26,6 +27,9 @@ public class PumpkinPlant extends Plant {
         this.projectileManager = projectileManager;
         this.projectileTexture = projectileAtlas.findRegion("projectile");
         this.projectileHitTexture = projectileAtlas.findRegion("splatter");
+        this.upgradeSound = upgradeSound;
+        this.maxUpgrade = maxUpgrade;
+        this.shootSound = shootSound;
         initialiseTextures();
     }
 
@@ -57,6 +61,7 @@ public class PumpkinPlant extends Plant {
                     new Vector2(this.position.x + Tile.TILE_SIZE / 2f + 10, this.position.y + 2 * Tile.TILE_SIZE / 3 + 10)
             };
             for (Vector2 projectilePosition : projectilePositions) {
+                shootSound.play();
                 projectileManager.addProjectile(new Projectile(projectilePosition, direction, projectileTexture, projectileHitTexture, attackDamage, 200f, enemy));
                 timeSinceLastAttack = 0;
             }

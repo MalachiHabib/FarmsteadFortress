@@ -91,6 +91,7 @@ public class UpgradeMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (player.getMoney() >= 15) {
+                    player.addMoney(-15);
                     plant.upgrade();
                 } else {
                     String message = "You cannot afford this. You have " + player.getMoney() + " dollars.";

@@ -1,5 +1,6 @@
 package com.farmsteadfortress.entities.plants.types;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.farmsteadfortress.entities.Player;
@@ -18,12 +19,15 @@ public class CauliflowerFlower extends Plant {
     private Player player;
 
     public CauliflowerFlower(float growTime, Vector2 position, int health, float timeBetweenPayouts,
-                             int payoutAmount, Tile tile, TextureAtlas atlas, Player player) {
+                             int payoutAmount, Tile tile, TextureAtlas atlas, Player player, Sound upgradeSound, Sound shootSound, Sound maxUpgrade) {
         super(growTime, position, health, 0, 0, 0, tile, "Cauliflower");
         this.atlas = atlas;
         this.timeBetweenPayouts = timeBetweenPayouts;
         this.payoutAmount = payoutAmount;
         this.player = player;
+        this.upgradeSound = upgradeSound;
+        this.maxUpgrade = maxUpgrade;
+        this.shootSound = shootSound;
         initialiseTextures();
     }
 

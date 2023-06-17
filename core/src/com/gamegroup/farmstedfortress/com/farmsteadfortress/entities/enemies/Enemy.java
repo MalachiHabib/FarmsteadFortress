@@ -3,6 +3,7 @@ package com.farmsteadfortress.entities.enemies;
 import static com.farmsteadfortress.utils.Helpers.gridToWorldPosition;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +24,7 @@ import java.util.Random;
  * Represents a generic enemy entity in the game.
  */
 public abstract class Enemy {
+    private Sound splatSound = Gdx.audio.newSound(Gdx.files.internal("sounds/splat.mp3"));
     protected static final Color EFFECT_COLOR = Color.RED;
     protected float scale;
     protected List<Enemy> enemies;
@@ -53,6 +55,7 @@ public abstract class Enemy {
     private boolean isAttacking;
     private float animationSpeed;
     private boolean isSelected = false;
+    private boolean hitSoundPlayed = false;
 
     /**
      * Constructs an enemy entity.
@@ -145,6 +148,7 @@ public abstract class Enemy {
 
     public void resetHit() {
         this.hitBy = null;
+        this.hitSoundPlayed = false;
     }
 
     public Projectile getHitBy() {
@@ -158,9 +162,15 @@ public abstract class Enemy {
     public boolean isHitBy(Projectile projectile) {
         float distance = this.getPosition().dst(projectile.getPosition());
         float maxDistanceThreshold = boundingBox.width / 6;
-        return distance <= maxDistanceThreshold;
-    }
+        boolean isHit = distance <= maxDistanceThreshold;
 
+        if (isHit && !hitSoundPlayed) {
+            splatSound.play();
+            hitSoundPlayed = true;
+        }
+
+        return isHit;
+    }
 
     /**
      * Abstract method for the enemy being attacked, to be implemented by subclasses.
@@ -386,4 +396,9 @@ public abstract class Enemy {
     public boolean isDead() {
         return health <= 0;
     }
+
+    public void dispose() {
+        splatSound.dispose();
+    }
+
 }

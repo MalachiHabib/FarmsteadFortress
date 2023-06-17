@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.input.GestureDetector;
@@ -36,6 +37,7 @@ import java.util.List;
 
 
 public class InputHandler extends InputAdapter implements GestureDetector.GestureListener, InputProcessor {
+    private static Sound placeSound = Gdx.audio.newSound(Gdx.files.internal("sounds/place.mp3"));
     private TileMap tileMap;
     private OrthographicCamera camera;
     private Texture hoverTexture;
@@ -225,6 +227,7 @@ public class InputHandler extends InputAdapter implements GestureDetector.Gestur
             if (hasFern) {
                 ((FernPlant) targetTile.getPlant()).harvest(player, targetTile);
             } else if (hasPlantToPlant) {
+                placeSound.play();
                 targetTile.setTileTexture(new Texture("tiles/crop_land.png"));
                 Plant plant = PlantFactory.createPlant(player.getPlantToBePlanted(), targetTile, player, projectileManager);
                 targetTile.setPlant(plant);

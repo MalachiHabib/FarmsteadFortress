@@ -90,7 +90,7 @@ public class ShopUI {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if (isOpen && player.getMoney() >= seed.getPrice()) {
-                        player.addMoney(-5);
+                        player.addMoney(-seed.getPrice());
                         inventory.addItem(seed);
                     } else {
                         String message = "You cannot afford this. You have " + player.getMoney() + " dollars.";

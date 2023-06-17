@@ -1,5 +1,6 @@
 package com.farmsteadfortress.entities.plants.types;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -19,7 +20,7 @@ public class CornPlant extends Plant {
     private TextureRegion projectileTexture, projectileHitTexture;
 
     public CornPlant(float growTime, Vector2 position, int health, int attackDamage, float attackSpeed,
-                     float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas, TextureAtlas projectileAtlas, ProjectileManager projectileManager) {
+                     float attackRange, float timeBetweenAttacks, Tile tile, TextureAtlas atlas, TextureAtlas projectileAtlas, ProjectileManager projectileManager, Sound upgradeSound, Sound shootSound, Sound maxUpgrade) {
         super(growTime, position, health, attackDamage, attackSpeed, attackRange, tile, "Corn");
         this.atlas = atlas;
         this.timeBetweenAttacks = timeBetweenAttacks;
@@ -27,6 +28,9 @@ public class CornPlant extends Plant {
         this.projectileManager = projectileManager;
         this.projectileTexture = projectileAtlas.findRegion("projectile");
         this.projectileHitTexture = projectileAtlas.findRegion("splatter");
+        this.upgradeSound = upgradeSound;
+        this.maxUpgrade = maxUpgrade;
+        this.shootSound = shootSound;
         initialiseTextures();
     }
 
@@ -54,6 +58,7 @@ public class CornPlant extends Plant {
             Vector2 direction = new Vector2(enemy.getPosition().x - position.x, enemy.getPosition().y - position.y);
             Vector2 projectilePosition = new Vector2(this.position.x + Tile.TILE_SIZE / 2f, this.position.y + 10f + Tile.TILE_SIZE);
             for (int i = 0; i < numberOfProjectiles; i++) {
+                shootSound.play();
                 projectileManager.addProjectile(new Projectile(projectilePosition, direction, projectileTexture, projectileHitTexture, attackDamage, 200f, enemy));
             }
             timeSinceLastAttack = 0;

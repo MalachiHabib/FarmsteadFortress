@@ -51,6 +51,9 @@ public class GameScreen extends ScreenAdapter {
     private GameOverScreen gameOverScreen;
     private GameWonScreen gameWonScreen;
     private FarmsteadFortress game;
+    private Music gameMusic;
+    private Music battleMusic;
+    private Music currentMusic;
 
     public GameScreen(SpriteBatch batch, FarmsteadFortress game) {
         this.gameOverScreen = new GameOverScreen();
@@ -104,6 +107,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        playMusic();
         waveController.update(delta);
         if (shop.isOpen()) {
             inputMultiplexer.addProcessor(shop.getStage());
@@ -135,7 +139,6 @@ public class GameScreen extends ScreenAdapter {
         projectileManager.render(batch);
         player.render(batch);
         batch.end();
-
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -198,9 +201,14 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void playMusic() {
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/game_track.mp3"));
-        backgroundMusic.play();
-        backgroundMusic.setVolume(game.getMusicVolume());
+        Music targetMusic = waveController.isWaveOver() ? gameMusic : battleMusic;
+        if (currentMusic != targetMusic) {
+            currentMusic.stop();
+            currentMusic = targetMusic;
+            currentMusic.play();
+            currentMusic.setLooping(true);
+            currentMusic.setVolume(game.getMusicVolume());
+        }
     }
 
     private void updateCamera() {
@@ -226,13 +234,18 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        playMusic();
+        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/game_track.mp3"));
+        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("music/battle_track.mp3"));
+        currentMusic = gameMusic;
+        currentMusic.play();
+        currentMusic.setLooping(true);
+        currentMusic.setVolume(game.getMusicVolume());
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
     public void hide() {
-        backgroundMusic.pause();
+        currentMusic.pause();
         Gdx.input.setInputProcessor(null);
     }
 }

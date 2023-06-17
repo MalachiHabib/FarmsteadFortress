@@ -6,6 +6,6 @@ import com.farmsteadfortress.entities.plants.Plant;
 
 public class PumpkinSeed extends Seed {
     public PumpkinSeed() {
-        super(ItemType.SEED, "Pumpkin Seed", 7, new Texture(Gdx.files.internal("gui/shop-pumpkin.png")), new Texture(Gdx.files.internal("gui/hotbar-pumpkin.png")), 15, Plant.PlantType.PUMPKIN);
+        super(ItemType.SEED, "Pumpkin Seed", 10, new Texture(Gdx.files.internal("gui/shop-pumpkin.png")), new Texture(Gdx.files.internal("gui/hotbar-pumpkin.png")), 15, Plant.PlantType.PUMPKIN);
     }
 }

@@ -82,7 +82,7 @@ public class Player {
         this.currentPath = null;
         this.currentPathIndex = 0;
         this.map = map;
-        this.money = 15;
+        this.money = 1511;
         this.health = 100;
         inventory = new Inventory();
     }

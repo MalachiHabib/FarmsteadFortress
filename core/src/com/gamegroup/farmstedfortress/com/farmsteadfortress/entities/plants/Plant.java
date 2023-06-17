@@ -1,5 +1,7 @@
 package com.farmsteadfortress.entities.plants;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -41,6 +43,10 @@ public abstract class Plant {
     protected float growthTimer;
     protected boolean isHighlighted = false;
     protected String name;
+    protected Sound upgradeSound;
+    protected Sound maxUpgrade;
+    protected Sound shootSound;
+    private boolean maxUpgradeSoundPlayed = false;
 
     public Plant(float growTime, Vector2 position, int health, int damage, float attackSpeed, float attackRange, Tile tile, String plantName) {
         this.growTime = growTime;
@@ -74,16 +80,28 @@ public abstract class Plant {
     }
 
     private void nextGrowthStage() {
-        switch (currentStage) {
-            case SEEDLING:
-                currentStage = GrowthStage.SPROUT;
-                break;
-            case SPROUT:
-                currentStage = GrowthStage.SMALL_PLANT;
-                break;
-            case SMALL_PLANT:
-                currentStage = GrowthStage.ADULT;
-                break;
+        if (upgradeSound != null) {
+            switch (currentStage) {
+                case SEEDLING:
+                    currentStage = GrowthStage.SPROUT;
+                    upgradeSound.play(0.2f);
+                    break;
+                case SPROUT:
+                    currentStage = GrowthStage.SMALL_PLANT;
+                    upgradeSound.play(0.2f);
+                    break;
+                case SMALL_PLANT:
+                    currentStage = GrowthStage.ADULT;
+                    upgradeSound.play(0.2f);
+                    break;
+                case ADULT:
+                case UPGRADE:
+                    if (!maxUpgradeSoundPlayed) {
+                        maxUpgrade.play(0.2f);
+                        maxUpgradeSoundPlayed = true;
+                    }
+                    break;
+            }
         }
     }
 
@@ -113,4 +131,8 @@ public abstract class Plant {
     protected abstract void initialiseTextures();
 
     protected abstract void attack(float delta, Enemy enemy);
+
+    public void dispose() {
+        upgradeSound.dispose();
+    }
 }
