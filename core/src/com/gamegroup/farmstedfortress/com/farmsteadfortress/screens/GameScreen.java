@@ -270,6 +270,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void hide() {
+        currentMusic.stop();
         Gdx.input.setInputProcessor(null);
     }
 }
