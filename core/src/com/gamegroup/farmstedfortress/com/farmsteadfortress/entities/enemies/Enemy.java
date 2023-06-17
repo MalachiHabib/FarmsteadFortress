@@ -157,7 +157,7 @@ public abstract class Enemy {
 
     public boolean isHitBy(Projectile projectile) {
         float distance = this.getPosition().dst(projectile.getPosition());
-        float maxDistanceThreshold = boundingBox.width / 4;
+        float maxDistanceThreshold = boundingBox.width / 6;
         return distance <= maxDistanceThreshold;
     }
 

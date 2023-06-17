@@ -33,7 +33,6 @@ public class CornPlant extends Plant {
     @Override
     public void upgrade() {
         attackDamage += 10;
-        timeBetweenAttacks -= 2;
         attackRange *= 1.5f;
         numberOfProjectiles += 1;
         currentStage = GrowthStage.UPGRADE;

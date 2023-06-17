@@ -22,6 +22,7 @@ public class WaveController {
     private float timeSinceLastSpawn;
     private Wave currentWave;
     private ShapeRenderer shapeRenderer;
+    private int cumulativeEnemyCount = 0;
 
     private boolean bossSpawned = false;
     public static boolean waveStarted;
@@ -83,15 +84,22 @@ public class WaveController {
     private Wave generateNextWave() {
         EnemyFactory.EnemyType enemyType = EnemyFactory.EnemyType.BASIC_ENEMY;
         int enemyCount = currentWaveNumber < 6 ? currentWaveNumber : (int) Math.min(50, Math.pow(2, (currentWaveNumber - 5) / 6f));
+
         if (currentWaveNumber % 6 == 0) {
             enemyType = EnemyFactory.EnemyType.BOSS_ENEMY;
             enemyCount = 1;
-        } else if (enemyCount > 30) {
-            enemyCount++;
+            cumulativeEnemyCount += enemyCount;
         }
-        return new Wave(currentWaveNumber++, enemyType, enemyCount);
-    }
+        else if (cumulativeEnemyCount > 30) {
+            cumulativeEnemyCount++;
+        }
 
+        else {
+            cumulativeEnemyCount += enemyCount;
+        }
+
+        return new Wave(currentWaveNumber++, enemyType, (enemyType == EnemyFactory.EnemyType.BOSS_ENEMY) ? enemyCount : cumulativeEnemyCount);
+    }
 
     public void startWave() {
         if (!waveStarted && isWaveOver()) {
@@ -128,11 +136,12 @@ public class WaveController {
         enemies.add(enemy);
 
         if (currentWave.getWaveNumber() % 6 == 0) {
-            enemy.increaseHealth();
-        }
+            if (enemy instanceof BossEnemy) {
+                bossSpawned = true;
+            } else {
+                enemy.increaseHealth();
+            }
 
-        if (enemy instanceof BossEnemy) {
-            bossSpawned = true;
         }
     }
 

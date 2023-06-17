@@ -33,7 +33,6 @@ public class TomatoPlant extends Plant {
     @Override
     public void upgrade() {
         attackDamage += 5;
-        timeBetweenAttacks -= 3;
         attackRange *= 2;
         currentStage = GrowthStage.UPGRADE;
     }

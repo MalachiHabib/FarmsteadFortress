@@ -5,11 +5,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.crashinvaders.vfx.VfxManager;
+import com.crashinvaders.vfx.effects.BloomEffect;
 import com.crashinvaders.vfx.effects.FxaaEffect;
+import com.crashinvaders.vfx.effects.LensFlareEffect;
 import com.crashinvaders.vfx.effects.MotionBlurEffect;
+import com.crashinvaders.vfx.effects.VignettingEffect;
 import com.crashinvaders.vfx.effects.util.MixEffect;
 import com.farmsteadfortress.screens.GameScreen;
 import com.farmsteadfortress.screens.MenuScreen;
@@ -21,10 +25,13 @@ public class FarmsteadFortress extends Game {
     private FxaaEffect fxaaEffect;
     private MotionBlurEffect motionBlurEffect;
     private Preferences preferences;
+    private VignettingEffect vignettingEffect;
+    private BloomEffect bloomEffect;
     public static Music backgroundMusic;
     public static GameScreen gameScreen;
     public static MenuScreen menuScreen;
     public static OptionsScreen optionsScreen;
+
 
 
     @Override
@@ -34,13 +41,18 @@ public class FarmsteadFortress extends Game {
         motionBlurEffect = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MAX, .5f);
         vfxManager.addEffect(motionBlurEffect);
         fxaaEffect = new FxaaEffect();
+        bloomEffect = new BloomEffect();
+        bloomEffect.setBloomIntensity(.25f);
+        vfxManager.addEffect(bloomEffect);
         vfxManager.addEffect(fxaaEffect);
-
+        vignettingEffect = new VignettingEffect(false);
+        vignettingEffect.setIntensity(.25f);
+        vfxManager.addEffect(vignettingEffect);
         batch = new SpriteBatch();
         optionsScreen = new OptionsScreen(this);
         gameScreen = new GameScreen(batch, this);
         menuScreen = new MenuScreen(this);
-        setScreen(new MenuScreen(this));
+        setScreen(menuScreen);
     }
 
     public void initialisePreferences() {

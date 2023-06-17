@@ -44,7 +44,6 @@ public class GameScreen extends ScreenAdapter {
     private ShopUI shop;
     private ArrayList<Stage> uiStages;
     private WaveController waveController;
-    private VignettingEffect vignettingEffect;
     private HUD hud;
     private WaveOverUI waveOverUI;
     private BitmapFont bmfont;
@@ -84,17 +83,11 @@ public class GameScreen extends ScreenAdapter {
         uiStages.add(hud.getStage());
         inputHandler.setUiStages(uiStages);
         inputHandler.setProjectileManager(projectileManager);
-
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(inputHandler);
         inputMultiplexer.addProcessor(hotbar.getStage());
 
-
         shapeRenderer.setAutoShapeType(true);
-
-        // Initialise the vignetting effect
-        vignettingEffect = new VignettingEffect(false);
-        vignettingEffect.setIntensity(0.5f);
 
         /*
         BitmapFont sourced from

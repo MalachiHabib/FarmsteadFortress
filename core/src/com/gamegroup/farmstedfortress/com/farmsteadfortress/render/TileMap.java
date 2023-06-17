@@ -32,7 +32,7 @@ public class TileMap {
     private static final String SPAWN_POINT = "S";
     private static final String PATH = "P";
     private static final String EXTRA_WEIGHTED_GROUND = "XWG";
-    private static final int ISLAND_SIZE = 27;
+    private static final int ISLAND_SIZE = 25;
     private List<int[]> path;
     private List<List<int[]>> successfulPaths;
     private List<PathResult> pathResults;
